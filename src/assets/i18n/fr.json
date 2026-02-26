@@ -1,0 +1,42 @@
+{
+  "LOGIN": {
+    "TITLE": "Se connecter",
+    "SUBTITLE": "Votre tableau de bord HSE",
+    "USERNAME": "Nom d'utilisateur",
+    "PASSWORD": "Mot de passe",
+    "OR_WITH": "ou se connecter avec",
+    "REMEMBER": "Se souvenir de moi",
+    "FORGOT": "Mot de passe oublié ?",
+    "SIGNIN_BTN": "Connexion",
+    "NEW": "Nouveau sur hseMonitor ?",
+    "CREATE": "Créer un compte"
+  },
+  "WELCOME": {
+    "TITLE": "Bienvenue sur hseMonitor",
+    "TEXT": "La solution complète pour la gestion de la sécurité et de l'environnement.",
+    "LEARN_MORE": "En savoir plus"
+  },
+  "HEADER": {
+    "SEARCH_PLACEHOLDER": "Rechercher..."
+  },
+   "SIDEBAR": {
+    "SECTIONS": {
+      "MAIN": "PRINCIPAL",
+      "HSE_MANAGEMENT": "GESTION HSE",
+      "ELEMENTS": "ÉLÉMENTS",
+      "CONFIGURATION": "CONFIGURATION"
+    },
+    "MENU": {
+      "DASHBOARD": "Tableau de bord",
+      "INCIDENTS": "Incidents",
+      "AUDITS": "Audits & Inspections",
+      "COMPONENTS": "Composants",
+      "FORMS": "Formulaires",
+      "USERS": "Utilisateurs",
+      "SETTINGS": "Paramètres"
+    }
+  },
+   "FOOTER": {
+    "COPYRIGHT": "Copyright © {{year}} {{brand}}. Tous droits réservés."
+  }
+}

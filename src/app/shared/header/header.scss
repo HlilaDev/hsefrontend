@@ -1,0 +1,240 @@
+:host {
+  display: block;
+  width: 100%;
+  background: #ffffff;
+  border-bottom: 1px solid #f0f0f5;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ================= HEADER LAYOUT ================= */
+
+.header-container {
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 25px;
+}
+
+.left-section,
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ================= SEARCH BAR ================= */
+
+.search-bar {
+  position: relative;
+
+  input {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 15px 8px 38px;
+    width: 250px;
+    outline: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+
+    &::placeholder {
+      color: #94a3b8;
+    }
+
+    &:focus {
+      border-color: #4f46e5;
+      width: 320px;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08);
+    }
+  }
+
+  i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 14px;
+  }
+}
+
+/* ================= ICON BUTTONS ================= */
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  position: relative;
+
+  &:hover {
+    background: #f1f5f9;
+    color: #4f46e5;
+  }
+
+  .lang-text {
+    font-size: 12px;
+    font-weight: 700;
+    margin-left: 6px;
+    color: #4f46e5;
+    background: #eef2ff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+}
+
+/* ================= FLAGS ================= */
+
+.flag-icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 3px;
+  object-fit: cover;
+  display: inline-block;
+}
+
+/* ================= BADGES ================= */
+
+.badge-container {
+  .badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 14px;
+    height: 14px;
+    font-size: 9px;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ffffff;
+    padding: 0;
+  }
+
+  .bg-success {
+    background-color: #10b981 !important;
+  }
+
+  .bg-danger {
+    background-color: #ef4444 !important;
+  }
+}
+
+/* ================= USER AVATAR ================= */
+
+.user-profile {
+  margin-left: 5px;
+  padding: 2px;
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: #4f46e5;
+  }
+
+  .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    cursor: pointer;
+  }
+}
+
+/* ================= LANGUAGE DROPDOWN ================= */
+
+.lang-wrapper {
+  position: relative;
+}
+
+.chevron {
+  font-size: 12px;
+  margin-left: 6px;
+  opacity: 0.7;
+  transition: transform 0.2s ease;
+}
+
+.lang-wrapper button[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+/* Dropdown animation smooth */
+.lang-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 190px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.12);
+  padding: 6px;
+  z-index: 1000;
+
+  animation: fadeSlide 0.18s ease forwards;
+  transform-origin: top right;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.lang-item {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #f1f5f9;
+  }
+
+  &.active {
+    background: #eef2ff;
+  }
+
+  .label {
+    color: #0f172a;
+    font-weight: 600;
+    font-size: 13px;
+  }
+}
+
+/* ================= MENU TOGGLE ================= */
+
+.menu-toggle {
+  margin-right: 10px;
+  color: #1e293b;
+}
+
+/* Bootstrap icons alignment */
+i.bi {
+  line-height: 1;
+}

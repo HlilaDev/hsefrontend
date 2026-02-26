@@ -1,0 +1,66 @@
+<header class="header-container">
+  <div class="left-section">
+    <button class="icon-btn menu-toggle" type="button">
+      <i class="bi bi-list"></i>
+    </button>
+
+    <div class="search-bar">
+      <input type="text" [placeholder]="'HEADER.SEARCH_PLACEHOLDER' | translate" />
+      <i class="bi bi-search"></i>
+    </div>
+  </div>
+
+  <div class="right-section">
+    <button class="icon-btn" type="button"><i class="bi bi-moon"></i></button>
+    <button class="icon-btn" type="button"><i class="bi bi-fullscreen"></i></button>
+
+    <div class="icon-btn badge-container">
+      <i class="bi bi-bell"></i>
+      <span class="badge bg-success"></span>
+    </div>
+
+    <div class="icon-btn badge-container">
+      <i class="bi bi-chat-dots"></i>
+      <span class="badge bg-danger">3</span>
+    </div>
+
+    <!-- LANGUAGE DROPDOWN -->
+    <div class="lang-wrapper">
+      <button
+        class="icon-btn"
+        type="button"
+        (click)="toggleLangMenu()"
+        aria-haspopup="menu"
+        [attr.aria-expanded]="isLangOpen"
+      >
+        <!-- ✅ flag de la langue courante via map -->
+        <img class="flag-icon" [src]="lang.flagByCode[currentLang]" alt="flag" />
+        <span class="lang-text">{{ currentLang }}</span>
+        <i class="bi bi-chevron-down chevron"></i>
+      </button>
+
+      <div class="lang-menu" *ngIf="isLangOpen" role="menu">
+        <button
+          class="lang-item"
+          type="button"
+          *ngFor="let o of lang.options"
+          (click)="chooseLang(o.code)"
+          [class.active]="o.code === currentLang"
+          role="menuitem"
+        >
+          <!-- ✅ flag de chaque option -->
+          <img class="flag-icon" [src]="o.flag" [alt]="o.code + ' flag'" />
+          <span class="code">{{ o.code }}</span>
+          <span class="label">{{ o.label }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="user-profile">
+      <img src="assets/images/profile-pic.webp" alt="User" class="avatar" />
+    </div>
+
+    <button class="icon-btn" type="button"><i class="bi bi-grid-3x3-gap"></i></button>
+    <button class="icon-btn" type="button"><i class="bi bi-gear"></i></button>
+  </div>
+</header>

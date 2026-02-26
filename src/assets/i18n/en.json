@@ -1,0 +1,25 @@
+{
+  "HEADER": {
+    "SEARCH_PLACEHOLDER": "Search..."
+  },
+  "SIDEBAR": {
+    "SECTIONS": {
+      "MAIN": "MAIN",
+      "HSE_MANAGEMENT": "HSE MANAGEMENT",
+      "ELEMENTS": "ELEMENTS",
+      "CONFIGURATION": "CONFIGURATION"
+    },
+    "MENU": {
+      "DASHBOARD": "Dashboard",
+      "INCIDENTS": "Incidents",
+      "AUDITS": "Audits & Inspections",
+      "COMPONENTS": "Components",
+      "FORMS": "Forms",
+      "USERS": "Users",
+      "SETTINGS": "Settings"
+    }
+  },
+  "FOOTER": {
+    "COPYRIGHT": "Copyright © {{year}} {{brand}}. All rights reserved."
+  }
+}
