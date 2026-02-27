@@ -1,6 +1,12 @@
 {
   "HEADER": {
-    "SEARCH_PLACEHOLDER": "Search..."
+    "SEARCH_PLACEHOLDER": "Search...",
+     "USER": {
+      "ROLE": "Admin",
+      "PROFILE": "Profile",
+      "SETTINGS": "Settings",
+      "LOGOUT": "Log Out"
+    }
   },
   "SIDEBAR": {
     "SECTIONS": {

@@ -1,6 +1,6 @@
 <header class="header-container">
   <div class="left-section">
-    <button class="icon-btn menu-toggle" type="button">
+    <button class="icon-btn menu-toggle" type="button" (click)="onToggleSidebar()">
       <i class="bi bi-list"></i>
     </button>
 
@@ -29,11 +29,10 @@
       <button
         class="icon-btn"
         type="button"
-        (click)="toggleLangMenu()"
+        (click)="toggleLangMenu($event)"
         aria-haspopup="menu"
         [attr.aria-expanded]="isLangOpen"
       >
-        <!-- ✅ flag de la langue courante via map -->
         <img class="flag-icon" [src]="lang.flagByCode[currentLang]" alt="flag" />
         <span class="lang-text">{{ currentLang }}</span>
         <i class="bi bi-chevron-down chevron"></i>
@@ -48,7 +47,6 @@
           [class.active]="o.code === currentLang"
           role="menuitem"
         >
-          <!-- ✅ flag de chaque option -->
           <img class="flag-icon" [src]="o.flag" [alt]="o.code + ' flag'" />
           <span class="code">{{ o.code }}</span>
           <span class="label">{{ o.label }}</span>
@@ -56,8 +54,46 @@
       </div>
     </div>
 
-    <div class="user-profile">
-      <img src="assets/images/profile-pic.webp" alt="User" class="avatar" />
+    <!-- USER DROPDOWN -->
+    <div class="user-wrapper">
+      <button
+        class="user-profile"
+        type="button"
+        (click)="toggleUserMenu($event)"
+        aria-haspopup="menu"
+        [attr.aria-expanded]="isUserOpen"
+      >
+        <img [src]="avatarUrl" alt="User" class="avatar" />
+      </button>
+
+      <div class="user-menu" *ngIf="isUserOpen" role="menu">
+        <div class="user-head">
+          <!-- ✅ Nom depuis /me -->
+          <div class="name">{{ displayName }}</div>
+
+          <!-- ✅ Role depuis /me (option 1: direct) -->
+          <!-- <div class="role">{{ displayRole }}</div> -->
+
+          <!-- ✅ Role traduit (option 2: recommandé) -->
+          <div class="role">
+            {{ ('HEADER.ROLES.' + displayRole) | translate }}
+          </div>
+        </div>
+
+        <a class="user-item" routerLink="/profile" (click)="closeUserMenu()">
+          {{ 'HEADER.USER.PROFILE' | translate }}
+        </a>
+
+        <a class="user-item" routerLink="/settings" (click)="closeUserMenu()">
+          {{ 'HEADER.USER.SETTINGS' | translate }}
+        </a>
+
+        <div class="divider"></div>
+
+        <button class="user-item danger" type="button" (click)="logout()">
+          {{ 'HEADER.USER.LOGOUT' | translate }}
+        </button>
+      </div>
     </div>
 
     <button class="icon-btn" type="button"><i class="bi bi-grid-3x3-gap"></i></button>

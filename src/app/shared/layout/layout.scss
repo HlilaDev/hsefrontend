@@ -1,48 +1,73 @@
-/* Conteneur principal qui occupe toute la fenêtre */
+:root {
+  --sidebar-w: 280px;
+  --sidebar-w-collapsed: 86px;
+  --header-h: 70px;
+}
+
+/* Conteneur principal (pas de scroll global) */
 .dashboard-container {
   display: flex;
   height: 100vh;
   width: 100vw;
-  overflow: hidden; // Empêche le scroll sur le conteneur parent
-  background-color: #f8f9fa; // Couleur de fond légère type Dashboard
+  overflow: hidden;
+  background-color: #f8f9fa;
 }
 
-/* Sidebar : Largeur fixe et scroll interne si nécessaire */
-app-sidebar {
-  width: 280px; // Largeur standard pour les templates que vous avez montrés
+/* Sidebar (la largeur est contrôlée ici) */
+.dashboard-container app-sidebar.sidebar {
+  width: var(--sidebar-w);
   height: 100%;
-  flex-shrink: 0; // Empêche la sidebar de s'écraser
+  flex-shrink: 0;
+  overflow: hidden;
   z-index: 1000;
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.02);
+  transition: width 0.2s ease;
 }
 
-/* Zone de droite (Header + Main Content + Footer) */
+/* Sidebar collapsed */
+.dashboard-container.sidebar-collapsed app-sidebar.sidebar {
+  width: var(--sidebar-w-collapsed);
+}
+
+/* Colonne droite */
 .main-content {
-  flex-grow: 1;
+  flex: 1;
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow-y: auto; // C'est ici que le scroll se fera
-  position: relative;
+  min-width: 0;
+
+  /* ✅ le scroll se fait ici */
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-/* Header : Toujours en haut */
-app-header {
+/* Header sticky */
+app-header.header {
   position: sticky;
   top: 0;
   z-index: 999;
-  width: 100%;
+  height: var(--header-h);
+  flex: 0 0 auto;
 }
 
-/* Zone de contenu dynamique (Router Outlet) */
+/* Zone du contenu */
 .content-area {
-  flex: 1 0 auto; // Prend tout l'espace restant pour pousser le footer en bas
-  padding: 30px; // Espacement généreux comme dans l'image Mophy
-  background-color: #f4f7fa; // Légère nuance pour détacher du blanc des cartes
+  flex: 1 1 auto;
+  padding: 30px;
+  background-color: #f4f7fa;
+  min-width: 0;
 }
 
-/* Footer : Tout en bas */
-app-footer {
+/* Footer */
+app-footer.footer {
+  flex: 0 0 auto;
   width: 100%;
-  flex-shrink: 0;
+}
+
+/* Optionnel responsive */
+@media (max-width: 992px) {
+  .dashboard-container app-sidebar.sidebar {
+    width: var(--sidebar-w-collapsed);
+  }
 }

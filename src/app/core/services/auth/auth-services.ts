@@ -1,8 +1,42 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { API_URLS } from '../../config/api_urls';
+import { Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+export interface User {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  fullName?: string;
+  email: string;
+  avatarUrl?: string;
+  role: 'operator' | 'hseManager' | 'admin';
+}
+
+@Injectable({ providedIn: 'root' })
 export class AuthServices {
-  
+  constructor(private http: HttpClient) {}
+
+  login(data: LoginPayload): Observable<{ user: User }> {
+    return this.http.post<{ user: User }>(API_URLS.auth.login, data, {
+      withCredentials: true,
+    });
+  }
+
+  me(): Observable<{ user: User }> {
+    return this.http.get<{ user: User }>(API_URLS.auth.me, {
+      withCredentials: true,
+    });
+  }
+
+  logout(): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(API_URLS.auth.logout, {}, {
+      withCredentials: true,
+    });
+  }
 }

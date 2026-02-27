@@ -133,12 +133,23 @@
 
 /* ================= USER AVATAR ================= */
 
+/* wrapper position relative (pour dropdown) */
+.user-wrapper {
+  position: relative;
+}
+
+/* button avatar */
 .user-profile {
   margin-left: 5px;
   padding: 2px;
   border-radius: 50%;
   border: 1px solid #e2e8f0;
   transition: border-color 0.2s;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     border-color: #4f46e5;
@@ -150,7 +161,6 @@
     border-radius: 50%;
     object-fit: cover;
     display: block;
-    cursor: pointer;
   }
 }
 
@@ -171,7 +181,19 @@
   transform: rotate(180deg);
 }
 
-/* Dropdown animation smooth */
+/* Dropdown animation smooth (utilisé par les 2 menus) */
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* LANG MENU */
 .lang-menu {
   position: absolute;
   right: 0;
@@ -186,17 +208,6 @@
 
   animation: fadeSlide 0.18s ease forwards;
   transform-origin: top right;
-}
-
-@keyframes fadeSlide {
-  from {
-    opacity: 0;
-    transform: translateY(-6px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
 }
 
 .lang-item {
@@ -225,6 +236,70 @@
     font-weight: 600;
     font-size: 13px;
   }
+}
+
+/* ================= USER DROPDOWN MENU ================= */
+
+.user-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 230px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+  z-index: 1100; /* > lang menu */
+  animation: fadeSlide 0.18s ease forwards;
+  transform-origin: top right;
+}
+
+.user-head {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+
+  .name {
+    font-weight: 800;
+    color: #0f172a;
+    font-size: 14px;
+  }
+
+  .role {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+  }
+}
+
+.user-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  text-decoration: none;
+  color: #334155;
+  font-size: 13px;
+
+  &:hover {
+    background: #f1f5f9;
+  }
+
+  &.danger {
+    color: #ef4444;
+
+    &:hover {
+      background: #fff1f2;
+    }
+  }
+}
+
+.divider {
+  height: 1px;
+  background: #f1f5f9;
 }
 
 /* ================= MENU TOGGLE ================= */

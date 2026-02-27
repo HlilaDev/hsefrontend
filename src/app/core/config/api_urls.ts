@@ -1,12 +1,14 @@
-export const BASE_URL = "http://localhost:3000/" ;
-export const URL_UPLOAD = "http://localhost:3000/uploads/"
-export const BASE_API_URL = "http://localhost:3000/api"
+export const BASE_URL = "http://localhost:5000/" ;
+export const URL_UPLOAD = "http://localhost:5000/uploads/"
+export const BASE_API_URL = "http://localhost:5000/api"
 
 export const API_URLS ={
     auth:{
     //Auth API
     register:`${BASE_API_URL}/auth/register`,
     login:`${BASE_API_URL}/auth/login`,
+    logout:`${BASE_API_URL}/auth/logout`,
+    me:`${BASE_API_URL}/auth/me`
     // verifyEmail:`${BASE_API_URL}/auth/verify-email`,
     },
 

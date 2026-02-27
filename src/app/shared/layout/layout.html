@@ -1,14 +1,13 @@
-<div class="dashboard-container">
-  <app-sidebar></app-sidebar>
+<div class="dashboard-container" [class.sidebar-collapsed]="layout.sidebarCollapsed()">
+  <app-sidebar class="sidebar"></app-sidebar>
 
   <div class="main-content">
-    <app-header></app-header>
-    
-    
-    <main class="content-area">
-      <router-outlet></router-outlet>
-    </main>
+    <app-header class="header"></app-header>
 
-    <app-footer></app-footer>
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+
+    <app-footer class="footer"></app-footer>
   </div>
 </div>

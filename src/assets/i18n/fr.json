@@ -17,7 +17,13 @@
     "LEARN_MORE": "En savoir plus"
   },
   "HEADER": {
-    "SEARCH_PLACEHOLDER": "Rechercher..."
+    "SEARCH_PLACEHOLDER": "Rechercher...",
+     "USER": {
+      "ROLE": "Administrateur",
+      "PROFILE": "Profil",
+      "SETTINGS": "Paramètres",
+      "LOGOUT": "Déconnexion"
+    }
   },
    "SIDEBAR": {
     "SECTIONS": {
