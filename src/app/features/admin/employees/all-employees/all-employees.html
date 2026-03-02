@@ -1,0 +1,59 @@
+<div class="page">
+  <div class="header">
+    <h2>Employees</h2>
+    <a class="btn-add" routerLink="/admin/employees/add">+ Add Employee</a>
+  </div>
+
+  @if (loading) {
+    <p>Loading...</p>
+  } @else {
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Full Name</th>
+          <th>Matricule</th>
+          <th>Department</th>
+          <th>Job</th>
+          <th>Hire Date</th>
+          <th>Active</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (e of employees; track trackById($index, e)) {
+          <tr>
+            <td>{{ e.fullName }}</td>
+            <td>{{ e.employeeId || '—' }}</td>
+            <td>{{ e.department || '—' }}</td>
+            <td>{{ e.jobTitle || '—' }}</td>
+            <td>{{ e.hireDate | date:'yyyy-MM-dd' }}</td>
+
+            <td>
+              <label class="switch">
+                <input type="checkbox"
+                       [checked]="e.isActive"
+                       (change)="toggleActive(e)" />
+                <span class="slider"></span>
+              </label>
+            </td>
+
+            <td>
+              <a class="btn btn-sm btn-outline-primary"
+                 [routerLink]="['/admin/employees/edit', e._id]">
+                Edit
+              </a>
+
+              <button class="btn btn-sm btn-outline-danger"
+                      (click)="deleteEmployee(e._id!)">
+                Delete
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+  }
+</div>

@@ -1,0 +1,180 @@
+.page {
+  padding: 22px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 34px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.table-wrap {
+  width: 100%;
+  overflow: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table thead th {
+  text-align: left;
+  font-weight: 800;
+  font-size: 14px;
+  padding: 14px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+.table tbody td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.table tbody tr:hover td {
+  background: #f8fafc;
+}
+
+.center {
+  text-align: center;
+}
+.right {
+  text-align: right;
+}
+
+.actions-col {
+  width: 220px;
+  white-space: nowrap;
+}
+
+.state {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 10px;
+}
+
+.state.error {
+  justify-content: space-between;
+}
+
+.muted {
+  color: #6b7280;
+  font-weight: 600;
+}
+
+/* badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+.badge.online {
+  background: #dcfce7;
+  color: #166534;
+}
+.badge.offline {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* sensors chips */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chip {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 12px;
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+/* buttons (simples, si tu n’as pas bootstrap) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 800;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-sm {
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.btn-primary {
+  background: #16a34a;
+  color: #fff;
+}
+
+.btn-outline {
+  background: #fff;
+  border-color: #e5e7eb;
+  color: #111827;
+}
+
+.btn-outline-primary {
+  background: #fff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.btn-outline-danger {
+  background: #fff;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.btn + .btn {
+  margin-left: 10px;
+}
+
+/* spinner */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 2px solid #e5e7eb;
+  border-top-color: #111827;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

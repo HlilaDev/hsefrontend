@@ -1,14 +1,40 @@
 {
+  "COMMON": {
+    "LOADING": "Lädt...",
+    "EDIT": "Bearbeiten",
+    "DELETE": "Löschen"
+  },
+
+  "LOGIN": {
+    "TITLE": "Anmelden",
+    "SUBTITLE": "Ihr HSE-Dashboard",
+    "USERNAME": "Benutzername",
+    "PASSWORD": "Passwort",
+    "OR_WITH": "oder anmelden mit",
+    "REMEMBER": "Angemeldet bleiben",
+    "FORGOT": "Passwort vergessen?",
+    "SIGNIN_BTN": "Anmelden",
+    "NEW": "Neu bei hseMonitor?",
+    "CREATE": "Konto erstellen"
+  },
+
+  "WELCOME": {
+    "TITLE": "Willkommen bei hseMonitor",
+    "TEXT": "Die komplette Lösung für Sicherheits- und Umweltmanagement.",
+    "LEARN_MORE": "Mehr erfahren"
+  },
+
   "HEADER": {
     "SEARCH_PLACEHOLDER": "Suchen...",
     "USER": {
-      "ROLE": "Admin",
+      "ROLE": "Administrator",
       "PROFILE": "Profil",
       "SETTINGS": "Einstellungen",
       "LOGOUT": "Abmelden"
     }
   },
-"SIDEBAR": {
+
+  "SIDEBAR": {
     "SECTIONS": {
       "MAIN": "HAUPT",
       "HSE_MANAGEMENT": "HSE-VERWALTUNG",
@@ -25,7 +51,31 @@
       "SETTINGS": "Einstellungen"
     }
   },
-   "FOOTER": {
+
+  "FOOTER": {
     "COPYRIGHT": "Copyright © {{year}} {{brand}}. Alle Rechte vorbehalten."
+  },
+
+  "ZONES": {
+    "TITLE": "Zonenliste",
+    "ADD_BTN": "Zone hinzufügen",
+    "EMPTY": "Keine Zonen gefunden.",
+    "CONFIRM_DELETE": "Diese Zone löschen?",
+    "ERROR": {
+      "LOAD": "Fehler beim Laden der Zonen.",
+      "DELETE": "Fehler beim Löschen der Zone."
+    },
+    "COLUMNS": {
+      "NAME": "Name",
+      "DESCRIPTION": "Beschreibung",
+      "RISK": "Risiko",
+      "ACTIVE": "Aktiv",
+      "ACTIONS": "Aktionen"
+    },
+    "RISK": {
+      "low": "Niedrig",
+      "medium": "Mittel",
+      "high": "Hoch"
+    }
   }
 }

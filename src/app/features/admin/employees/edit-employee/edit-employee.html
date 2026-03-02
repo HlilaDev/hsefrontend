@@ -1,0 +1,101 @@
+<div class="page">
+  <div class="header">
+    <h2 class="title">Edit Employee</h2>
+
+    <a class="btn btn-outline" routerLink="/admin/employees">Back</a>
+  </div>
+
+  <div class="card">
+    @if (errorMessage) {
+      <div class="alert">{{ errorMessage }}</div>
+    }
+
+    @if (loadingEmployee) {
+      <div class="state">
+        <div class="spinner" aria-hidden="true"></div>
+        <span class="muted">Loading employee...</span>
+      </div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="submit()" class="form">
+        <!-- Full name -->
+        <div class="field">
+          <label>Full Name <span class="req">*</span></label>
+          <input
+            type="text"
+            placeholder="Ex: Ahmed Ben Ali"
+            formControlName="fullName"
+            [class.invalid]="f.fullName.touched && f.fullName.invalid"
+          />
+          @if (f.fullName.touched && f.fullName.invalid) {
+            <small class="error">Full name is required (min 3 chars).</small>
+          }
+        </div>
+
+        <!-- Matricule -->
+        <div class="field">
+          <label>Employee ID (Matricule)</label>
+          <input type="text" placeholder="Ex: EMP-001" formControlName="employeeId" />
+        </div>
+
+        <!-- Department / Job -->
+        <div class="grid">
+          <div class="field">
+            <label>Department</label>
+            <input type="text" placeholder="Ex: Production" formControlName="department" />
+          </div>
+
+          <div class="field">
+            <label>Job Title</label>
+            <input type="text" placeholder="Ex: Technician" formControlName="jobTitle" />
+          </div>
+        </div>
+
+        <!-- Zone -->
+        <div class="field">
+          <label>Zone</label>
+
+          @if (loadingZones) {
+            <div class="muted">Loading zones...</div>
+          } @else {
+            <select formControlName="zone">
+              <option value="">— Select zone —</option>
+              @for (z of zones; track z._id) {
+                <option [value]="z._id">{{ z.name }}</option>
+              }
+            </select>
+          }
+        </div>
+
+        <!-- Phone / Hire date -->
+        <div class="grid">
+          <div class="field">
+            <label>Phone</label>
+            <input type="text" placeholder="+216 ..." formControlName="phone" />
+          </div>
+
+          <div class="field">
+            <label>Hire Date</label>
+            <input type="date" formControlName="hireDate" />
+          </div>
+        </div>
+
+        <!-- Active -->
+        <div class="field inline">
+          <label class="check">
+            <input type="checkbox" formControlName="isActive" />
+            <span>Active</span>
+          </label>
+        </div>
+
+        <!-- Actions -->
+        <div class="actions">
+          <button class="btn btn-primary" type="submit" [disabled]="submitting">
+            @if (submitting) { Saving... } @else { Save changes }
+          </button>
+
+          <a class="btn btn-outline" routerLink="/admin/employees">Cancel</a>
+        </div>
+      </form>
+    }
+  </div>
+</div>

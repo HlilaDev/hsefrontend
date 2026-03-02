@@ -1,0 +1,114 @@
+<div class="page">
+  <!-- Header -->
+  <div class="header">
+    <h1 class="title">{{ titleKey | translate }}</h1>
+
+    <a class="btn btn-primary" [routerLink]="['/admin/devices/add']">
+      + {{ addLabelKey | translate }}
+    </a>
+  </div>
+
+  <!-- Card -->
+  <div class="card">
+    @if (loading) {
+      <div class="state">
+        <div class="spinner" aria-hidden="true"></div>
+        <span class="muted">{{ 'COMMON.LOADING' | translate }}</span>
+      </div>
+    } @else if (errorMessageKey) {
+      <div class="state error">
+        <span class="muted">{{ errorMessageKey | translate }}</span>
+
+        <button class="btn btn-outline" type="button" (click)="loadDevices()">
+          {{ 'COMMON.RETRY' | translate }}
+        </button>
+      </div>
+    } @else if (devices.length === 0) {
+      <div class="state">
+        <span class="muted">{{ emptyKey | translate }}</span>
+      </div>
+    } @else {
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th style="width: 160px">{{ 'DEVICES.COLUMNS.DEVICE_ID' | translate }}</th>
+              <th>{{ 'DEVICES.COLUMNS.NAME' | translate }}</th>
+              <th style="width: 180px">{{ 'DEVICES.COLUMNS.ZONE' | translate }}</th>
+              <th>{{ 'DEVICES.COLUMNS.SENSORS' | translate }}</th>
+              <th class="center" style="width: 140px">{{ 'DEVICES.COLUMNS.STATUS' | translate }}</th>
+              <th style="width: 200px">{{ 'DEVICES.COLUMNS.LAST_SEEN' | translate }}</th>
+              <th class="actions-col">{{ 'DEVICES.COLUMNS.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (d of devices; track trackByDevice($index, d)) {
+              <tr>
+                <!-- Device ID -->
+                <td style="width: 160px">{{ d.deviceId }}</td>
+
+                <!-- Name -->
+                <td>{{ d.name || '—' }}</td>
+
+                <!-- Zone -->
+                <td style="width: 180px">{{ getZoneName(d) }}</td>
+
+                <!-- Sensors -->
+                <td>
+                  @if (!hasSensors(d)) {
+                    <span class="muted">—</span>
+                  } @else {
+                    <div class="chips">
+                      @for (s of d.sensors; track s) {
+                        <span class="chip">{{ s }}</span>
+                      }
+                    </div>
+                  }
+                </td>
+
+                <!-- Status -->
+                <td class="center" style="width: 140px">
+                  <span
+                    class="badge"
+                    [class.online]="isOnline(d)"
+                    [class.offline]="!isOnline(d)"
+                  >
+                    {{ getStatusKey(d) | translate }}
+                  </span>
+                </td>
+
+                <!-- Last seen -->
+                <td style="width: 200px">
+                  @if (!d.lastSeen) {
+                    <span class="muted">—</span>
+                  } @else {
+                    {{ d.lastSeen | date: 'yyyy-MM-dd HH:mm' }}
+                  }
+                </td>
+
+                <!-- Actions -->
+                <td class="actions-col">
+                  <a
+                    class="btn btn-sm btn-outline-primary"
+                    [routerLink]="['/admin/devices/edit', getRowId(d)]"
+                  >
+                    {{ 'COMMON.EDIT' | translate }}
+                  </a>
+
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    type="button"
+                    (click)="deleteDevice(getRowId(d))"
+                  >
+                    {{ 'COMMON.DELETE' | translate }}
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,89 @@
+<div class="page">
+  <!-- Header -->
+  <div class="page-header">
+    <h2>{{ 'ZONES.TITLE' | translate }}</h2>
+
+    <a class="btn-add" [routerLink]="['/admin/zones/add']">
+      + {{ 'ZONES.ADD_BTN' | translate }}
+    </a>
+  </div>
+
+  <!-- Card -->
+  <div class="card">
+    @if (loading) {
+      <div class="state">
+        <div class="spinner" aria-hidden="true"></div>
+        <span class="muted">{{ 'COMMON.LOADING' | translate }}</span>
+      </div>
+    } @else if (errorMessageKey) {
+      <div class="state error">
+        <span class="muted">{{ errorMessageKey | translate }}</span>
+
+        <button class="btn btn-outline" type="button" (click)="loadZones()">
+          {{ 'COMMON.RETRY' | translate }}
+        </button>
+      </div>
+    } @else if (zones.length === 0) {
+      <div class="state">
+        <span class="muted">{{ 'ZONES.EMPTY' | translate }}</span>
+      </div>
+    } @else {
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>{{ 'ZONES.COLUMNS.NAME' | translate }}</th>
+              <th>{{ 'ZONES.COLUMNS.DESCRIPTION' | translate }}</th>
+              <th style="width: 180px">{{ 'ZONES.COLUMNS.RISK' | translate }}</th>
+              <th class="center" style="width: 120px">{{ 'ZONES.COLUMNS.ACTIVE' | translate }}</th>
+              <th class="actions-col">{{ 'COMMON.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (z of zones; track trackById($index, z)) {
+              <tr>
+                <td class="name">{{ z.name }}</td>
+                <td class="desc">{{ z.description || '—' }}</td>
+
+                <td style="width: 180px">
+                  <span class="badge" [ngClass]="riskClass(z)">
+                    {{ riskKey(z) | translate }}
+                  </span>
+                </td>
+
+                <td class="center" style="width: 120px">
+                  <label class="switch">
+                    <input
+                      type="checkbox"
+                      [checked]="z.isActive"
+                      (change)="toggleActive(z)"
+                    />
+                    <span class="slider"></span>
+                  </label>
+                </td>
+
+                <td class="actions-col">
+                  <a
+                    class="btn btn-sm btn-outline-primary"
+                    [routerLink]="['/admin/zones/edit', getRowId(z)]"
+                  >
+                    {{ 'COMMON.EDIT' | translate }}
+                  </a>
+
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    type="button"
+                    (click)="deleteZone(z)"
+                  >
+                    {{ 'COMMON.DELETE' | translate }}
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>

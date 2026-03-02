@@ -29,7 +29,24 @@ export const API_URLS ={
     deleteZone:`${BASE_API_URL}/zones/`,
      },
 
-    
+    //Devices API
+   devices: {
+  allDevices: `${BASE_API_URL}/devices/`,
+  getDeviceById: `${BASE_API_URL}/devices/`,
+  addDevice: `${BASE_API_URL}/devices/`,
+  editDevice: `${BASE_API_URL}/devices/`,
+  deleteDevice: `${BASE_API_URL}/devices/`,
+  // optionnel: toggle status, etc...
+},
+
+   employees: {
+  allEmployee: `${BASE_API_URL}/employees/`,
+  getEmployeeById: `${BASE_API_URL}/employees/`,
+  addEmployee: `${BASE_API_URL}/employees/`,
+  editEmployee: `${BASE_API_URL}/employees/`,
+  deleteEmployee: `${BASE_API_URL}/employees/`,
+  // optionnel: toggle status, etc...
+},
 
        
 }
