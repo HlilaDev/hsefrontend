@@ -16,4 +16,14 @@ export const DEVICES_ROUTES: Routes = [
     loadComponent: () =>
       import('./edit-device/edit-device').then(m => m.EditDevice),
   },
+    {
+    path: 'management/:id',
+    loadComponent: () =>
+      import('./device-management/device-management').then(m => m.DeviceManagement),
+  },
+    {
+    path: ':id',
+    loadComponent: () =>
+      import('./device-details/device-details').then(m => m.DeviceDetails),
+  },
 ];

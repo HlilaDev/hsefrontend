@@ -1,0 +1,334 @@
+<div class="page">
+  <div class="page-header">
+    <div class="title-wrap">
+      <div class="eyebrow">ADMIN / DEVICE MANAGEMENT</div>
+      <h1>Device Management</h1>
+      <p class="muted">
+        Manage device connectivity, MQTT configuration, maintenance actions, firmware
+        and remote commands.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn ghost" (click)="onBack()">Back to devices</button>
+      <button class="btn primary" (click)="onAction('Ping device')">Ping Now</button>
+    </div>
+  </div>
+
+  <div class="top-grid">
+    <section class="card hero-card">
+      <div class="hero-left">
+        <div class="device-icon">
+          <i class="bi bi-cpu"></i>
+        </div>
+
+        <div class="hero-info">
+          <div class="device-row">
+            <h2>{{ device.name }}</h2>
+            <span class="status-badge" [ngClass]="getStatusClass(device.status)">
+              {{ device.status }}
+            </span>
+          </div>
+
+          <div class="meta-grid">
+            <div><span>ID</span><strong>{{ device.deviceId }}</strong></div>
+            <div><span>Type</span><strong>{{ device.type }}</strong></div>
+            <div><span>Zone</span><strong>{{ device.zone }}</strong></div>
+            <div><span>Firmware</span><strong>{{ device.firmware }}</strong></div>
+            <div><span>IP Address</span><strong>{{ device.ipAddress }}</strong></div>
+            <div><span>MAC</span><strong>{{ device.macAddress }}</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <span>Uptime</span>
+          <strong>{{ device.uptime }}</strong>
+        </div>
+        <div class="stat">
+          <span>Signal</span>
+          <strong>{{ device.signal }} dBm</strong>
+        </div>
+        <div class="stat">
+          <span>Battery</span>
+          <strong>{{ device.battery }}%</strong>
+        </div>
+        <div class="stat">
+          <span>Last Sync</span>
+          <strong>{{ device.lastSync }}</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="card action-card">
+      <div class="card-head">
+        <h3>Quick Commands</h3>
+        <p>Most used remote actions</p>
+      </div>
+
+      <div class="action-grid">
+        <button class="action-btn" (click)="onAction('Restart device')">
+          <i class="bi bi-arrow-repeat"></i>
+          <span>Restart</span>
+        </button>
+
+        <button class="action-btn" (click)="onAction('Sync time')">
+          <i class="bi bi-clock-history"></i>
+          <span>Sync Time</span>
+        </button>
+
+        <button class="action-btn" (click)="onAction('Get instant reading')">
+          <i class="bi bi-activity"></i>
+          <span>Read Now</span>
+        </button>
+
+        <button class="action-btn" (click)="onAction('Run diagnostics')">
+          <i class="bi bi-heart-pulse"></i>
+          <span>Diagnostics</span>
+        </button>
+
+        <button class="action-btn" (click)="onAction('Capture snapshot')">
+          <i class="bi bi-camera"></i>
+          <span>Snapshot</span>
+        </button>
+
+        <button class="action-btn danger-soft" (click)="onAction('Factory reset')">
+          <i class="bi bi-exclamation-octagon"></i>
+          <span>Factory Reset</span>
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <div class="content-grid">
+    <section class="card">
+      <div class="card-head">
+        <h3>MQTT Configuration</h3>
+        <p>Broker communication and messaging settings</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label>Broker Host</label>
+          <input type="text" [value]="device.broker" />
+        </div>
+
+        <div class="field">
+          <label>Port</label>
+          <input type="number" [value]="device.port" />
+        </div>
+
+        <div class="field">
+          <label>Sampling Interval (s)</label>
+          <input type="number" [value]="device.samplingInterval" />
+        </div>
+
+        <div class="field">
+          <label>Alert Threshold</label>
+          <input type="number" [value]="device.threshold" />
+        </div>
+      </div>
+
+      <div class="switch-list">
+        <button class="switch-item" [class.active]="mqttEnabled()" (click)="toggleMqtt()">
+          <div>
+            <strong>MQTT Enabled</strong>
+            <p>Allow device publish/subscribe communication</p>
+          </div>
+          <span class="switch-pill">{{ mqttEnabled() ? 'ON' : 'OFF' }}</span>
+        </button>
+
+        <button class="switch-item" [class.active]="autoReconnect()" (click)="toggleReconnect()">
+          <div>
+            <strong>Auto Reconnect</strong>
+            <p>Reconnect automatically when broker is unavailable</p>
+          </div>
+          <span class="switch-pill">{{ autoReconnect() ? 'ON' : 'OFF' }}</span>
+        </button>
+
+        <button class="switch-item" [class.active]="alertMode()" (click)="toggleAlertMode()">
+          <div>
+            <strong>Alert Mode</strong>
+            <p>Publish critical alerts instantly</p>
+          </div>
+          <span class="switch-pill">{{ alertMode() ? 'ON' : 'OFF' }}</span>
+        </button>
+      </div>
+
+      <div class="section-actions">
+        <button class="btn ghost">Test Broker</button>
+        <button class="btn primary">Save MQTT Settings</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h3>Connectivity & Network</h3>
+        <p>Technical info and communication health</p>
+      </div>
+
+      <div class="kv-list">
+        <div class="kv-item">
+          <span>Connection Status</span>
+          <strong class="ok">Connected</strong>
+        </div>
+        <div class="kv-item">
+          <span>Wi-Fi RSSI</span>
+          <strong>{{ device.signal }} dBm</strong>
+        </div>
+        <div class="kv-item">
+          <span>Local IP</span>
+          <strong>{{ device.ipAddress }}</strong>
+        </div>
+        <div class="kv-item">
+          <span>MQTT Session</span>
+          <strong>Persistent</strong>
+        </div>
+        <div class="kv-item">
+          <span>Last Heartbeat</span>
+          <strong>10 sec ago</strong>
+        </div>
+        <div class="kv-item">
+          <span>Zone Binding</span>
+          <strong>{{ device.zone }}</strong>
+        </div>
+      </div>
+
+      <div class="section-actions">
+        <button class="btn ghost" (click)="onAction('Ping device')">Ping Device</button>
+        <button class="btn ghost" (click)="onAction('Refresh status')">Refresh Status</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h3>Firmware & Updates</h3>
+        <p>OTA management and versioning</p>
+      </div>
+
+      <div class="firmware-box">
+        <div class="firmware-current">
+          <span>Current Firmware</span>
+          <strong>{{ device.firmware }}</strong>
+        </div>
+
+        <div class="firmware-progress">
+          <div class="progress-top">
+            <span>Update readiness</span>
+            <span>72%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 72%"></div>
+          </div>
+        </div>
+
+        <div class="field full">
+          <label>Firmware Package</label>
+          <input type="text" value="firmware-v1.5.0.bin" />
+        </div>
+      </div>
+
+      <div class="section-actions">
+        <button class="btn ghost" (click)="onAction('Check for updates')">Check Update</button>
+        <button class="btn primary" (click)="onAction('Start OTA update')">Start OTA</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h3>Maintenance Mode</h3>
+        <p>Safe state for diagnostics and interventions</p>
+      </div>
+
+      <button
+        class="maintenance-toggle"
+        [class.active]="maintenanceMode()"
+        (click)="toggleMaintenance()"
+      >
+        <div>
+          <strong>{{ maintenanceMode() ? 'Maintenance Enabled' : 'Maintenance Disabled' }}</strong>
+          <p>
+            {{
+              maintenanceMode()
+                ? 'Commands and alerts are reduced for safe intervention.'
+                : 'Device is operating in normal production mode.'
+            }}
+          </p>
+        </div>
+
+        <span class="switch-pill">{{ maintenanceMode() ? 'ON' : 'OFF' }}</span>
+      </button>
+
+      <div class="section-actions">
+        <button class="btn ghost" (click)="onAction('Run self test')">Self Test</button>
+        <button class="btn ghost" (click)="onAction('Clear local logs')">Clear Logs</button>
+      </div>
+    </section>
+
+    <section class="card logs-card">
+      <div class="card-head">
+        <h3>Recent Commands</h3>
+        <p>Last remote actions sent to this device</p>
+      </div>
+
+      <div class="logs-list">
+        @for (log of logs; track log.time + log.action) {
+          <div class="log-item">
+            <div class="log-left">
+              <div class="log-title">{{ log.action }}</div>
+              <div class="log-meta">{{ log.time }} • {{ log.source }}</div>
+            </div>
+
+            <span class="log-status" [ngClass]="log.status">
+              {{ log.status }}
+            </span>
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="card danger-card">
+      <div class="card-head">
+        <h3>Danger Zone</h3>
+        <p>Critical actions that can affect device availability</p>
+      </div>
+
+      <div class="danger-box">
+        <div class="danger-text">
+          <strong>Factory reset</strong>
+          <p>
+            Remove current configuration and restore default parameters. Use only for
+            recovery or device reprovisioning.
+          </p>
+        </div>
+
+        <button class="btn danger" (click)="onAction('Factory reset')">
+          Factory Reset
+        </button>
+      </div>
+    </section>
+  </div>
+</div>
+
+@if (showConfirmModal()) {
+  <div class="modal-backdrop" (click)="closeModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <h3>{{ confirmTitle() }}</h3>
+      <p>{{ confirmText() }}</p>
+
+      @if (actionError()) {
+        <div class="error-text">{{ actionError() }}</div>
+      }
+
+      <div class="modal-actions">
+        <button class="btn ghost" (click)="closeModal()" [disabled]="actionLoading()">
+          Cancel
+        </button>
+        <button class="btn primary" (click)="confirmAction()" [disabled]="actionLoading()">
+          {{ actionLoading() ? 'Sending...' : 'Confirm' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

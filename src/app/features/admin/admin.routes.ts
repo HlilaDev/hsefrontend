@@ -5,7 +5,7 @@ export const ADMIN_ROUTES: Routes = [
     path: '',
     loadComponent: () =>
       import('./layouts/layout-admin/layout-admin').then(m => m.LayoutAdmin),
-    children: [
+    children: [ 
       // ✅ /admin → dashboard
       {
         path: '',
@@ -33,13 +33,19 @@ export const ADMIN_ROUTES: Routes = [
          import('./employees/employees.routes')
         .then(m => m.EMPLOYEES_ROUTES),
 },
+      {
+       path: 'sensors',
+        loadChildren: () =>
+         import('./sensors/sensors.routes')
+        .then(m => m.SENSORS_ROUTES),
+},
 
       {
        path: 'users',
         loadChildren: () =>
          import('./users/users.routes')
         .then(m => m.USERS_ROUTES),
-}
+},
     ],
   },
 ];

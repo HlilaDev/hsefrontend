@@ -1,91 +1,50 @@
 <div class="sidebar-wrapper">
+  <!-- Brand -->
   <div class="logo-section">
-    <div class="logo-container">
-      <img src="assets/images/logo.png" alt="HSE" class="logo-icon">
-    </div>
+    <a class="brand-link" [routerLink]="brand.homeLink || '/'">
+      <div class="logo-container">
+        <img [src]="brand.logoSrc || 'assets/images/logo.png'" alt="HSE" class="logo-icon">
+      </div>
 
-    <span class="logo-text">HSE <span class="text-primary">Monitor</span></span>
+      <div class="brand-texts">
+        <span class="logo-text">
+          {{ brand.title }} <span class="text-primary">{{ brand.accent }}</span>
+        </span>
+        @if (brand.subtitle) {
+          <span class="brand-subtitle">{{ brand.subtitle }}</span>
+        }
+      </div>
+    </a>
   </div>
 
+  <!-- Menu -->
   <div class="menu-container">
     <nav class="sidebar-nav">
+      @for (section of sections; track section.titleKey) {
+        <div class="menu-section">
+          <p class="section-title">
+            <span class="dots">...</span>
+            {{ section.titleKey | translate }}
+          </p>
 
-      <div class="menu-section">
-        <p class="section-title"><span class="dots">...</span> {{ 'SIDEBAR.SECTIONS.MAIN' | translate }}</p>
-        <ul class="list-unstyled">
-          <li>
-            <a routerLink="/home" routerLinkActive="active" class="menu-item">
-              <i class="bi bi-grid icon"></i>
-              <span class="label">{{ 'SIDEBAR.MENU.DASHBOARD' | translate }}</span>
-              <i class="bi bi-chevron-right arrow"></i>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="menu-section">
-        <p class="section-title"><span class="dots">...</span> {{ 'SIDEBAR.SECTIONS.HSE_MANAGEMENT' | translate }}</p>
-        <ul class="list-unstyled">
-          <li>
-            <a routerLink="/incidents" routerLinkActive="active" class="menu-item">
-              <i class="bi bi-exclamation-triangle icon"></i>
-              <span class="label">{{ 'SIDEBAR.MENU.INCIDENTS' | translate }}</span>
-              <i class="bi bi-chevron-right arrow"></i>
-            </a>
-          </li>
-
-          <li>
-            <a routerLink="/audits" routerLinkActive="active" class="menu-item">
-              <i class="bi bi-clipboard-check icon"></i>
-              <span class="label">{{ 'SIDEBAR.MENU.AUDITS' | translate }}</span>
-              <i class="bi bi-chevron-right arrow"></i>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="menu-section">
-        <p class="section-title"><span class="dots">...</span> {{ 'SIDEBAR.SECTIONS.ELEMENTS' | translate }}</p>
-        <ul class="list-unstyled">
-          <li>
-            <a routerLink="/components" routerLinkActive="active" class="menu-item">
-              <i class="bi bi-compass icon"></i>
-              <span class="label">{{ 'SIDEBAR.MENU.COMPONENTS' | translate }}</span>
-              <i class="bi bi-chevron-right arrow"></i>
-            </a>
-          </li>
-
-          <li>
-            <a routerLink="/forms" routerLinkActive="active" class="menu-item">
-              <i class="bi bi-file-earmark-text icon"></i>
-              <span class="label">{{ 'SIDEBAR.MENU.FORMS' | translate }}</span>
-              <i class="bi bi-chevron-right arrow"></i>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="menu-section">
-        <p class="section-title"><span class="dots">...</span> {{ 'SIDEBAR.SECTIONS.CONFIGURATION' | translate }}</p>
-        <ul class="list-unstyled">
-          <li>
-            <a routerLink="/users" routerLinkActive="active" class="menu-item">
-              <i class="bi bi-people icon"></i>
-              <span class="label">{{ 'SIDEBAR.MENU.USERS' | translate }}</span>
-              <i class="bi bi-chevron-right arrow"></i>
-            </a>
-          </li>
-
-          <li>
-            <a routerLink="/settings" routerLinkActive="active" class="menu-item">
-              <i class="bi bi-gear icon"></i>
-              <span class="label">{{ 'SIDEBAR.MENU.SETTINGS' | translate }}</span>
-              <i class="bi bi-chevron-right arrow"></i>
-            </a>
-          </li>
-        </ul>
-      </div>
-
+          <ul class="list-unstyled">
+            @for (item of section.items; track item.route) {
+              <li>
+                <a
+                  [routerLink]="item.route"
+                  routerLinkActive="active"
+                  class="menu-item"
+                  [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+                >
+                  <i class="icon" [class]="item.icon"></i>
+                  <span class="label">{{ item.labelKey | translate }}</span>
+                  <i class="bi bi-chevron-right arrow"></i>
+                </a>
+              </li>
+            }
+          </ul>
+        </div>
+      }
     </nav>
   </div>
 </div>

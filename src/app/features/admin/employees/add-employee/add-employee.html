@@ -1,62 +1,83 @@
 <div class="page">
   <div class="header">
-    <h2 class="title">Add Employee</h2>
+    <h2 class="title">{{ 'EMPLOYEES.ADD_TITLE' | translate }}</h2>
 
     <a class="btn btn-outline" routerLink="/admin/employees">
-      Back
+      {{ 'COMMON.BACK' | translate }}
     </a>
   </div>
 
   <div class="card">
     @if (errorMessage) {
       <div class="alert">
-        {{ errorMessage }}
+        {{ errorMessage | translate }}
       </div>
     }
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="form">
       <!-- Full name -->
       <div class="field">
-        <label>Full Name <span class="req">*</span></label>
+        <label>
+          {{ 'EMPLOYEES.FORM.FULL_NAME' | translate }}
+          <span class="req">*</span>
+        </label>
+
         <input
           type="text"
-          placeholder="Ex: Ahmed Ben Ali"
+          [placeholder]="'EMPLOYEES.FORM.FULL_NAME_PH' | translate"
           formControlName="fullName"
           [class.invalid]="f.fullName.touched && f.fullName.invalid"
         />
+
         @if (f.fullName.touched && f.fullName.invalid) {
-          <small class="error">Full name is required (min 3 chars).</small>
+          <small class="error">
+            {{ 'EMPLOYEES.VALIDATION.FULL_NAME_REQUIRED' | translate }}
+          </small>
         }
       </div>
 
       <!-- Matricule -->
       <div class="field">
-        <label>Employee ID (Matricule)</label>
-        <input type="text" placeholder="Ex: EMP-001" formControlName="employeeId" />
+        <label>{{ 'EMPLOYEES.FORM.EMPLOYEE_ID' | translate }}</label>
+        <input
+          type="text"
+          [placeholder]="'EMPLOYEES.FORM.EMPLOYEE_ID_PH' | translate"
+          formControlName="employeeId"
+        />
       </div>
 
       <!-- Department -->
       <div class="grid">
         <div class="field">
-          <label>Department</label>
-          <input type="text" placeholder="Ex: Production" formControlName="department" />
+          <label>{{ 'EMPLOYEES.FORM.DEPARTMENT' | translate }}</label>
+          <input
+            type="text"
+            [placeholder]="'EMPLOYEES.FORM.DEPARTMENT_PH' | translate"
+            formControlName="department"
+          />
         </div>
 
         <div class="field">
-          <label>Job Title</label>
-          <input type="text" placeholder="Ex: Technician" formControlName="jobTitle" />
+          <label>{{ 'EMPLOYEES.FORM.JOB_TITLE' | translate }}</label>
+          <input
+            type="text"
+            [placeholder]="'EMPLOYEES.FORM.JOB_TITLE_PH' | translate"
+            formControlName="jobTitle"
+          />
         </div>
       </div>
 
       <!-- Zone -->
       <div class="field">
-        <label>Zone</label>
+        <label>{{ 'EMPLOYEES.FORM.ZONE' | translate }}</label>
 
         @if (loadingZones) {
-          <div class="muted">Loading zones...</div>
+          <div class="muted">{{ 'EMPLOYEES.LOADING_ZONES' | translate }}</div>
         } @else {
           <select formControlName="zone">
-            <option value="">— Select zone —</option>
+            <option value="">
+              {{ 'EMPLOYEES.FORM.SELECT_ZONE' | translate }}
+            </option>
             @for (z of zones; track z._id) {
               <option [value]="z._id">{{ z.name }}</option>
             }
@@ -67,12 +88,16 @@
       <!-- Phone + hire date -->
       <div class="grid">
         <div class="field">
-          <label>Phone</label>
-          <input type="text" placeholder="+216 ..." formControlName="phone" />
+          <label>{{ 'EMPLOYEES.FORM.PHONE' | translate }}</label>
+          <input
+            type="text"
+            [placeholder]="'EMPLOYEES.FORM.PHONE_PH' | translate"
+            formControlName="phone"
+          />
         </div>
 
         <div class="field">
-          <label>Hire Date</label>
+          <label>{{ 'EMPLOYEES.FORM.HIRE_DATE' | translate }}</label>
           <input type="date" formControlName="hireDate" />
         </div>
       </div>
@@ -81,18 +106,22 @@
       <div class="field inline">
         <label class="check">
           <input type="checkbox" formControlName="isActive" />
-          <span>Active</span>
+          <span>{{ 'EMPLOYEES.FORM.ACTIVE' | translate }}</span>
         </label>
       </div>
 
       <!-- Actions -->
       <div class="actions">
         <button class="btn btn-primary" type="submit" [disabled]="submitting">
-          @if (submitting) { Saving... } @else { Save }
+          @if (submitting) {
+            {{ 'COMMON.SAVING' | translate }}
+          } @else {
+            {{ 'COMMON.SAVE' | translate }}
+          }
         </button>
 
         <a class="btn btn-outline" routerLink="/admin/employees">
-          Cancel
+          {{ 'COMMON.CANCEL' | translate }}
         </a>
       </div>
     </form>

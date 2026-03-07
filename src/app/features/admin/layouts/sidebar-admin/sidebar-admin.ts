@@ -1,38 +1,26 @@
-import { Component, HostBinding } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-
-type MenuItem = {
-  label: string;
-  icon: string;     // bootstrap icons class
-  link: string;
-};
+import { Component } from '@angular/core';
+import { Sidebar } from '../../../../shared/sidebar/sidebar';
+import { ADMIN_SECTIONS } from '../../../../shared/sidebar/config/admin.sidebar.config';
 
 @Component({
   selector: 'app-sidebar-admin',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
-  templateUrl: './sidebar-admin.html',
-  styleUrl: './sidebar-admin.scss',
+  imports: [Sidebar],
+  template: `
+    <app-sidebar
+      [sections]="sections"
+      [brand]="brand">
+    </app-sidebar>
+  `, 
 })
 export class SidebarAdmin {
-  // Optionnel: mode réduit
-  collapsed = false;
+  sections = ADMIN_SECTIONS;
 
-  menu: MenuItem[] = [
-    { label: 'Zones', icon: 'bi bi-geo-alt', link: '/admin/zones' },
-    { label: 'Devices', icon: 'bi bi-cpu', link: '/admin/devices' },
-   { label: 'Employees', icon: 'bi bi-cpu', link: '/admin/employees' },
-      { label: 'Users', icon: 'bi bi-cpu', link: '/admin/users' },
-    { label: 'Settings', icon: 'bi bi-gear', link: '/admin/settings' },
-  ];
-
-  toggle() {
-    this.collapsed = !this.collapsed;
-  }
-
-  // Ajoute une classe au host quand collapsed
-  @HostBinding('class.collapsed')
-  get isCollapsed() {
-    return this.collapsed;
-  }
+  brand = {
+    title: 'Admin',
+    accent: 'Panel',
+    subtitle: 'hseMonitor',
+    logoSrc: 'assets/images/logo.png',
+    homeLink: '/admin',
+  };
 }

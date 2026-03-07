@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { EmployeeServices, Employee } from '../../../../core/services/employees/employee-services';
 import { ZoneServices } from '../../../../core/services/zones/zone-services';
@@ -9,7 +10,7 @@ import { ZoneServices } from '../../../../core/services/zones/zone-services';
 @Component({
   selector: 'app-edit-employee',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, TranslateModule],
   templateUrl: './edit-employee.html',
   styleUrl: './edit-employee.scss',
 })
@@ -34,9 +35,9 @@ export class EditEmployee {
     employeeId: [''],
     department: [''],
     jobTitle: [''],
-    zone: [''],      // zoneId
+    zone: [''],
     phone: [''],
-    hireDate: [''],  // yyyy-MM-dd
+    hireDate: [''],
     isActive: [true],
   });
 
@@ -53,6 +54,7 @@ export class EditEmployee {
 
   private loadZones() {
     this.loadingZones = true;
+
     this.zoneService.getAllZones().subscribe({
       next: (res: any) => {
         this.zones = res?.items ?? res?.zones ?? res ?? [];
@@ -67,15 +69,15 @@ export class EditEmployee {
 
   private loadEmployee() {
     if (!this.id) {
-      this.errorMessage = 'Missing employee id';
+      this.errorMessage = 'EMPLOYEES.ERROR.MISSING_ID';
       this.loadingEmployee = false;
       return;
     }
 
     this.loadingEmployee = true;
+
     this.employeeService.getEmployeeById(this.id).subscribe({
       next: (emp: Employee | any) => {
-        // zone peut être string ou objet populé
         const zoneId =
           typeof emp.zone === 'string' ? emp.zone : (emp.zone?._id ?? '');
 
@@ -92,8 +94,8 @@ export class EditEmployee {
 
         this.loadingEmployee = false;
       },
-      error: (e: any) => {
-        this.errorMessage = e?.message || 'Failed to load employee';
+      error: () => {
+        this.errorMessage = 'EMPLOYEES.ERROR.LOAD_ONE';
         this.loadingEmployee = false;
       },
     });
@@ -127,14 +129,13 @@ export class EditEmployee {
         this.submitting = false;
         this.router.navigate(['/admin/employees']);
       },
-      error: (e: any) => {
+      error: () => {
         this.submitting = false;
-        this.errorMessage = e?.message || 'Failed to update employee';
+        this.errorMessage = 'EMPLOYEES.ERROR.UPDATE';
       },
     });
   }
 
-  // Convertit une date backend -> yyyy-MM-dd (pour input date)
   private toDateInput(value: any): string {
     if (!value) return '';
     const d = new Date(value);

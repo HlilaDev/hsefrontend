@@ -1,0 +1,13 @@
+<div class="dashboard">
+  <!-- Carte pour afficher le nombre total d'observations de l'agent -->
+  <app-stat-card
+    [title]="'My Observations'"
+    [iconClass]="'bi bi-exclamation-triangle'"
+    [value]="totalObservations"
+    [routerLink]="['/agent/observations']"
+    [variant]="'blue'"
+    [linkLabel]="'View Observations'"
+  ></app-stat-card>
+
+  <!-- Autres cartes, par exemple pour le tableau de bord, les zones, etc. -->
+</div>

@@ -1,7 +1,8 @@
 <aside class="sidebar">
   <!-- Top / Brand -->
   <div class="brand">
-    <div class="brand-left">
+    <!-- ✅ whole brand clickable to /admin -->
+    <a class="brand-left" routerLink="/admin">
       <div class="logo">
         <img src="assets/images/logo.png" alt="Logo" />
       </div>
@@ -10,12 +11,9 @@
         <div class="brand-title">Admin <span class="primary">Panel</span></div>
         <div class="brand-subtitle">hseMonitor</div>
       </div>
-    </div>
+    </a>
 
-    <!-- collapse button (optionnel) -->
-    <button class="collapse-btn" type="button" (click)="toggle()" aria-label="Toggle sidebar">
-      <i class="bi" [class.bi-list]="!collapsed" [class.bi-x]="collapsed"></i>
-    </button>
+    <!-- ❌ removed collapse button -->
   </div>
 
   <!-- Menu -->
@@ -45,7 +43,7 @@
     </div>
   </nav>
 
-  <!-- Bottom (optionnel) -->
+  <!-- Bottom -->
   <div class="bottom">
     <div class="hint">
       <i class="bi bi-shield-check"></i>

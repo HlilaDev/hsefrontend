@@ -16,7 +16,7 @@
   height: 100%;
 }
 
-/* ===================== LOGO ===================== */
+/* ===================== LOGO / BRAND ===================== */
 .logo-section {
   padding: 0 25px;
   display: flex;
@@ -25,6 +25,16 @@
   height: 70px;
   border-bottom: 1px solid #f8fafc;
   transition: padding 0.2s ease, justify-content 0.2s ease;
+
+  /* whole brand clickable */
+  .brand-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
 
   .logo-container {
     display: flex;
@@ -38,15 +48,34 @@
     display: block;
   }
 
+  /* brand texts wrapper (title + subtitle) */
+  .brand-texts {
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* prevent overflow */
+    line-height: 1.1;
+  }
+
   .logo-text {
     font-size: 19px;
     font-weight: 800;
     color: #1e293b;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     .text-primary {
       color: #4f46e5;
     }
+  }
+
+  .brand-subtitle {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
@@ -114,6 +143,8 @@
     font-size: 14px;
     font-weight: 500;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .arrow {
@@ -153,9 +184,14 @@
   .logo-section {
     padding: 0 12px;
     justify-content: center;
+
+    .brand-link {
+      justify-content: center;
+    }
   }
 
-  .logo-text {
+  /* hide texts */
+  .brand-texts {
     display: none;
   }
 

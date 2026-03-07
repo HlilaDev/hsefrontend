@@ -1,0 +1,13 @@
+<div class="hsemanager-layout" [class.sidebar-collapsed]="layout.sidebarCollapsed()">
+  <app-sidebar-manager class="sidebar"></app-sidebar-manager>
+
+  <div class="main-content">
+    <app-header class="header"></app-header>
+
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+
+    <app-footer class="footer"></app-footer>
+  </div>
+</div>

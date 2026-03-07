@@ -1,7 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Header } from "../header/header";
-import { Sidebar } from "../sidebar/sidebar";
 import { Footer } from "../footer/footer"; 
 import { LayoutService } from '../../core/services/layout/layout';
 
@@ -12,8 +11,8 @@ import { LayoutService } from '../../core/services/layout/layout';
   imports: [
     RouterOutlet,
     Header,
-    Sidebar,
-    Footer
+    Footer,
+
 ],
   templateUrl: './layout.html',
   styleUrl: './layout.scss',

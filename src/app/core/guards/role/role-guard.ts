@@ -12,7 +12,7 @@ export const roleGuard: CanActivateFn = (route) => {
   return auth.me().pipe(
     map(({ user }) => {
       if (!allowedRoles || allowedRoles.includes(user.role)) return true;
-      return router.createUrlTree(['/unauthorized']);
+      return router.createUrlTree(['/404']);
     }),
     catchError(() => of(router.createUrlTree(['/login'])))
   );

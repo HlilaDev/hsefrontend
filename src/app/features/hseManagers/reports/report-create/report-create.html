@@ -1,0 +1,168 @@
+<div class="page">
+  <!-- Header -->
+  <div class="header">
+    <div class="title">
+      <h2>Créer un Report</h2>
+      <p class="muted">
+        Générer un rapport (weekly/monthly/yearly/audit/custom) pour une zone et une période.
+      </p>
+    </div>
+
+    <div class="actions">
+      <a class="btn ghost" routerLink="/hsemanager/reports">
+        <i class="bi bi-arrow-left"></i>
+        Retour
+      </a>
+
+      <button class="btn primary" (click)="submit()" [disabled]="form.invalid || loading()">
+        <i class="bi bi-check2-circle"></i>
+        Créer
+      </button>
+    </div>
+  </div>
+
+  <!-- Alerts -->
+  <div *ngIf="error()" class="alert error">
+    <i class="bi bi-exclamation-triangle"></i>
+    {{ error() }}
+  </div>
+
+  <div class="card content">
+    <form class="form" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="grid2">
+        <!-- Title -->
+        <div class="field span2">
+          <label>Titre</label>
+          <div class="input-wrap">
+            <i class="bi bi-type"></i>
+            <input
+              class="input"
+              formControlName="title"
+              placeholder="Ex: Rapport Audit Zone A"
+            />
+          </div>
+          <p class="hint">Optionnel (si vide, le backend peut générer automatiquement).</p>
+        </div>
+
+        <!-- Type -->
+        <div class="field">
+          <label>Type *</label>
+          <select class="select" formControlName="type">
+            <option value="weekly">weekly</option>
+            <option value="monthly">monthly</option>
+            <option value="yearly">yearly</option>
+            <option value="audit">audit</option>
+            <option value="custom">custom</option>
+          </select>
+          <p class="hint error" *ngIf="fieldInvalid('type')">Type requis</p>
+        </div>
+
+        <!-- Zone -->
+        <div class="field">
+          <label>Zone</label>
+          <select class="select" formControlName="zone">
+            <option value="">Toutes / globale</option>
+            <option *ngFor="let z of zones()" [value]="z._id">{{ z.name }}</option>
+          </select>
+          <p class="hint">Laisse vide si le rapport est global (sans zone).</p>
+        </div>
+
+        <!-- Start Date -->
+        <div class="field">
+          <label>Start Date</label>
+          <div class="input-wrap">
+            <i class="bi bi-calendar-event"></i>
+            <input class="input" type="date" formControlName="startDate" />
+          </div>
+          <p class="hint">Optionnel (utile pour custom, audit…)</p>
+        </div>
+
+        <!-- End Date -->
+        <div class="field">
+          <label>End Date</label>
+          <div class="input-wrap">
+            <i class="bi bi-calendar-check"></i>
+            <input class="input" type="date" formControlName="endDate" />
+          </div>
+          <p class="hint error" *ngIf="dateError()">
+            EndDate doit être &gt; StartDate
+          </p>
+        </div>
+
+        <!-- Automatic -->
+        <div class="field span2">
+          <label>Mode</label>
+          <div class="toggle">
+            <label class="switch">
+              <input type="checkbox" formControlName="isAutomatic" />
+              <span class="slider"></span>
+            </label>
+            <div class="toggle-text">
+              <div class="t1">
+                {{ form.value.isAutomatic ? 'Automatique' : 'Manuel' }}
+              </div>
+              <div class="t2 muted">
+                Automatique: le serveur calcule métriques + export. Manuel: tu peux ajuster plus tard.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metrics (optional) -->
+        <div class="field">
+          <label>Total Incidents</label>
+          <div class="input-wrap">
+            <i class="bi bi-exclamation-octagon"></i>
+            <input class="input" type="number" min="0" formControlName="totalIncidents" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Total Observations</label>
+          <div class="input-wrap">
+            <i class="bi bi-clipboard-check"></i>
+            <input class="input" type="number" min="0" formControlName="totalObservations" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Compliance Rate (%)</label>
+          <div class="input-wrap">
+            <i class="bi bi-shield-check"></i>
+            <input
+              class="input"
+              type="number"
+              min="0"
+              max="100"
+              step="0.01"
+              formControlName="complianceRate"
+            />
+          </div>
+        </div>
+
+        <!-- Export URL (optional) -->
+        <div class="field span2">
+          <label>Export URL (PDF)</label>
+          <div class="input-wrap">
+            <i class="bi bi-file-earmark-pdf"></i>
+            <input class="input" formControlName="exportUrl" placeholder="http://.../report.pdf" />
+          </div>
+          <p class="hint">Optionnel. Souvent rempli par le backend après génération.</p>
+        </div>
+      </div>
+
+      <!-- Footer actions (mobile friendly) -->
+      <div class="footer-actions">
+        <button type="button" class="btn ghost" routerLink="/hsemanager/reports">
+          <i class="bi bi-x-circle"></i>
+          Annuler
+        </button>
+
+        <button type="submit" class="btn primary" [disabled]="form.invalid || loading()">
+          <i class="bi bi-check2-circle"></i>
+          Créer
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

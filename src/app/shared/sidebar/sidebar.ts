@@ -1,37 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { SidebarBrand, SidebarSection } from './sidebar.model';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive , TranslateModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive, TranslateModule],
   templateUrl: './sidebar.html',
-  styleUrl: './sidebar.scss'
+  styleUrl: './sidebar.scss',
 })
 export class Sidebar {
-  // Structure de données pour le menu (plus facile à maintenir)
-  menuSections = [
-    {
-      title: 'MAIN',
-      items: [
-        { label: 'Dashboard', icon: 'bi-grid', route: '/home' }
-      ]
-    },
-    {
-      title: 'APPS',
-      items: [
-        { label: 'Apps', icon: 'bi-box-arrow-in-down', route: '/apps' }
-      ]
-    },
-    {
-      title: 'ELEMENTS',
-      items: [
-        { label: 'Components', icon: 'bi-compass', route: '/components' },
-        { label: 'Elements', icon: 'bi-database', route: '/elements' },
-        { label: 'Advanced UI', icon: 'bi-cube', route: '/ui' }
-      ]
-    }
-  ];
+  @Input({ required: true }) sections: SidebarSection[] = [];
+
+  @Input() brand: SidebarBrand = {
+    title: 'HSE',
+    accent: 'Monitor',
+    subtitle: 'hseMonitor',
+    logoSrc: 'assets/images/logo.png',
+    homeLink: '/',
+  };
 }

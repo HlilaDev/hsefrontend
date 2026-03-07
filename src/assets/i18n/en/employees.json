@@ -1,0 +1,90 @@
+{
+  "EMPLOYEES": {
+    "TITLE": "Employees",
+    "SUBTITLE": "Employee list with filters",
+    "ADD_BTN": "Add Employee",
+    "ADD_TITLE": "Add Employee",
+    "EDIT_TITLE": "Edit Employee",
+    "LOADING_EMPLOYEE": "Loading employee...",
+    "LOADING_ZONES": "Loading zones...",
+    "SAVE_CHANGES": "Save changes",
+    "EMPTY": "No employees found.",
+    "COLUMNS": {
+      "FULL_NAME": "Full Name",
+      "MATRICULE": "Matricule",
+      "DEPARTMENT": "Department",
+      "JOB": "Job",
+      "HIRE_DATE": "Hire Date",
+      "ACTIVE": "Active",
+      "ACTIONS": "Actions"
+    },
+    "FILTERS": {
+      "SEARCH": "Search",
+      "SEARCH_PH": "Name, matricule or job...",
+      "DEPARTMENT": "Department",
+      "DEPARTMENT_PH": "Department name...",
+      "STATUS": "Status",
+      "ALL": "All"
+    },
+    "FORM": {
+      "FULL_NAME": "Full Name",
+      "FULL_NAME_PH": "E.g. Ahmed Ben Ali",
+      "EMPLOYEE_ID": "Employee ID (Matricule)",
+      "EMPLOYEE_ID_PH": "E.g. EMP-001",
+      "DEPARTMENT": "Department",
+      "DEPARTMENT_PH": "E.g. Production",
+      "JOB_TITLE": "Job Title",
+      "JOB_TITLE_PH": "E.g. Technician",
+      "ZONE": "Zone",
+      "SELECT_ZONE": "— Select zone —",
+      "PHONE": "Phone",
+      "PHONE_PH": "+216 ...",
+      "HIRE_DATE": "Hire Date",
+      "ACTIVE": "Active"
+    },
+    "STATUS": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive"
+    },
+    "VALIDATION": {
+      "FULL_NAME_REQUIRED": "Full name is required (min 3 chars)."
+    },
+    "ERROR": {
+      "LOAD": "Failed to load employees.",
+      "DELETE": "Failed to delete employee.",
+      "TOGGLE_ACTIVE": "Failed to update employee status.",
+      "MISSING_ID": "Missing employee id.",
+      "LOAD_ONE": "Failed to load employee.",
+      "UPDATE": "Failed to update employee.",
+      "CREATE": "Failed to create employee."
+    },
+    "CONFIRM_DELETE": "Are you sure you want to delete this employee?",
+    "PROFILE": {
+      "SUBTITLE": "View profile information, activity status and training history.",
+      "PERSONAL_INFO": "Personal Information",
+      "TRAININGS": "Completed Trainings",
+      "NO_TRAININGS": "No trainings found for this employee.",
+      "CREATED_AT": "Created At",
+      "ACTIVATE": "Activate",
+      "DEACTIVATE": "Deactivate",
+      "SCORE": "Score",
+      "CERTIFIED": "Certified",
+      "ZONE_ID_PH": "Zone ObjectId"
+    }
+  },
+  "COMMON": {
+    "LOADING": "Loading...",
+    "RETRY": "Retry",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "VIEW": "View",
+    "BACK": "Back",
+    "SAVE": "Save",
+    "SAVING": "Saving...",
+    "CANCEL": "Cancel",
+    "FILTER": "Filter",
+    "RESET": "Reset",
+    "TOTAL": "Total",
+    "PAGE": "Page"
+  }
+}

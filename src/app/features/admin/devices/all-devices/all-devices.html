@@ -1,114 +1,174 @@
 <div class="page">
   <!-- Header -->
   <div class="header">
-    <h1 class="title">{{ titleKey | translate }}</h1>
+    <div>
+      <h2 class="title">{{ 'DEVICES.TITLE' | translate }}</h2>
+      <p class="muted">{{ 'DEVICES.SUBTITLE' | translate }}</p>
+    </div>
 
-    <a class="btn btn-primary" [routerLink]="['/admin/devices/add']">
-      + {{ addLabelKey | translate }}
+    <a class="btn primary" [routerLink]="['/admin/devices/add']">
+      <i class="bi bi-plus-lg"></i>
+      {{ 'DEVICES.ADD_BTN' | translate }}
     </a>
   </div>
 
-  <!-- Card -->
-  <div class="card">
-    @if (loading) {
-      <div class="state">
-        <div class="spinner" aria-hidden="true"></div>
-        <span class="muted">{{ 'COMMON.LOADING' | translate }}</span>
-      </div>
-    } @else if (errorMessageKey) {
-      <div class="state error">
-        <span class="muted">{{ errorMessageKey | translate }}</span>
+  <!-- Filters -->
+  <div class="card filters">
+    <div class="field">
+      <label>{{ 'DEVICES.FILTERS.SEARCH' | translate }}</label>
+      <input
+        class="input"
+        type="text"
+        [placeholder]="'DEVICES.FILTERS.SEARCH_PH' | translate"
+        [ngModel]="q()"
+        (ngModelChange)="q.set($event)"
+        (keyup.enter)="onSearch()"
+      />
+    </div>
 
-        <button class="btn btn-outline" type="button" (click)="loadDevices()">
-          {{ 'COMMON.RETRY' | translate }}
+    <div class="field">
+      <label>{{ 'DEVICES.FILTERS.ZONE' | translate }}</label>
+      <input
+        class="input"
+        type="text"
+        [placeholder]="'DEVICES.FILTERS.ZONE_PH' | translate"
+        [ngModel]="zone()"
+        (ngModelChange)="zone.set($event)"
+        (keyup.enter)="onSearch()"
+      />
+    </div>
+
+    <div class="field">
+      <label>{{ 'DEVICES.FILTERS.STATUS' | translate }}</label>
+      <select
+        class="input"
+        [ngModel]="status()"
+        (ngModelChange)="status.set($event)"
+      >
+        <option value="">{{ 'DEVICES.FILTERS.ALL' | translate }}</option>
+        <option value="online">{{ 'DEVICES.STATUS.online' | translate }}</option>
+        <option value="offline">{{ 'DEVICES.STATUS.offline' | translate }}</option>
+        <option value="maintenance">{{ 'DEVICES.STATUS.maintenance' | translate }}</option>
+      </select>
+    </div>
+
+    <div class="actions">
+      <button class="btn" (click)="onSearch()" [disabled]="loading()">
+        <i class="bi bi-search"></i>
+        {{ 'COMMON.FILTER' | translate }}
+      </button>
+
+      <button class="btn ghost" (click)="clearFilters()" [disabled]="loading()">
+        {{ 'COMMON.RESET' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="card">
+    <div *ngIf="error()" class="alert error">
+      <i class="bi bi-exclamation-triangle"></i>
+      {{ error() }}
+    </div>
+
+    <div *ngIf="loading()" class="loading">
+      <span class="spinner"></span>
+      {{ 'COMMON.LOADING' | translate }}
+    </div>
+
+    <div class="table-wrap" *ngIf="!loading()">
+      <table class="table">
+        <thead>
+          <tr>
+            <th style="width: 160px">{{ 'DEVICES.COLUMNS.DEVICE_ID' | translate }}</th>
+            <th>{{ 'DEVICES.COLUMNS.NAME' | translate }}</th>
+            <th style="width: 180px">{{ 'DEVICES.COLUMNS.ZONE' | translate }}</th>
+            <th>{{ 'DEVICES.COLUMNS.SENSORS' | translate }}</th>
+            <th class="center" style="width: 140px">{{ 'DEVICES.COLUMNS.STATUS' | translate }}</th>
+            <th class="right">{{ 'DEVICES.COLUMNS.ACTIONS' | translate }}</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let d of pagedDevices(); trackBy: trackByDevice">
+            <td>{{ d.deviceId }}</td>
+            <td class="strong">{{ d.name || '—' }}</td>
+            <td>{{ getZoneName(d) }}</td>
+
+            <td>
+              <ng-container *ngIf="hasSensors(d); else noSensors">
+                <div class="chips">
+                  <span class="chip" *ngFor="let s of d.sensors">{{ s }}</span>
+                </div>
+              </ng-container>
+              <ng-template #noSensors>
+                <span class="muted">—</span>
+              </ng-template>
+            </td>
+
+            <td class="center">
+              <span class="badge" [class]="badgeClass(d.status)">
+                {{ getStatusKey(d) | translate }}
+              </span>
+            </td>
+
+            <td class="right actions-cell">
+              <a
+                class="btn xs"
+                [routerLink]="['/admin/devices', getRowId(d)]"
+                [title]="'COMMON.VIEW' | translate"
+              >
+                <i class="bi bi-eye"></i>
+              </a>
+
+              <a
+                class="btn xs"
+                [routerLink]="['/admin/devices/edit', getRowId(d)]"
+                [title]="'COMMON.EDIT' | translate"
+              >
+                <i class="bi bi-pencil"></i>
+              </a>
+
+              <button
+                class="btn xs danger"
+                type="button"
+                (click)="deleteDevice(getRowId(d))"
+                [disabled]="loading()"
+                [title]="'COMMON.DELETE' | translate"
+              >
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+
+          <tr *ngIf="pagedDevices().length === 0">
+            <td colspan="6" class="empty">
+              {{ 'DEVICES.EMPTY' | translate }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pager" *ngIf="!loading()">
+      <div class="muted">
+        {{ 'COMMON.TOTAL' | translate }} : <b>{{ total() }}</b>
+      </div>
+
+      <div class="pager-actions">
+        <button class="btn" (click)="prev()" [disabled]="page() <= 1">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+
+        <span class="muted">
+          {{ 'COMMON.PAGE' | translate }} {{ page() }} / {{ pages() }}
+        </span>
+
+        <button class="btn" (click)="next()" [disabled]="page() >= pages()">
+          <i class="bi bi-chevron-right"></i>
         </button>
       </div>
-    } @else if (devices.length === 0) {
-      <div class="state">
-        <span class="muted">{{ emptyKey | translate }}</span>
-      </div>
-    } @else {
-      <div class="table-wrap">
-        <table class="table">
-          <thead>
-            <tr>
-              <th style="width: 160px">{{ 'DEVICES.COLUMNS.DEVICE_ID' | translate }}</th>
-              <th>{{ 'DEVICES.COLUMNS.NAME' | translate }}</th>
-              <th style="width: 180px">{{ 'DEVICES.COLUMNS.ZONE' | translate }}</th>
-              <th>{{ 'DEVICES.COLUMNS.SENSORS' | translate }}</th>
-              <th class="center" style="width: 140px">{{ 'DEVICES.COLUMNS.STATUS' | translate }}</th>
-              <th style="width: 200px">{{ 'DEVICES.COLUMNS.LAST_SEEN' | translate }}</th>
-              <th class="actions-col">{{ 'DEVICES.COLUMNS.ACTIONS' | translate }}</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            @for (d of devices; track trackByDevice($index, d)) {
-              <tr>
-                <!-- Device ID -->
-                <td style="width: 160px">{{ d.deviceId }}</td>
-
-                <!-- Name -->
-                <td>{{ d.name || '—' }}</td>
-
-                <!-- Zone -->
-                <td style="width: 180px">{{ getZoneName(d) }}</td>
-
-                <!-- Sensors -->
-                <td>
-                  @if (!hasSensors(d)) {
-                    <span class="muted">—</span>
-                  } @else {
-                    <div class="chips">
-                      @for (s of d.sensors; track s) {
-                        <span class="chip">{{ s }}</span>
-                      }
-                    </div>
-                  }
-                </td>
-
-                <!-- Status -->
-                <td class="center" style="width: 140px">
-                  <span
-                    class="badge"
-                    [class.online]="isOnline(d)"
-                    [class.offline]="!isOnline(d)"
-                  >
-                    {{ getStatusKey(d) | translate }}
-                  </span>
-                </td>
-
-                <!-- Last seen -->
-                <td style="width: 200px">
-                  @if (!d.lastSeen) {
-                    <span class="muted">—</span>
-                  } @else {
-                    {{ d.lastSeen | date: 'yyyy-MM-dd HH:mm' }}
-                  }
-                </td>
-
-                <!-- Actions -->
-                <td class="actions-col">
-                  <a
-                    class="btn btn-sm btn-outline-primary"
-                    [routerLink]="['/admin/devices/edit', getRowId(d)]"
-                  >
-                    {{ 'COMMON.EDIT' | translate }}
-                  </a>
-
-                  <button
-                    class="btn btn-sm btn-outline-danger"
-                    type="button"
-                    (click)="deleteDevice(getRowId(d))"
-                  >
-                    {{ 'COMMON.DELETE' | translate }}
-                  </button>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    }
+    </div>
   </div>
 </div>

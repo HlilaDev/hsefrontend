@@ -1,28 +1,56 @@
 import { Routes } from '@angular/router';
-import { Layout } from './shared/layout/layout';
-import { Home } from './features/pages/home/home';
 import { Login } from './features/auth/login/login';
 import { guestGuard } from './core/guards/guest/guest-guard';
+import { roleGuard } from './core/guards/role/role-guard';
+import { HseagentLayout } from './features/hseAgents/layouts/hseagent-layout/hseagent-layout';
 
 export const routes: Routes = [
-    { path: 'login', component: Login ,
-    canActivate: [guestGuard],},
-    {
-    path: '',
-    component: Layout, // Le parent avec Header/Sidebar
-    children: [
-      { path: 'home', component: Home },
-      { path: '', redirectTo: 'home', pathMatch: 'full' },
-      
+
+  // Auth
+  { path: 'login', component: Login, canActivate: [guestGuard] },
+
+  // Admin routes
   {
-  path: 'account',
-  loadChildren: () =>
-    import('./features/account/account.routes').then(m => m.ACCOUNT_ROUTES),
-}
-      
-    ]
+    path: 'admin',
+    loadChildren: () =>
+      import('./features/admin/admin.routes')
+        .then(m => m.ADMIN_ROUTES),
+    canActivate: [roleGuard],
+    data: { } // Seul admin peut accéder
   },
-      { path: 'admin', loadChildren: () =>
-      import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES),
+
+  // HSE Manager routes
+  {
+    path: 'manager',
+    loadChildren: () =>
+      import('./features/hseManagers/hsemanagers.routes')
+        .then(m => m.HSEMANAGERS_ROUTES),
+    canActivate: [roleGuard],
+    data: { roles: ['hseManager'] } // Seul hseManager peut accéder
   },
+
+  // HSE Agent routes
+  {
+    path: 'agent',
+    component: HseagentLayout,
+    // canActivate: [roleGuard],
+    // data: { roles: ['agent'] }, // Seul agent peut accéder
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./features/hseAgents/hseagents.routes')
+            .then(m => m.HSEAGENTS_ROUTES),
+      },
+    ],
+  },
+
+  // Redirection par défaut
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+
+  // Page non autorisée
+  { path: '404', loadComponent: () => import('./shared/pages/not-found/not-found').then(m => m.NotFound) },
+
+  // Catch-all: redirige vers login si route inconnue
+  { path: '**', redirectTo: '404' }
 ];

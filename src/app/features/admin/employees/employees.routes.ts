@@ -19,4 +19,10 @@ export const EMPLOYEES_ROUTES: Routes = [
       import('./edit-employee/edit-employee')
         .then(m => m.EditEmployee),
   },
+    {
+    path: ':id',
+    loadComponent: () =>
+      import('./employee-profile/employee-profile')
+        .then(m => m.EmployeeProfile),
+  },
 ];

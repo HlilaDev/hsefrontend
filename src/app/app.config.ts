@@ -1,29 +1,26 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withInterceptors, HttpClient } from '@angular/common/http';
 
 import { routes } from './app.routes';
-
-import { provideTranslateService } from '@ngx-translate/core';
-import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
-
 import { credentialsInterceptor } from './interceptors/credentials.interceptor';
 
+import { provideTranslateService, TranslateLoader } from '@ngx-translate/core';
+import { MultiTranslateHttpLoader } from '../assets/i18n/multi-translate-loader';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideHttpClient(
-            withInterceptors([credentialsInterceptor])
-
-    ),
+    provideHttpClient(withInterceptors([credentialsInterceptor])),
     provideRouter(routes),
 
     provideTranslateService({
-      loader: provideTranslateHttpLoader({
-        prefix: './assets/i18n/',   // <-- si tes json sont dans src/assets/i18n
-        suffix: '.json',
-      }),
+      loader: {
+        provide: TranslateLoader,
+        useFactory: (http: HttpClient) =>
+          new MultiTranslateHttpLoader(http, ['common', 'sidebar', 'auth' , 'zones','devices','employees']),
+        deps: [HttpClient],
+      },
       fallbackLang: 'en',
     }),
   ],

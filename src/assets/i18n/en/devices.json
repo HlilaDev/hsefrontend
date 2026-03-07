@@ -1,0 +1,97 @@
+{
+  "DEVICES": {
+    "TITLE": "Devices",
+    "LIST_TITLE": "Devices",
+    "SUBTITLE": "Device list with filters",
+    "ADD_LABEL": "Add device",
+    "ADD_BTN": "Add",
+    "ADD_TITLE": "Add Device",
+    "ADD_SUBTITLE": "Create a new device and assign it to a zone.",
+    "EMPTY": "No devices found.",
+    "COLUMNS": {
+      "DEVICE_ID": "Device ID",
+      "NAME": "Name",
+      "ZONE": "Zone",
+      "SENSORS": "Sensors",
+      "STATUS": "Status",
+      "ACTIONS": "Actions"
+    },
+    "FILTERS": {
+      "SEARCH": "Search",
+      "SEARCH_PH": "Device name or ID...",
+      "ZONE": "Zone",
+      "ZONE_PH": "Zone name or ID",
+      "STATUS": "Status",
+      "ALL": "All"
+    },
+    "FORM": {
+      "DEVICE_ID": "Device ID",
+      "DEVICE_ID_PH": "E.g. esp8266-01",
+      "NAME": "Device name",
+      "NAME_PH": "E.g. ESP Zone A",
+      "ZONE": "Zone",
+      "SELECT_ZONE": "Select a zone",
+      "SENSORS": "Sensors",
+      "SENSORS_PH": "E.g. temperature, humidity, gas",
+      "SENSORS_HELP": "Enter sensors separated by commas.",
+      "STATUS": "Status",
+      "DESCRIPTION": "Description",
+      "DESC_PH": "Describe this device..."
+    },
+    "DETAIL": {
+      "KICKER": "Devices",
+      "TITLE": "Device Details",
+      "SUBTITLE": "Device details + linked sensors list.",
+      "MANAGEMENT": "Management",
+      "OVERVIEW": "Overview",
+      "LAST_SEEN": "Last Seen",
+      "CREATED": "Created",
+      "SENSORS": "Sensors",
+      "LOADING_SENSORS": "Loading sensors...",
+      "NO_SENSORS": "No sensors linked to this device.",
+      "NOT_FOUND": "Device not found.",
+      "SENSORS_LOAD_ERROR": "Failed to load linked sensors."
+    },
+    "STATUS": {
+      "online": "Online",
+      "offline": "Offline",
+      "maintenance": "Maintenance"
+    },
+    "VALIDATION": {
+      "DEVICE_ID_REQUIRED": "Device ID is required.",
+      "DEVICE_ID_MIN": "Device ID must contain at least 3 characters.",
+      "ZONE_REQUIRED": "Zone is required."
+    },
+    "MESSAGES": {
+      "LOAD_ERROR": "Failed to load devices.",
+      "CREATE_SUCCESS": "Device added successfully.",
+      "CREATE_ERROR": "Failed to add device.",
+      "DELETE_CONFIRM": "Are you sure you want to delete this device?",
+      "DELETE_SUCCESS": "Device deleted successfully.",
+      "DELETE_ERROR": "Failed to delete device."
+    },
+    "ERROR": {
+      "LOAD": "Failed to load devices.",
+      "DELETE": "Failed to delete device.",
+      "MISSING_ID": "Missing device id in route.",
+      "LOAD_ONE": "Failed to load device."
+    },
+    "CONFIRM_DELETE": "Are you sure you want to delete this device?"
+  },
+  "COMMON": {
+    "LOADING": "Loading...",
+    "RETRY": "Retry",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "VIEW": "View",
+    "BACK": "Back",
+    "SAVE": "Save",
+    "SAVING": "Saving...",
+    "CANCEL": "Cancel",
+    "FILTER": "Filter",
+    "RESET": "Reset",
+    "TOTAL": "Total",
+    "PAGE": "Page",
+    "EMPTY_VALUE": "—"
+  }
+}
