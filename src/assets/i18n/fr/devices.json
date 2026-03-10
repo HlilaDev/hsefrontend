@@ -78,6 +78,34 @@
     },
     "CONFIRM_DELETE": "Voulez-vous vraiment supprimer ce device ?"
   },
+  "SENSORS": {
+    "TITLE": "Capteurs",
+    "SUBTITLE": "Liste des capteurs",
+    "COLUMNS": {
+      "NAME": "Nom",
+      "TYPE": "Type",
+      "ZONE": "Zone",
+      "STATUS": "Statut",
+      "THRESHOLD": "Seuil"
+    },
+    "TYPE": {
+      "temperature": "Température",
+      "humidity": "Humidité",
+      "gas": "Gaz",
+      "smoke": "Fumée",
+      "motion": "Mouvement",
+      "pressure": "Pression",
+      "light": "Luminosité",
+      "sound": "Son",
+      "vibration": "Vibration",
+      "other": "Autre"
+    },
+    "STATUS": {
+      "online": "En ligne",
+      "offline": "Hors ligne",
+      "maintenance": "Maintenance"
+    }
+  },
   "COMMON": {
     "LOADING": "Chargement...",
     "RETRY": "Réessayer",

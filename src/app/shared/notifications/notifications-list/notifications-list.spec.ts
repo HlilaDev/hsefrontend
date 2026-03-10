@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { HsemanagerSidebar } from './hsemanager-sidebar';
+import { NotificationsList } from './notifications-list';
 
-describe('HsemanagerSidebar', () => {
-  let component: HsemanagerSidebar;
-  let fixture: ComponentFixture<HsemanagerSidebar>;
+describe('NotificationsList', () => {
+  let component: NotificationsList;
+  let fixture: ComponentFixture<NotificationsList>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HsemanagerSidebar]
+      imports: [NotificationsList]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(HsemanagerSidebar);
+    fixture = TestBed.createComponent(NotificationsList);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

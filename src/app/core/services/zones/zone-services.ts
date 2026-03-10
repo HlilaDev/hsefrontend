@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_URLS } from '../../config/api_urls';
+import { Device } from '../devices/device-services';
 
 export type RiskLevel = 'low' | 'medium' | 'high';
 
@@ -13,6 +14,12 @@ export interface Zone {
   isActive: boolean;
   createdAt?: string;
   updatedAt?: string;
+  temperature?: number | null;
+  humidity?: number | null;
+  alertsCount?: number;
+  sensors?: any[];
+  devices?: any[];
+  employees?: any[];
 }
 
 export interface CreateZonePayload {
@@ -35,43 +42,47 @@ export interface UpdateZonePayload {
 export class ZoneServices {
   constructor(private http: HttpClient) {}
 
-  // ✅ GET all zones
-  getAllZones(): Observable<{ zones: Zone[] }> {
-    return this.http.get<{ zones: Zone[] }>(API_URLS.zones.allZones, {
+  // backend listZones => { items, total, page, pages }
+  getAllZones(): Observable<{ items: Zone[]; total: number; page: number; pages: number }> {
+    return this.http.get<{ items: Zone[]; total: number; page: number; pages: number }>(
+      API_URLS.zones.allZones,
+      { withCredentials: true }
+    );
+  }
+
+  // backend getZoneById => zone direct
+  getZoneById(id: string): Observable<Zone> {
+    return this.http.get<Zone>(API_URLS.zones.getZoneById + id, {
       withCredentials: true,
     });
   }
 
-  // ✅ GET zone by id
-  getZoneById(id: string): Observable<{ zone: Zone }> {
-    return this.http.get<{ zone: Zone }>(API_URLS.zones.getZoneById + id, {
+  createZone(payload: CreateZonePayload): Observable<Zone> {
+    return this.http.post<Zone>(API_URLS.zones.allZones, payload, {
       withCredentials: true,
     });
   }
 
-  // ✅ POST create zone
-  createZone(payload: CreateZonePayload): Observable<{ zone: Zone }> {
-    return this.http.post<{ zone: Zone }>(API_URLS.zones.allZones, payload, {
+  updateZone(id: string, payload: UpdateZonePayload): Observable<Zone> {
+    return this.http.put<Zone>(API_URLS.zones.editZone + id, payload, {
       withCredentials: true,
     });
   }
 
-  // ✅ PUT update zone
-  updateZone(id: string, payload: UpdateZonePayload): Observable<{ zone: Zone }> {
-    return this.http.put<{ zone: Zone }>(API_URLS.zones.editZone + id, payload, {
-      withCredentials: true,
-    });
-  }
-
-  // ✅ DELETE zone
   deleteZone(id: string): Observable<{ message: string }> {
     return this.http.delete<{ message: string }>(API_URLS.zones.deleteZone + id, {
       withCredentials: true,
     });
   }
 
-  // ✅ PATCH quick toggle active (si ton backend accepte PUT, tu peux l’utiliser)
-  toggleActive(id: string, isActive: boolean): Observable<{ zone: Zone }> {
+  toggleActive(id: string, isActive: boolean): Observable<Zone> {
     return this.updateZone(id, { isActive });
+  }
+
+  getDevicesByZone(zoneId: string) {
+    return this.http.get<Device[]>(
+      `${API_URLS.zones.getDevicesByZone}${zoneId}/devices`,
+      { withCredentials: true }
+    );
   }
 }

@@ -6,6 +6,14 @@
   background: #f5f6fa;
 }
 
+app-header-admin.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  flex: 0 0 var(--header-h);
+  height: var(--header-h);
+}
+
 /* Sidebar */
 app-sidebar-admin {
   width: 250px;

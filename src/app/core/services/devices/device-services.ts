@@ -98,6 +98,7 @@ export class DeviceServices {
     return this.http.get<{ items: SensorLite[] }>(`${base}/sensors`);
   }
 
+
   // POST /devices/:id/restart
   restartDevice(id: string): Observable<any> {
     const base = this.byId(API_URLS.devices.restartDevice, id);

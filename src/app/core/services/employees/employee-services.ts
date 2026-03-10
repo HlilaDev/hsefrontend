@@ -57,6 +57,13 @@ export class EmployeeServices {
       .pipe(catchError(this.handleError));
   }
 
+  //get employee by zone 
+  getEmployeesByZone(zoneId: string) {
+  return this.http
+    .get<Employee[]>(`${API_URLS.employees.getEmployeesByZone}${encodeURIComponent(zoneId)}`)
+    .pipe(catchError(this.handleError));
+}
+
   // ✅ Fix for TS2339: method exists and matches backend PUT /:id
   toggleActive(id: string, isActive: boolean) {
     return this.updateEmployee(id, { isActive });

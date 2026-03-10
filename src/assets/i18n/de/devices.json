@@ -2,7 +2,7 @@
   "DEVICES": {
     "TITLE": "Geräte",
     "LIST_TITLE": "Geräte",
-    "SUBTITLE": "Geräteliste mit Filtern",
+    "SUBTITLE": "Liste der Geräte mit Filtern",
     "ADD_LABEL": "Gerät hinzufügen",
     "ADD_BTN": "Hinzufügen",
     "ADD_TITLE": "Gerät hinzufügen",
@@ -26,13 +26,13 @@
     },
     "FORM": {
       "DEVICE_ID": "Geräte-ID",
-      "DEVICE_ID_PH": "Z. B. esp8266-01",
+      "DEVICE_ID_PH": "Bsp.: esp8266-01",
       "NAME": "Gerätename",
-      "NAME_PH": "Z. B. ESP Zone A",
+      "NAME_PH": "Bsp.: ESP Zone A",
       "ZONE": "Zone",
       "SELECT_ZONE": "Zone auswählen",
       "SENSORS": "Sensoren",
-      "SENSORS_PH": "Z. B. Temperatur, Feuchtigkeit, Gas",
+      "SENSORS_PH": "Bsp.: Temperatur, Luftfeuchtigkeit, Gas",
       "SENSORS_HELP": "Geben Sie die Sensoren durch Kommas getrennt ein.",
       "STATUS": "Status",
       "DESCRIPTION": "Beschreibung",
@@ -44,8 +44,8 @@
       "SUBTITLE": "Gerätedetails + Liste der verknüpften Sensoren.",
       "MANAGEMENT": "Verwaltung",
       "OVERVIEW": "Übersicht",
-      "LAST_SEEN": "Zuletzt gesehen",
-      "CREATED": "Erstellt",
+      "LAST_SEEN": "Letzte Aktivität",
+      "CREATED": "Erstellt am",
       "SENSORS": "Sensoren",
       "LOADING_SENSORS": "Sensoren werden geladen...",
       "NO_SENSORS": "Keine Sensoren mit diesem Gerät verknüpft.",
@@ -73,17 +73,45 @@
     "ERROR": {
       "LOAD": "Fehler beim Laden der Geräte.",
       "DELETE": "Fehler beim Löschen des Geräts.",
-      "MISSING_ID": "Geräte-ID in der Route fehlt.",
+      "MISSING_ID": "Fehlende Geräte-ID in der Route.",
       "LOAD_ONE": "Fehler beim Laden des Geräts."
     },
     "CONFIRM_DELETE": "Möchten Sie dieses Gerät wirklich löschen?"
+  },
+  "SENSORS": {
+    "TITLE": "Sensoren",
+    "SUBTITLE": "Sensorliste",
+    "COLUMNS": {
+      "NAME": "Name",
+      "TYPE": "Typ",
+      "ZONE": "Zone",
+      "STATUS": "Status",
+      "THRESHOLD": "Schwellenwert"
+    },
+    "TYPE": {
+      "temperature": "Temperatur",
+      "humidity": "Luftfeuchtigkeit",
+      "gas": "Gas",
+      "smoke": "Rauch",
+      "motion": "Bewegung",
+      "pressure": "Druck",
+      "light": "Licht",
+      "sound": "Ton",
+      "vibration": "Vibration",
+      "other": "Andere"
+    },
+    "STATUS": {
+      "online": "Online",
+      "offline": "Offline",
+      "maintenance": "Wartung"
+    }
   },
   "COMMON": {
     "LOADING": "Wird geladen...",
     "RETRY": "Erneut versuchen",
     "EDIT": "Bearbeiten",
     "DELETE": "Löschen",
-    "VIEW": "Anzeigen",
+    "VIEW": "Ansehen",
     "BACK": "Zurück",
     "SAVE": "Speichern",
     "SAVING": "Wird gespeichert...",

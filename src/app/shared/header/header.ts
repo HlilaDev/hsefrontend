@@ -1,37 +1,42 @@
 import { Component, ElementRef, HostListener, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { LanguageService, Lang } from '../../core/services/languages/language';
 import { LayoutService } from '../../core/services/layout/layout';
 import { AuthServices, User } from '../../core/services/auth/auth-services';
+import { NotificationStore } from '../../core/services/notifications/notification-store';
+import { NotificationItem } from '../../core/services/notifications/notification-services';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, TranslateModule, RouterLink],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
 export class Header implements OnInit {
+  notificationStore = inject(NotificationStore);
   layout = inject(LayoutService);
   lang = inject(LanguageService);
   private el = inject(ElementRef<HTMLElement>);
 
   isLangOpen = false;
   isUserOpen = false;
+  isNotificationOpen = false;
 
-  // ✅ User chargé depuis /me
   user: User | null = null;
-
-  // Optionnel: afficher loader / éviter flash
   isLoadingMe = false;
 
-  constructor(private authservices: AuthServices, private router: Router) {}
+  constructor(
+    private authservices: AuthServices,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadMe();
+    this.notificationStore.init();
   }
 
   private loadMe(): void {
@@ -39,14 +44,12 @@ export class Header implements OnInit {
 
     this.authservices.me().subscribe({
       next: (res: any) => {
-        // ton backend renvoie { user: req.user }
         this.user = res?.user ?? null;
         this.isLoadingMe = false;
       },
       error: () => {
         this.user = null;
         this.isLoadingMe = false;
-        // si token invalide/expiré => redirect login
         this.router.navigate(['/login']);
       },
     });
@@ -56,58 +59,91 @@ export class Header implements OnInit {
     return this.lang.current;
   }
 
-  // ---------- LANG MENU ----------
-  toggleLangMenu(ev?: MouseEvent) {
+  toggleLangMenu(ev?: MouseEvent): void {
     ev?.stopPropagation();
     this.isLangOpen = !this.isLangOpen;
-    if (this.isLangOpen) this.isUserOpen = false; // ✅ un seul menu ouvert
+
+    if (this.isLangOpen) {
+      this.isUserOpen = false;
+      this.isNotificationOpen = false;
+    }
   }
 
-  chooseLang(code: Lang) {
+  chooseLang(code: Lang): void {
     this.lang.setLang(code);
     this.isLangOpen = false;
   }
 
-  // ---------- USER MENU ----------
-  toggleUserMenu(ev?: MouseEvent) {
+  toggleUserMenu(ev?: MouseEvent): void {
     ev?.stopPropagation();
     this.isUserOpen = !this.isUserOpen;
-    if (this.isUserOpen) this.isLangOpen = false; // ✅ un seul menu ouvert
+
+    if (this.isUserOpen) {
+      this.isLangOpen = false;
+      this.isNotificationOpen = false;
+    }
   }
 
-  closeUserMenu() {
+  closeUserMenu(): void {
     this.isUserOpen = false;
   }
 
-  logout() {
+  toggleNotificationMenu(ev?: MouseEvent): void {
+    ev?.stopPropagation();
+    this.isNotificationOpen = !this.isNotificationOpen;
+
+    if (this.isNotificationOpen) {
+      this.isLangOpen = false;
+      this.isUserOpen = false;
+    }
+  }
+
+  markAllNotificationsRead(): void {
+    this.notificationStore.markAllAsRead();
+  }
+
+  openNotification(id?: string): void {
+    if (!id) return;
+    this.notificationStore.markAsRead(id);
+  }
+
+  openNotificationsPage(): void {
+    this.isNotificationOpen = false;
+    this.router.navigate(['/notifications']);
+  }
+
+  trackByAlert(index: number, item: NotificationItem): string {
+    return item._id;
+  }
+
+  logout(): void {
     this.authservices.logout().subscribe({
       next: () => this.router.navigate(['/login']),
       error: () => this.router.navigate(['/login']),
     });
   }
 
-  // ---------- LAYOUT ----------
-  onToggleSidebar() {
+  onToggleSidebar(): void {
     this.layout.toggleSidebar();
   }
 
-  // ---------- OUTSIDE CLICK / ESC ----------
   @HostListener('document:click', ['$event'])
-  onDocClick(ev: MouseEvent) {
+  onDocClick(ev: MouseEvent): void {
     const target = ev.target as Node;
     if (!this.el.nativeElement.contains(target)) {
       this.isLangOpen = false;
       this.isUserOpen = false;
+      this.isNotificationOpen = false;
     }
   }
 
   @HostListener('document:keydown.escape')
-  onEsc() {
+  onEsc(): void {
     this.isLangOpen = false;
     this.isUserOpen = false;
+    this.isNotificationOpen = false;
   }
 
-  // Helpers UI (optionnel)
   get displayName(): string {
     return this.user?.fullName || '—';
   }
@@ -117,7 +153,6 @@ export class Header implements OnInit {
   }
 
   get avatarUrl(): string {
-    // si backend retourne avatar plus tard, adapte ici
     return 'assets/images/profile-pic.webp';
   }
 }

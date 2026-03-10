@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HseagentSidebar } from '../hseagent-sidebar/hseagent-sidebar';
-import { Header } from '../../../../shared/header/header';
 import { Footer } from '../../../../shared/footer/footer';
 import { LayoutService } from '../../../../core/services/layout/layout';
+import { HeaderAgent } from "../header-agent/header-agent";
 
 @Component({
   selector: 'app-hseagent-layout',
@@ -11,9 +11,9 @@ import { LayoutService } from '../../../../core/services/layout/layout';
   imports: [
     RouterOutlet,
     HseagentSidebar,
-    Header,
     Footer,
-  ],
+    HeaderAgent
+],
   templateUrl: './hseagent-layout.html',
   styleUrl: './hseagent-layout.scss',
 })

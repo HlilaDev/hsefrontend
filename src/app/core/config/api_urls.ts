@@ -27,7 +27,19 @@ export const API_URLS ={
     getZoneById:`${BASE_API_URL}/zones/`,
     editZone:`${BASE_API_URL}/zones/`,
     deleteZone:`${BASE_API_URL}/zones/`,
+    getDevicesByZone: `${BASE_API_URL}/zones/`,
      },
+//audits
+     audits: {
+  allAudits: `${BASE_API_URL}/audits/`,
+  getAuditById: `${BASE_API_URL}/audits/`,
+  addAudit: `${BASE_API_URL}/audits/`,
+  editAudit: `${BASE_API_URL}/audits/`,
+  deleteAudit: `${BASE_API_URL}/audits/`,
+  addFinding: `${BASE_API_URL}/audits/`,
+  updateFinding: `${BASE_API_URL}/audits/`,
+  deleteFinding: `${BASE_API_URL}/audits/`,
+},
 
     //Devices API
    devices: {
@@ -37,6 +49,7 @@ export const API_URLS ={
   editDevice: `${BASE_API_URL}/devices/`,
   deleteDevice: `${BASE_API_URL}/devices/`,
   deviceSensors: `${BASE_API_URL}/devices/`,
+
  restartDevice: `${BASE_API_URL}/devices/`,
   // optionnel: toggle status, etc...
 },
@@ -47,6 +60,7 @@ export const API_URLS ={
   addEmployee: `${BASE_API_URL}/employees/`,
   editEmployee: `${BASE_API_URL}/employees/`,
   deleteEmployee: `${BASE_API_URL}/employees/`,
+   getEmployeesByZone: `${BASE_API_URL}/employees/by-zone/`,
   // optionnel: toggle status, etc...
 },
 

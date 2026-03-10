@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { NotificationsList } from '../../shared/notifications/notifications-list/notifications-list';
 
 export const ADMIN_ROUTES: Routes = [
   {
@@ -19,6 +20,8 @@ export const ADMIN_ROUTES: Routes = [
         loadChildren: () =>
           import('./zone/zones.routes').then(m => m.ZONES_ROUTES),
       },
+   
+      {path:'notifications', component:NotificationsList},
 
       // ✅ /admin/devices
       {

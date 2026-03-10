@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { API_URLS } from '../../config/api_urls'; // adapte le chemin selon ton projet
+import { API_URLS } from '../../config/api_urls'; 
 import { Observable } from 'rxjs';
 
 export type SensorStatus = 'online' | 'offline' | 'maintenance';

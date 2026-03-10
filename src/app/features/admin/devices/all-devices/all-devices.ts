@@ -1,3 +1,4 @@
+
 import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
@@ -29,15 +30,12 @@ export class AllDevices {
   loading = signal(false);
   error = signal<string | null>(null);
 
-  // filters
   q = signal('');
   zone = signal('');
   status = signal('');
 
-  // data
   devices = signal<Device[]>([]);
 
-  // pagination
   page = signal(1);
   pageSize = signal(10);
 
@@ -144,12 +142,16 @@ export class AllDevices {
   getZoneName(d: any): string {
     const z = d?.zone;
     if (!z) return '—';
-    if (typeof z === 'object') return z?.name ?? z?._id ?? '—';
+
+    if (typeof z === 'object') {
+      return z?.name || z?._id || '—';
+    }
+
     return String(z);
   }
 
-  hasSensors(d: any): boolean {
-    return Array.isArray(d?.sensors) && d.sensors.length > 0;
+  getSensorsCount(d: any): number {
+    return Array.isArray(d?.sensors) ? d.sensors.length : 0;
   }
 
   getStatusKey(d: any): string {
