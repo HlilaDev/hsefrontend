@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { NotificationsList } from '../../shared/notifications/notifications-list/notifications-list';
+import { Profile } from '../account/profile/profile';
 
 export const ADMIN_ROUTES: Routes = [
   {
@@ -13,6 +14,8 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () =>
           import('./dashboard-admin/dashboard-admin').then(m => m.DashboardAdmin),
       },
+
+      { path: 'profile', component: Profile },
 
       // ✅ /admin/zones → lazy-load zones.routes.ts
       {

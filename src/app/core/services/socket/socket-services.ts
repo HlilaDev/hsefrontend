@@ -4,16 +4,19 @@ import { io, Socket } from 'socket.io-client';
 import { BASE_URL } from '../../config/api_urls';
 
 export interface LiveAlert {
+  action?: string;
   _id?: string;
+  notificationId?: string;
   type?: string;
   title?: string;
   message?: string;
-  severity?: 'info' | 'warning' | 'critical';
+  severity?: 'info' | 'success' | 'warning' | 'critical';
   status?: 'open' | 'acknowledged' | 'resolved';
   readingValue?: number;
   threshold?: number;
   createdAt?: string;
   updatedAt?: string;
+  isRead?: boolean;
   zone?: string | { _id: string; name?: string };
   device?:
     | string
@@ -28,6 +31,39 @@ export interface LiveAlert {
         threshold?: number;
         severity?: string;
       };
+  meta?: any;
+}
+
+export interface SocketNotificationPayload {
+  _id?: string; // parfois userNotification id
+  isRead?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  notification?: {
+    _id?: string;
+    title?: string;
+    message?: string;
+    type?: string;
+    action?: string;
+    severity?: 'info' | 'success' | 'warning' | 'critical';
+    createdAt?: string;
+    updatedAt?: string;
+    zone?: string | { _id: string; name?: string };
+    device?:
+      | string
+      | { _id: string; name?: string; deviceId?: string; status?: string };
+    rule?:
+      | string
+      | {
+          _id: string;
+          name?: string;
+          metric?: string;
+          operator?: string;
+          threshold?: number;
+          severity?: string;
+        };
+    meta?: any;
+  };
 }
 
 @Injectable({
@@ -71,6 +107,60 @@ export class SocketServices {
 
       return () => {
         this.socket?.off('alert:new', handler);
+      };
+    });
+  }
+
+  onNewNotification(): Observable<SocketNotificationPayload> {
+    return new Observable<SocketNotificationPayload>((observer) => {
+      if (!this.socket) {
+        this.connect();
+      }
+
+      const handler = (data: SocketNotificationPayload) => {
+        observer.next(data);
+      };
+
+      this.socket?.on('notification:new', handler);
+
+      return () => {
+        this.socket?.off('notification:new', handler);
+      };
+    });
+  }
+
+  onDeviceOffline(): Observable<any> {
+    return new Observable<any>((observer) => {
+      if (!this.socket) {
+        this.connect();
+      }
+
+      const handler = (data: any) => {
+        observer.next(data);
+      };
+
+      this.socket?.on('device:offline', handler);
+
+      return () => {
+        this.socket?.off('device:offline', handler);
+      };
+    });
+  }
+
+  onDeviceOnline(): Observable<any> {
+    return new Observable<any>((observer) => {
+      if (!this.socket) {
+        this.connect();
+      }
+
+      const handler = (data: any) => {
+        observer.next(data);
+      };
+
+      this.socket?.on('device:online', handler);
+
+      return () => {
+        this.socket?.off('device:online', handler);
       };
     });
   }

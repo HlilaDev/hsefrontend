@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_URLS } from '../../config/api_urls';
 import { Device } from '../devices/device-services';
@@ -20,6 +20,7 @@ export interface Zone {
   sensors?: any[];
   devices?: any[];
   employees?: any[];
+  code?: string;
 }
 
 export interface CreateZonePayload {
@@ -42,15 +43,29 @@ export interface UpdateZonePayload {
 export class ZoneServices {
   constructor(private http: HttpClient) {}
 
-  // backend listZones => { items, total, page, pages }
-  getAllZones(): Observable<{ items: Zone[]; total: number; page: number; pages: number }> {
+  getAllZones(
+    companyId?: string,
+    isActive?: boolean
+  ): Observable<{ items: Zone[]; total: number; page: number; pages: number }> {
+    let params = new HttpParams();
+
+    if (companyId) {
+      params = params.set('company', companyId);
+    }
+
+    if (isActive !== undefined) {
+      params = params.set('isActive', String(isActive));
+    }
+
     return this.http.get<{ items: Zone[]; total: number; page: number; pages: number }>(
       API_URLS.zones.allZones,
-      { withCredentials: true }
+      {
+        withCredentials: true,
+        params,
+      }
     );
   }
 
-  // backend getZoneById => zone direct
   getZoneById(id: string): Observable<Zone> {
     return this.http.get<Zone>(API_URLS.zones.getZoneById + id, {
       withCredentials: true,

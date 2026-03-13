@@ -5,7 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 
 import { UserServices } from '../../../../core/services/users/user-services';
 
-type Role = 'operator' | 'hseManager' | 'admin';
+type Role = 'agent' | 'manager' | 'admin';
 
 type AddUserForm = FormGroup<{
   firstName: FormControl<string>;
@@ -36,7 +36,7 @@ export class AddUser {
     lastName: this.fb.nonNullable.control('', [Validators.required, Validators.minLength(2)]),
     email: this.fb.nonNullable.control('', [Validators.required, Validators.email]),
     password: this.fb.nonNullable.control('', [Validators.required, Validators.minLength(6)]),
-    role: this.fb.nonNullable.control<Role>('operator', [Validators.required]),
+    role: this.fb.nonNullable.control<Role>('agent', [Validators.required]),
   }) as AddUserForm;
 
   get firstName() { return this.form.controls.firstName; }
@@ -83,7 +83,7 @@ export class AddUser {
       lastName: '',
       email: '',
       password: '',
-      role: 'operator',
+      role: 'agent',
     });
   }
 }

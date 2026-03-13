@@ -40,6 +40,15 @@ export const API_URLS ={
   updateFinding: `${BASE_API_URL}/audits/`,
   deleteFinding: `${BASE_API_URL}/audits/`,
 },
+ //incidentEvents
+incidentEvents: {
+  create: `${BASE_URL}/incident-events`,
+  list: `${BASE_URL}/incident-events`,
+  byId: (id: string) => `${BASE_URL}/incident-events/${id}`,
+  update: (id: string) => `${BASE_URL}/incident-events/${id}`,
+  resolve: (id: string) => `${BASE_URL}/incident-events/${id}/resolve`,
+  delete: (id: string) => `${BASE_URL}/incident-events/${id}`,
+},
 
     //Devices API
    devices: {
@@ -123,6 +132,23 @@ readings: {
 
   latestByZone: (zoneId: string) =>
     `${BASE_API_URL}/readings/latest/zone/${zoneId}`,
+},
+
+// notifications globales
+notifications: {
+  dispatch: `${BASE_API_URL}/notifications/dispatch`,
+  all: `${BASE_API_URL}/notifications/`,
+  byId: `${BASE_API_URL}/notifications/`,
+  deleteGlobal: `${BASE_API_URL}/notifications/`,
+},
+
+// notifications de l'utilisateur connecté
+userNotifications: {
+  all: `${BASE_API_URL}/user-notifications/`,
+  unreadCount: `${BASE_API_URL}/user-notifications/unread-count`,
+  markAsRead: `${BASE_API_URL}/user-notifications/`,
+  markAllAsRead: `${BASE_API_URL}/user-notifications/read-all`,
+  delete: `${BASE_API_URL}/user-notifications/`,
 }
 
 }

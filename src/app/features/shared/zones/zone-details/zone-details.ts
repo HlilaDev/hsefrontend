@@ -4,9 +4,9 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { catchError, finalize, forkJoin, of } from 'rxjs';
 
-import { ZoneServices, Zone } from '../../../core/services/zones/zone-services';
-import { DeviceServices, Device } from '../../../core/services/devices/device-services';
-import { EmployeeServices, Employee } from '../../../core/services/employees/employee-services';
+import { ZoneServices, Zone } from '../../../../core/services/zones/zone-services';
+import { DeviceServices, Device } from '../../../../core/services/devices/device-services';
+import { EmployeeServices, Employee } from '../../../../core/services/employees/employee-services';
 
 type ZoneDevice = {
   _id: string;

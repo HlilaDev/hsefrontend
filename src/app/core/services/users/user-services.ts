@@ -31,7 +31,7 @@ export class UserServices {
   getUserById(id: string) {
     return this.http
       .get(`${API_URLS.users.getUserById}${encodeURIComponent(id)}`)
-      .pipe(catchError(this.handleError));
+      .pipe(catchError(this.handleError)); 
   }
 
   // ✅ CREATE USER

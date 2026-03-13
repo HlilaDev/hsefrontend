@@ -16,7 +16,7 @@ export const routes: Routes = [
       import('./features/admin/admin.routes')
         .then(m => m.ADMIN_ROUTES),
     canActivate: [roleGuard],
-    data: { } // Seul admin peut accéder
+    data: { roles: ['admin'] } // Seul admin peut accéder
   },
 
   // HSE Manager routes
@@ -26,15 +26,15 @@ export const routes: Routes = [
       import('./features/hseManagers/hsemanagers.routes')
         .then(m => m.HSEMANAGERS_ROUTES),
     canActivate: [roleGuard],
-    data: { roles: ['hseManager'] } // Seul hseManager peut accéder
+    data: { roles: ['manager'] } // Seul hseManager peut accéder
   },
 
   // HSE Agent routes
   {
     path: 'agent',
     component: HseagentLayout,
-    // canActivate: [roleGuard],
-    // data: { roles: ['agent'] }, // Seul agent peut accéder
+    canActivate: [roleGuard],
+    data: { roles: ['agent'] }, // Seul agent peut accéder
     children: [
       {
         path: '',

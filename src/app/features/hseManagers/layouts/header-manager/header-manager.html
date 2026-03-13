@@ -25,11 +25,8 @@
       >
         <i class="bi bi-bell"></i>
 
-        <span
-          class="badge bg-danger"
-          *ngIf="notificationStore.unreadCount() > 0"
-        >
-          {{ notificationStore.unreadCount() > 9 ? '9+' : notificationStore.unreadCount() }}
+        <span class="badge bg-danger" *ngIf="unreadCount > 0">
+          {{ unreadCount > 9 ? '9+' : unreadCount }}
         </span>
       </button>
 
@@ -38,7 +35,7 @@
           <div>
             <div class="title">Notifications</div>
             <div class="subtitle">
-              {{ notificationStore.unreadCount() }} non lue(s)
+              {{ unreadCount }} non lue(s)
             </div>
           </div>
 
@@ -53,18 +50,18 @@
 
         <div
           class="notification-list"
-          *ngIf="notificationStore.latestNotifications().length > 0; else emptyNotifications"
+          *ngIf="notifications.length > 0; else emptyNotifications"
         >
           <button
             class="notification-item"
             type="button"
-            *ngFor="let item of notificationStore.latestNotifications(); trackBy: trackByAlert"
+            *ngFor="let item of notifications; trackBy: trackByAlert"
             [class.unread]="!item.isRead"
-            (click)="openNotification(item._id)"
+            (click)="openNotification(item)"
           >
             <div
               class="notification-dot"
-              [ngClass]="notificationStore.getSeverityClass(item.severity)"
+              [ngClass]="getSeverityClass(item)"
             ></div>
 
             <div class="notification-content">
@@ -77,15 +74,25 @@
               </div>
 
               <div class="notification-meta">
-                <span>{{ notificationStore.getZoneName(item.zone) }}</span>
+                <span>{{ getZoneName(item) }}</span>
                 <span>•</span>
-                <span>{{ notificationStore.getDeviceName(item.device) }}</span>
+                <span>{{ getDeviceName(item) }}</span>
               </div>
 
               <div class="notification-time">
-                {{ notificationStore.getTime(item.createdAt) }}
+                {{ getNotificationTime(item) }}
               </div>
             </div>
+
+            <button
+              class="delete-notification-btn"
+              type="button"
+              (click)="deleteNotification(item._id, $event)"
+              aria-label="Supprimer notification"
+              title="Supprimer"
+            >
+              <i class="bi bi-x-lg"></i>
+            </button>
           </button>
         </div>
 
@@ -160,11 +167,11 @@
           </div>
         </div>
 
-        <a class="user-item" routerLink="/account" (click)="closeUserMenu()">
+        <a class="user-item" routerLink="/manager/profile" (click)="closeUserMenu()">
           {{ 'HEADER.USER.PROFILE' | translate }}
         </a>
 
-        <a class="user-item" routerLink="/settings" (click)="closeUserMenu()">
+        <a class="user-item" routerLink="/manager/settings" (click)="closeUserMenu()">
           {{ 'HEADER.USER.SETTINGS' | translate }}
         </a>
 

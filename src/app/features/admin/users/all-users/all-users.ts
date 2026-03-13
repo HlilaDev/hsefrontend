@@ -9,7 +9,7 @@ export type User = {
   firstName: string;
   lastName: string;
   email: string;
-  role: 'operator' | 'hseManager' | 'admin';
+  role: 'agent' | 'manager' | 'admin';
   createdAt?: string;
   updatedAt?: string;
 };
@@ -57,8 +57,8 @@ export class AllUsers {
 
   roleText(role: User['role']) {
     if (role === 'admin') return 'Admin';
-    if (role === 'hseManager') return 'HSE Manager';
-    return 'Operator';
+    if (role === 'manager') return 'Manager';
+    return 'Agent';
   }
 
   deleteUser(id: string) {

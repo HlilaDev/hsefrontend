@@ -1,0 +1,222 @@
+<div class="team-page">
+  <div class="page-header">
+    <div class="title-wrap">
+      <span class="eyebrow">HSE Team Monitoring</span>
+      <h1>Team Overview</h1>
+      <p>
+        View all team members, their roles, assigned zones, and live status across the industrial site.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button
+        class="view-btn"
+        [class.active]="viewMode() === 'table'"
+        (click)="setView('table')">
+        <i class="bi bi-table"></i>
+        Table
+      </button>
+
+      <button
+        class="view-btn"
+        [class.active]="viewMode() === 'cards'"
+        (click)="setView('cards')">
+        <i class="bi bi-grid-3x3-gap"></i>
+        Cards
+      </button>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon blue">
+        <i class="bi bi-people"></i>
+      </div>
+      <div class="stat-content">
+        <span>Total Team</span>
+        <strong>{{ totalMembers() }}</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon green">
+        <i class="bi bi-wifi"></i>
+      </div>
+      <div class="stat-content">
+        <span>Online</span>
+        <strong>{{ onlineCount() }}</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon orange">
+        <i class="bi bi-activity"></i>
+      </div>
+      <div class="stat-content">
+        <span>Busy</span>
+        <strong>{{ busyCount() }}</strong>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon gray">
+        <i class="bi bi-slash-circle"></i>
+      </div>
+      <div class="stat-content">
+        <span>Offline</span>
+        <strong>{{ offlineCount() }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar-card">
+    <div class="toolbar">
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input
+          type="text"
+          placeholder="Search by name, role, email or zone..."
+          [ngModel]="search()"
+          (ngModelChange)="search.set($event)" />
+      </div>
+
+      <div class="filters">
+        <select [ngModel]="selectedRole()" (ngModelChange)="selectedRole.set($event)">
+          <option value="all">All roles</option>
+          <option value="hseManager">HSE Manager</option>
+          <option value="supervisor">Supervisor</option>
+          <option value="hseAgent">HSE Agent</option>
+          <option value="technician">Technician</option>
+          <option value="employee">Employee</option>
+        </select>
+
+        <select [ngModel]="selectedStatus()" (ngModelChange)="selectedStatus.set($event)">
+          <option value="all">All status</option>
+          <option value="online">Online</option>
+          <option value="busy">Busy</option>
+          <option value="offline">Offline</option>
+          <option value="onLeave">On Leave</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="viewMode() === 'table'; else cardsView">
+    <div class="table-card">
+      <div class="table-head">
+        <div>
+          <h3>Team Members</h3>
+          <p>{{ filteredTeam().length }} member(s) found</p>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Member</th>
+              <th>Role</th>
+              <th>Zone</th>
+              <th>Status</th>
+              <th>Phone</th>
+              <th>Last Seen</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let member of filteredTeam(); trackBy: trackById">
+              <td>
+                <div class="member-cell">
+                  <div class="avatar">
+                    {{ getInitials(member.fullName) }}
+                  </div>
+
+                  <div class="member-info">
+                    <strong>{{ member.fullName }}</strong>
+                    <span>{{ member.email }}</span>
+                  </div>
+                </div>
+              </td>
+
+              <td>
+                <span class="role-badge">
+                  {{ getRoleLabel(member.role) }}
+                </span>
+              </td>
+
+              <td>{{ member.zone }}</td>
+
+              <td>
+                <span class="status-badge" [ngClass]="member.status">
+                  <span class="dot"></span>
+                  {{ getStatusLabel(member.status) }}
+                </span>
+              </td>
+
+              <td>{{ member.phone }}</td>
+              <td>{{ member.lastSeen }}</td>
+            </tr>
+
+            <tr *ngIf="filteredTeam().length === 0">
+              <td colspan="6">
+                <div class="empty-state">
+                  <i class="bi bi-inboxes"></i>
+                  <p>No team members found for the selected filters.</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #cardsView>
+    <div class="cards-grid">
+      <div class="member-card" *ngFor="let member of filteredTeam(); trackBy: trackById">
+        <div class="card-top">
+          <div class="avatar large">
+            {{ getInitials(member.fullName) }}
+          </div>
+
+          <span class="status-badge" [ngClass]="member.status">
+            <span class="dot"></span>
+            {{ getStatusLabel(member.status) }}
+          </span>
+        </div>
+
+        <div class="card-body">
+          <h3>{{ member.fullName }}</h3>
+          <p class="role">{{ getRoleLabel(member.role) }}</p>
+
+          <div class="meta-list">
+            <div class="meta-item">
+              <i class="bi bi-geo-alt"></i>
+              <span>{{ member.zone }}</span>
+            </div>
+
+            <div class="meta-item">
+              <i class="bi bi-envelope"></i>
+              <span>{{ member.email }}</span>
+            </div>
+
+            <div class="meta-item">
+              <i class="bi bi-telephone"></i>
+              <span>{{ member.phone }}</span>
+            </div>
+
+            <div class="meta-item">
+              <i class="bi bi-clock-history"></i>
+              <span>{{ member.lastSeen }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state cards-empty" *ngIf="filteredTeam().length === 0">
+        <i class="bi bi-inboxes"></i>
+        <p>No team members found for the selected filters.</p>
+      </div>
+    </div>
+  </ng-template>
+</div>

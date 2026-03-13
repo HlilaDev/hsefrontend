@@ -17,7 +17,8 @@
       "OBSERVATIONS": "Observations",
       "INCIDENTS": "Incidents",
       "TRAINING": "Training",
-            "MONITORING": "Monitoring",
+      "TEAM": "Team",
+      "MONITORING": "Monitoring",
 
       "AUDITS":"Audits",
       "ALERTS": "Alerts",

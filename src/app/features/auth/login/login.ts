@@ -1,6 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators,
+  FormGroup,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthServices } from '../../../core/services/auth/auth-services';
 
@@ -12,8 +17,7 @@ import { AuthServices } from '../../../core/services/auth/auth-services';
   styleUrl: './login.scss',
 })
 export class Login {
-
-  loginForm!: FormGroup;   // 🔹 on déclare seulement
+  loginForm!: FormGroup;
 
   loading = false;
   errorMessage = '';
@@ -23,7 +27,6 @@ export class Login {
     private auth: AuthServices,
     private router: Router
   ) {
-    // 🔹 on initialise ici (après injection)
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(4)]],
@@ -40,9 +43,21 @@ export class Login {
     this.errorMessage = '';
 
     this.auth.login(this.loginForm.value).subscribe({
-      next: () => {
+      next: (res: any) => {
         this.loading = false;
-        this.router.navigateByUrl('/');
+
+        const role = res?.user?.role || res?.role;
+
+        if (role === 'admin') {
+          this.router.navigateByUrl('/admin');
+        } else if (role === 'manager') {
+          this.router.navigateByUrl('/manager');
+        } else if (role === 'agent') {
+          this.router.navigateByUrl('/agent');
+        } else {
+          this.errorMessage = 'Role not recognized';
+          this.router.navigateByUrl('/');
+        }
       },
       error: (err) => {
         this.loading = false;

@@ -1,6 +1,7 @@
 {
   "ZONES": {
     "TITLE": "Zones",
+    "SUBTITLE": "Gérez les zones industrielles et leur niveau de risque.",
     "ADD_BTN": "Ajouter une zone",
     "EMPTY": "Aucune zone trouvée.",
     "EDIT_TITLE": "Modifier la zone",
@@ -20,6 +21,13 @@
       "ACTIVE": "Zone active",
       "ACTIVE_HELP": "Désactivez cette option pour masquer temporairement la zone."
     },
+    "FILTERS": {
+      "SEARCH": "Recherche",
+      "SEARCH_PH": "Rechercher par nom ou description...",
+      "RISK": "Niveau de risque",
+      "STATUS": "Statut",
+      "ALL": "Tous"
+    },
     "RISK": {
       "low": "Faible",
       "medium": "Moyen",
@@ -36,6 +44,12 @@
       "NAME_REQUIRED": "Le nom de la zone est requis.",
       "NAME_MIN": "Le nom doit contenir au moins 3 caractères."
     },
+    "ERROR": {
+      "LOAD": "Erreur lors du chargement des zones.",
+      "DELETE": "Erreur lors de la suppression de la zone.",
+      "TOGGLE_ACTIVE": "Erreur lors de la mise à jour du statut de la zone."
+    },
+    "CONFIRM_DELETE": "Voulez-vous vraiment supprimer cette zone ?",
     "MESSAGES": {
       "LOAD_ERROR": "Erreur lors du chargement des zones.",
       "DETAIL_LOAD_ERROR": "Erreur lors du chargement de la zone.",
@@ -111,6 +125,13 @@
     "SAVING": "Enregistrement...",
     "CANCEL": "Annuler",
     "VIEW": "Voir",
-    "RESET": "Réinitialiser"
+    "RESET": "Réinitialiser",
+    "FILTER": "Filtrer",
+    "TOTAL": "Total",
+    "PAGE": "Page",
+    "ACTIVE": "Active",
+    "INACTIVE": "Inactive",
+    "ENABLE": "Activer",
+    "DISABLE": "Désactiver"
   }
 }

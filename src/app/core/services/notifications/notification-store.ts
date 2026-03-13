@@ -57,6 +57,7 @@ export class NotificationStore {
       next: (alert: LiveAlert) => {
         const newNotification: NotificationItem = {
           _id: alert._id || crypto.randomUUID(),
+          notificationId: alert._id,
           title: alert.title || 'Nouvelle alerte',
           message: alert.message || 'Aucune description',
           severity: alert.severity || 'info',
@@ -68,10 +69,17 @@ export class NotificationStore {
           rule: alert.rule,
           type: alert.type,
           action: 'created',
+          meta: alert,
         };
 
         this.notifications.update((items) => {
-          const exists = items.some((item) => item._id === newNotification._id);
+          const exists = items.some(
+            (item) =>
+              item._id === newNotification._id ||
+              (!!item.notificationId &&
+                item.notificationId === newNotification.notificationId)
+          );
+
           if (exists) return items;
 
           this.playNotificationSound();
@@ -101,7 +109,11 @@ export class NotificationStore {
     this.notificationServices.markAllAsRead().subscribe({
       next: () => {
         this.notifications.update((items) =>
-          items.map((item) => ({ ...item, isRead: true }))
+          items.map((item) => ({
+            ...item,
+            isRead: true,
+            readAt: new Date().toISOString(),
+          }))
         );
       },
       error: (err) => {
@@ -132,6 +144,17 @@ export class NotificationStore {
     if (!device) return '-';
     if (typeof device === 'string') return device;
     return device.name || device.deviceId || device._id;
+  }
+
+  getActorName(actor: NotificationItem['actor']): string {
+    if (!actor) return '-';
+    if (typeof actor === 'string') return actor;
+
+    const fullName =
+      actor.fullName ||
+      `${actor.firstName || ''} ${actor.lastName || ''}`.trim();
+
+    return fullName || actor.email || actor._id;
   }
 
   getSeverityClass(severity?: NotificationItem['severity']): string {

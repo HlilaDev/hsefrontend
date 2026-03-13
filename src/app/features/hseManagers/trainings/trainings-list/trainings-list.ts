@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { catchError, finalize, of } from 'rxjs';
 
-// ✅ adapte le chemin selon ton projet
 import { TrainingServices } from '../../../../core/services/trainings/training-services';
 
 type Category = 'safety' | 'environment' | 'quality' | 'security' | 'other';
@@ -35,38 +34,43 @@ export class TrainingsList {
   private trainingsService = inject(TrainingServices);
   private router = inject(Router);
 
-  isLoading = signal<boolean>(true);
+  isLoading = signal(true);
   error = signal<string | null>(null);
 
   trainings = signal<Training[]>([]);
 
-  // UI state
-  q = signal<string>('');
+  q = signal('');
   category = signal<Category | 'all'>('all');
   status = signal<TrainingStatus | 'all'>('all');
   sort = signal<SortKey>('startDate_desc');
 
   filtered = computed(() => {
-    const q = this.q().trim().toLowerCase();
-    const cat = this.category();
-    const st = this.status();
+    const search = this.q().trim().toLowerCase();
+    const category = this.category();
+    const status = this.status();
     const sort = this.sort();
 
     let list = [...this.trainings()];
 
-    if (q) {
-      list = list.filter(t =>
-        (t.title || '').toLowerCase().includes(q) ||
-        (t.description || '').toLowerCase().includes(q) ||
-        (t.provider || '').toLowerCase().includes(q) ||
-        (t.location || '').toLowerCase().includes(q)
+    if (search) {
+      list = list.filter((t) =>
+        (t.title || '').toLowerCase().includes(search) ||
+        (t.description || '').toLowerCase().includes(search) ||
+        (t.provider || '').toLowerCase().includes(search) ||
+        (t.location || '').toLowerCase().includes(search)
       );
     }
 
-    if (cat !== 'all') list = list.filter(t => t.category === cat);
-    if (st !== 'all') list = list.filter(t => t.status === st);
+    if (category !== 'all') {
+      list = list.filter((t) => t.category === category);
+    }
 
-    const toTime = (d: any) => new Date(d).getTime();
+    if (status !== 'all') {
+      list = list.filter((t) => t.status === status);
+    }
+
+    const toTime = (value: string | Date | undefined) =>
+      value ? new Date(value).getTime() : 0;
 
     list.sort((a, b) => {
       switch (sort) {
@@ -84,101 +88,118 @@ export class TrainingsList {
     return list;
   });
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.fetch();
   }
 
-  fetch() {
+  fetch(): void {
     this.isLoading.set(true);
     this.error.set(null);
 
-    this.trainingsService.getAllTrainings()
+    this.trainingsService
+      .getAllTrainings()
       .pipe(
         catchError((err) => {
-          this.error.set(err?.error?.message || 'Erreur lors du chargement des trainings.');
-          return of([]);
+          console.error('List trainings error:', err);
+          this.error.set(
+            err?.error?.message || 'Erreur lors du chargement des formations.'
+          );
+          return of({ items: [] });
         }),
         finalize(() => this.isLoading.set(false))
       )
-      .subscribe((rows: any) => {
-        const list = Array.isArray(rows) ? rows : (rows?.data ?? []);
+      .subscribe((response: any) => {
+        const list = Array.isArray(response)
+          ? response
+          : response?.items || response?.data || [];
+
         this.trainings.set(list);
       });
   }
 
-  // labels
-  categoryLabel(cat: Category) {
-    switch (cat) {
-      case 'safety': return 'Safety';
-      case 'environment': return 'Environment';
-      case 'quality': return 'Quality';
-      case 'security': return 'Security';
-      case 'other': return 'Other';
+  categoryLabel(category: Category): string {
+    switch (category) {
+      case 'safety':
+        return 'Safety';
+      case 'environment':
+        return 'Environment';
+      case 'quality':
+        return 'Quality';
+      case 'security':
+        return 'Security';
+      case 'other':
+        return 'Other';
     }
   }
 
-  statusLabel(st: TrainingStatus) {
-    switch (st) {
-      case 'scheduled': return 'Prévu';
-      case 'completed': return 'Terminé';
-      case 'cancelled': return 'Annulé';
+  statusLabel(status: TrainingStatus): string {
+    switch (status) {
+      case 'scheduled':
+        return 'Prévu';
+      case 'completed':
+        return 'Terminé';
+      case 'cancelled':
+        return 'Annulé';
     }
   }
 
-  badgeClass(st: TrainingStatus) {
-    return st === 'scheduled' ? 'badge scheduled'
-      : st === 'completed' ? 'badge completed'
+  badgeClass(status: TrainingStatus): string {
+    return status === 'scheduled'
+      ? 'badge scheduled'
+      : status === 'completed'
+      ? 'badge completed'
       : 'badge cancelled';
   }
 
-  participantsCount(t: Training) {
-    return t.participants?.length ?? 0;
+  participantsCount(training: Training): number {
+    return training.participants?.length ?? 0;
   }
 
-  fmtDate(d: any) {
-    if (!d) return '-';
-    const dt = new Date(d);
-    if (Number.isNaN(dt.getTime())) return '-';
-    return dt.toLocaleDateString();
+  fmtDate(value: string | Date | undefined): string {
+    if (!value) return '-';
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '-';
+
+    return date.toLocaleDateString();
   }
 
-  goCreate() {
-    // ✅ route relative simple
-    this.router.navigate(['trainings/create'], { relativeTo: this.router.routerState.root.firstChild?.firstChild ?? undefined });
-
-    // si jamais relative pose souci -> utilise absolu:
-    // this.router.navigate(['/hsemanager/trainings/create']);
+  goCreate(): void {
+    this.router.navigate(['/manager/trainings/create']);
   }
 
-  goDetail(id: string) {
-    this.router.navigate([id], { relativeTo: this.router.routerState.root.firstChild?.firstChild ?? undefined });
-    // absolu: this.router.navigate(['/hsemanager/trainings', id]);
+  goDetail(id: string): void {
+    this.router.navigate(['/manager/trainings', id]);
   }
 
-  goEdit(id: string) {
-    this.router.navigate([id, 'edit'], { relativeTo: this.router.routerState.root.firstChild?.firstChild ?? undefined });
-    // absolu: this.router.navigate(['/hsemanager/trainings', id, 'edit']);
+  goEdit(id: string): void {
+    this.router.navigate(['/manager/trainings', id, 'edit']);
   }
 
-  deleteTraining(id: string) {
+  deleteTraining(id: string): void {
     const ok = confirm('Supprimer cette formation ?');
     if (!ok) return;
 
     this.isLoading.set(true);
     this.error.set(null);
 
-    this.trainingsService.deleteTraining(id)
+    this.trainingsService
+      .deleteTraining(id)
       .pipe(
         catchError((err) => {
+          console.error('Delete training error:', err);
           this.error.set(err?.error?.message || 'Suppression échouée.');
           return of(null);
         }),
         finalize(() => this.isLoading.set(false))
       )
-      .subscribe(() => this.fetch());
+      .subscribe((res) => {
+        if (!res) return;
+        this.fetch();
+      });
   }
 
-  resetFilters() {
+  resetFilters(): void {
     this.q.set('');
     this.category.set('all');
     this.status.set('all');

@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
-import { ZonesOverview } from '../../shared/zones/zones-overview/zones-overview';
+import { ZonesOverview } from '../shared/zones/zones-overview/zones-overview';
+import { Profile } from '../account/profile/profile';
+import { NotificationsList } from '../../shared/notifications/notifications-list/notifications-list';
 
 export const HSEAGENTS_ROUTES: Routes = [
 
@@ -16,8 +18,20 @@ export const HSEAGENTS_ROUTES: Routes = [
         .then(m => m.OBSERVATIONS_ROUTES),
   },
 
+    { path: 'employees',
+    loadChildren: () =>
+      import('../shared/employees/employees.routes')
+        .then(m => m.EMPLOYEES_ROUTES),
+  },
+
     { path: 'zones', component:ZonesOverview
   },
+
+      { path: 'profile', component:Profile
+  },
+                  //zone details
+            { path: 'notifications', component:NotificationsList
+          },
 
   
  

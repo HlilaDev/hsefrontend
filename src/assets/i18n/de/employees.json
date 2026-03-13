@@ -1,5 +1,6 @@
 {
   "EMPLOYEES": {
+    "KICKER": "Belegschaft",
     "TITLE": "Mitarbeiter",
     "SUBTITLE": "Mitarbeiterliste mit Filtern",
     "ADD_BTN": "Mitarbeiter hinzufügen",
@@ -9,34 +10,42 @@
     "LOADING_ZONES": "Zonen werden geladen...",
     "SAVE_CHANGES": "Änderungen speichern",
     "EMPTY": "Keine Mitarbeiter gefunden.",
+    "STATS": {
+      "TOTAL": "Mitarbeiter gesamt",
+      "ACTIVE": "Aktive Mitarbeiter",
+      "INACTIVE": "Inaktive Mitarbeiter",
+      "ASSIGNED_ZONE": "Einer Zone zugewiesen"
+    },
     "COLUMNS": {
-      "FULL_NAME": "Vollständiger Name",
-      "MATRICULE": "Matrikelnummer",
+      "NAME": "Vollständiger Name",
+      "EMPLOYEE_ID": "Mitarbeiter-ID",
       "DEPARTMENT": "Abteilung",
-      "JOB": "Position",
-      "HIRE_DATE": "Einstellungsdatum",
-      "ACTIVE": "Aktiv",
-      "ACTIONS": "Aktionen"
+      "JOB_TITLE": "Position",
+      "ZONE": "Zone",
+      "PHONE": "Telefon",
+      "STATUS": "Status"
     },
     "FILTERS": {
       "SEARCH": "Suche",
-      "SEARCH_PH": "Name, Matrikelnummer oder Position...",
+      "SEARCH_PH": "Name, Mitarbeiter-ID oder Position...",
       "DEPARTMENT": "Abteilung",
-      "DEPARTMENT_PH": "Name der Abteilung...",
+      "DEPARTMENT_PH": "Abteilungsname...",
+      "ZONE": "Zone",
+      "ZONE_PH": "Zonenname...",
       "STATUS": "Status",
       "ALL": "Alle"
     },
     "FORM": {
       "FULL_NAME": "Vollständiger Name",
-      "FULL_NAME_PH": "Z. B. Ahmed Ben Ali",
-      "EMPLOYEE_ID": "Mitarbeiter-ID (Matrikelnummer)",
-      "EMPLOYEE_ID_PH": "Z. B. EMP-001",
+      "FULL_NAME_PH": "Z. B.: Ahmed Ben Ali",
+      "EMPLOYEE_ID": "Mitarbeiter-ID",
+      "EMPLOYEE_ID_PH": "Z. B.: EMP-001",
       "DEPARTMENT": "Abteilung",
-      "DEPARTMENT_PH": "Z. B. Produktion",
-      "JOB_TITLE": "Berufsbezeichnung",
-      "JOB_TITLE_PH": "Z. B. Techniker",
+      "DEPARTMENT_PH": "Z. B.: Produktion",
+      "JOB_TITLE": "Position",
+      "JOB_TITLE_PH": "Z. B.: Techniker",
       "ZONE": "Zone",
-      "SELECT_ZONE": "— Zone auswählen —",
+      "SELECT_ZONE": "— Eine Zone auswählen —",
       "PHONE": "Telefon",
       "PHONE_PH": "+216 ...",
       "HIRE_DATE": "Einstellungsdatum",
@@ -63,7 +72,7 @@
       "SUBTITLE": "Profilinformationen, Aktivitätsstatus und Schulungsverlauf anzeigen.",
       "PERSONAL_INFO": "Persönliche Informationen",
       "TRAININGS": "Abgeschlossene Schulungen",
-      "NO_TRAININGS": "Keine Schulungen für diesen Mitarbeiter gefunden.",
+      "NO_TRAININGS": "Für diesen Mitarbeiter wurden keine Schulungen gefunden.",
       "CREATED_AT": "Erstellt am",
       "ACTIVATE": "Aktivieren",
       "DEACTIVATE": "Deaktivieren",
@@ -85,6 +94,11 @@
     "FILTER": "Filtern",
     "RESET": "Zurücksetzen",
     "TOTAL": "Gesamt",
-    "PAGE": "Seite"
+    "PAGE": "Seite",
+    "ACTIONS": "Aktionen",
+    "ACTIVE": "Aktiv",
+    "INACTIVE": "Inaktiv",
+    "ENABLE": "Aktivieren",
+    "DISABLE": "Deaktivieren"
   }
 }

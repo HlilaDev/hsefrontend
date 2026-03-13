@@ -4,6 +4,7 @@ import { Footer } from '../../../../shared/footer/footer';
 import { LayoutService } from '../../../../core/services/layout/layout';
 import { SidebarManager } from '../../layouts/sidebar-manager/sidebar-manager';
 import { HeaderManager } from "../header-manager/header-manager";
+import { ScrollTop } from "../../../../shared/ui/scroll-top/scroll-top";
 
 @Component({
   selector: 'app-hsemanager-layout',
@@ -12,7 +13,8 @@ import { HeaderManager } from "../header-manager/header-manager";
     RouterOutlet,
     Footer,
     SidebarManager,
-    HeaderManager
+    HeaderManager,
+    ScrollTop
 ],
   templateUrl: './hsemanager-layout.html',
   styleUrl: './hsemanager-layout.scss',

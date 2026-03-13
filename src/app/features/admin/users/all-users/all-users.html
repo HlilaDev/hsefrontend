@@ -2,7 +2,7 @@
   <div class="page-header">
     <div>
       <h2>Utilisateurs</h2>
-      <p class="muted">Liste des comptes (operator / hseManager / admin).</p>
+      <p class="muted">Liste des comptes (Agent / Manager / admin).</p>
     </div>
 
     <div class="header-actions">
@@ -43,8 +43,8 @@
                   <span
                     class="badge"
                     [class.admin]="u.role === 'admin'"
-                    [class.manager]="u.role === 'hseManager'"
-                    [class.operator]="u.role === 'operator'"
+                    [class.manager]="u.role === 'manager'"
+                    [class.agent]="u.role === 'agent'"
                   >
                     {{ roleText(u.role) }}
                   </span>

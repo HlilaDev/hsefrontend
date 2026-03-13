@@ -1,5 +1,6 @@
 {
   "EMPLOYEES": {
+    "KICKER": "Personnel",
     "TITLE": "Employés",
     "SUBTITLE": "Liste des employés avec filtres",
     "ADD_BTN": "Ajouter un employé",
@@ -9,20 +10,28 @@
     "LOADING_ZONES": "Chargement des zones...",
     "SAVE_CHANGES": "Enregistrer les modifications",
     "EMPTY": "Aucun employé trouvé.",
+    "STATS": {
+      "TOTAL": "Total des employés",
+      "ACTIVE": "Employés actifs",
+      "INACTIVE": "Employés inactifs",
+      "ASSIGNED_ZONE": "Affectés à une zone"
+    },
     "COLUMNS": {
-      "FULL_NAME": "Nom complet",
-      "MATRICULE": "Matricule",
+      "NAME": "Nom complet",
+      "EMPLOYEE_ID": "Matricule",
       "DEPARTMENT": "Département",
-      "JOB": "Poste",
-      "HIRE_DATE": "Date d'embauche",
-      "ACTIVE": "Actif",
-      "ACTIONS": "Actions"
+      "JOB_TITLE": "Poste",
+      "ZONE": "Zone",
+      "PHONE": "Téléphone",
+      "STATUS": "Statut"
     },
     "FILTERS": {
       "SEARCH": "Recherche",
       "SEARCH_PH": "Nom, matricule ou poste...",
       "DEPARTMENT": "Département",
       "DEPARTMENT_PH": "Nom du département...",
+      "ZONE": "Zone",
+      "ZONE_PH": "Nom de la zone...",
       "STATUS": "Statut",
       "ALL": "Tous"
     },
@@ -85,6 +94,11 @@
     "FILTER": "Filtrer",
     "RESET": "Réinitialiser",
     "TOTAL": "Total",
-    "PAGE": "Page"
+    "PAGE": "Page",
+    "ACTIONS": "Actions",
+    "ACTIVE": "Actif",
+    "INACTIVE": "Inactif",
+    "ENABLE": "Activer",
+    "DISABLE": "Désactiver"
   }
 }

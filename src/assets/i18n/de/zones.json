@@ -1,6 +1,7 @@
 {
   "ZONES": {
     "TITLE": "Zonen",
+    "SUBTITLE": "Verwalten Sie industrielle Zonen und deren Risikostufe.",
     "ADD_BTN": "Zone hinzufügen",
     "EMPTY": "Keine Zonen gefunden.",
     "EDIT_TITLE": "Zone bearbeiten",
@@ -20,6 +21,13 @@
       "ACTIVE": "Zone aktiv",
       "ACTIVE_HELP": "Deaktivieren Sie diese Option, um die Zone vorübergehend auszublenden."
     },
+    "FILTERS": {
+      "SEARCH": "Suche",
+      "SEARCH_PH": "Nach Name oder Beschreibung suchen...",
+      "RISK": "Risikostufe",
+      "STATUS": "Status",
+      "ALL": "Alle"
+    },
     "RISK": {
       "low": "Niedrig",
       "medium": "Mittel",
@@ -36,6 +44,12 @@
       "NAME_REQUIRED": "Der Zonenname ist erforderlich.",
       "NAME_MIN": "Der Name muss mindestens 3 Zeichen enthalten."
     },
+    "ERROR": {
+      "LOAD": "Fehler beim Laden der Zonen.",
+      "DELETE": "Fehler beim Löschen der Zone.",
+      "TOGGLE_ACTIVE": "Fehler beim Aktualisieren des Zonenstatus."
+    },
+    "CONFIRM_DELETE": "Möchten Sie diese Zone wirklich löschen?",
     "MESSAGES": {
       "LOAD_ERROR": "Fehler beim Laden der Zonen.",
       "DETAIL_LOAD_ERROR": "Fehler beim Laden der Zone.",
@@ -111,6 +125,13 @@
     "SAVING": "Wird gespeichert...",
     "CANCEL": "Abbrechen",
     "VIEW": "Anzeigen",
-    "RESET": "Zurücksetzen"
+    "RESET": "Zurücksetzen",
+    "FILTER": "Filtern",
+    "TOTAL": "Gesamt",
+    "PAGE": "Seite",
+    "ACTIVE": "Aktiv",
+    "INACTIVE": "Inaktiv",
+    "ENABLE": "Aktivieren",
+    "DISABLE": "Deaktivieren"
   }
 }

@@ -1,8 +1,20 @@
-import { Component, ElementRef, HostListener, inject } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { NotificationStore } from '../../../../core/services/notifications/notification-store';
 import { LayoutService } from '../../../../core/services/layout/layout';
-import { Lang, LanguageService } from '../../../../core/services/languages/language';
-import { AuthServices, User } from '../../../../core/services/auth/auth-services';
+import {
+  Lang,
+  LanguageService,
+} from '../../../../core/services/languages/language';
+import {
+  AuthServices,
+  User,
+} from '../../../../core/services/auth/auth-services';
 import { Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
@@ -14,9 +26,7 @@ import { NotificationItem } from '../../../../core/services/notifications/notifi
   templateUrl: './header-manager.html',
   styleUrl: './header-manager.scss',
 })
-export class HeaderManager {
-
-
+export class HeaderManager implements OnInit {
   notificationStore = inject(NotificationStore);
   layout = inject(LayoutService);
   lang = inject(LanguageService);
@@ -57,6 +67,14 @@ export class HeaderManager {
 
   get currentLang(): Lang {
     return this.lang.current;
+  }
+
+  get notifications(): NotificationItem[] {
+    return this.notificationStore.latestNotifications();
+  }
+
+  get unreadCount(): number {
+    return this.notificationStore.unreadCount();
   }
 
   toggleLangMenu(ev?: MouseEvent): void {
@@ -102,9 +120,76 @@ export class HeaderManager {
     this.notificationStore.markAllAsRead();
   }
 
-  openNotification(id?: string): void {
-    if (!id) return;
-    this.notificationStore.markAsRead(id);
+  openNotification(item: NotificationItem): void {
+    if (!item?._id) return;
+
+    if (!item.isRead) {
+      this.notificationStore.markAsRead(item._id);
+    }
+
+    this.isNotificationOpen = false;
+
+    if (item.type === 'observation' && item.observation) {
+      const id =
+        typeof item.observation === 'string'
+          ? item.observation
+          : item.observation._id;
+      if (id) {
+        this.router.navigate(['/manager/observations', id]);
+        return;
+      }
+    }
+
+    if (item.type === 'incident' && item.incident) {
+      const id =
+        typeof item.incident === 'string' ? item.incident : item.incident._id;
+      if (id) {
+        this.router.navigate(['/manager/incidents', id]);
+        return;
+      }
+    }
+
+    if (item.type === 'audit' && item.audit) {
+      const id = typeof item.audit === 'string' ? item.audit : item.audit._id;
+      if (id) {
+        this.router.navigate(['/manager/audits', id]);
+        return;
+      }
+    }
+
+    if (item.type === 'training' && item.training) {
+      const id =
+        typeof item.training === 'string' ? item.training : item.training._id;
+      if (id) {
+        this.router.navigate(['/manager/trainings', id]);
+        return;
+      }
+    }
+
+    if (item.type === 'report' && item.report) {
+      const id =
+        typeof item.report === 'string' ? item.report : item.report._id;
+      if (id) {
+        this.router.navigate(['/manager/reports', id]);
+        return;
+      }
+    }
+
+    if (item.type === 'device' && item.device) {
+      const id =
+        typeof item.device === 'string' ? item.device : item.device._id;
+      if (id) {
+        this.router.navigate(['/manager/devices', id]);
+        return;
+      }
+    }
+
+    this.router.navigate(['/manager/notifications']);
+  }
+
+  deleteNotification(id: string, ev?: MouseEvent): void {
+    ev?.stopPropagation();
+    this.notificationStore.deleteOne(id);
   }
 
   openNotificationsPage(): void {
@@ -114,6 +199,22 @@ export class HeaderManager {
 
   trackByAlert(index: number, item: NotificationItem): string {
     return item._id;
+  }
+
+  getZoneName(item: NotificationItem): string {
+    return this.notificationStore.getZoneName(item.zone);
+  }
+
+  getDeviceName(item: NotificationItem): string {
+    return this.notificationStore.getDeviceName(item.device);
+  }
+
+  getSeverityClass(item: NotificationItem): string {
+    return this.notificationStore.getSeverityClass(item.severity);
+  }
+
+  getNotificationTime(item: NotificationItem): string {
+    return this.notificationStore.getTime(item.createdAt);
   }
 
   logout(): void {
@@ -145,7 +246,11 @@ export class HeaderManager {
   }
 
   get displayName(): string {
-    return this.user?.fullName || '—';
+    return (
+      this.user?.fullName ||
+      `${this.user?.firstName || ''} ${this.user?.lastName || ''}`.trim() ||
+      '—'
+    );
   }
 
   get displayRole(): string {

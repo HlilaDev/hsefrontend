@@ -8,14 +8,21 @@ export interface LoginPayload {
   password: string;
 }
 
+export interface UserCompany {
+  _id: string;
+  name: string;
+  industry?: string;
+}
+
 export interface User {
   _id: string;
   firstName: string;
   lastName: string;
   fullName?: string;
   email: string;
+  company?: string | UserCompany | null;
   avatarUrl?: string;
-  role: 'operator' | 'hseManager' | 'admin';
+  role: 'agent' | 'manager' | 'admin';
 }
 
 @Injectable({ providedIn: 'root' })
@@ -27,7 +34,6 @@ export class AuthServices {
       withCredentials: true,
     });
   }
-
 
   me(): Observable<{ user: User }> {
     return this.http.get<{ user: User }>(API_URLS.auth.me, {

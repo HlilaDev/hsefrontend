@@ -10,5 +10,10 @@
   },
   "FOOTER": {
     "COPYRIGHT": "Copyright © {{year}} {{brand}}. Alle Rechte vorbehalten."
+  },
+  "COMMON": {
+    "ACTIVE": "Aktiv",
+    "INACTIVE": "Inaktiv",
+    "ACTIONS": "Aktionen"
   }
 }

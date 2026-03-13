@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Footer } from "../footer/footer"; 
 import { LayoutService } from '../../core/services/layout/layout';
+import { ScrollTop } from "../ui/scroll-top/scroll-top";
 
 
 @Component({
@@ -10,7 +11,7 @@ import { LayoutService } from '../../core/services/layout/layout';
   imports: [
     RouterOutlet,
     Footer,
-
+    ScrollTop
 ],
   templateUrl: './layout.html',
   styleUrl: './layout.scss',

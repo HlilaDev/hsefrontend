@@ -15,9 +15,11 @@ export const HSEMANAGER_SECTIONS: SidebarSection[] = [
       { labelKey: 'SIDEBAR.MENU.INCIDENTS', icon: 'bi bi-exclamation-triangle', route: '/manager/incidents' },
       { labelKey: 'SIDEBAR.MENU.AUDITS', icon: 'bi bi-clipboard-check', route: '/manager/audits' },
       { labelKey: 'SIDEBAR.MENU.TRAINING', icon: 'bi bi-mortarboard', route: '/manager/trainings' },
-                  { labelKey: 'SIDEBAR.MENU.MONITORING', icon: 'bi bi-clipboard-check', route: '/manager/monitoring' },
-
+      { labelKey: 'SIDEBAR.MENU.MONITORING', icon: 'bi bi-clipboard-check', route: '/manager/monitoring' },
+      { labelKey: 'SIDEBAR.MENU.OBSERVATIONS', icon: 'bi bi-file-earmark-bar-graph', route: '/manager/observations' },
       { labelKey: 'SIDEBAR.MENU.REPORTS', icon: 'bi bi-file-earmark-bar-graph', route: '/manager/reports' },
+      { labelKey: 'SIDEBAR.MENU.TEAM', icon: 'bi bi-mortarboard', route: '/manager/team' },
+
     ],
   },
   {

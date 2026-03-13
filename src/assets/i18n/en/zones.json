@@ -1,116 +1,116 @@
 {
   "ZONES": {
     "TITLE": "Zones",
-    "ADD_BTN": "Ajouter une zone",
-    "EMPTY": "Aucune zone trouvée.",
-    "EDIT_TITLE": "Modifier la zone",
-    "EDIT_SUBTITLE": "Mettez à jour les informations de cette zone.",
+    "ADD_BTN": "Add Zone",
+    "EMPTY": "No zones found.",
+    "EDIT_TITLE": "Edit Zone",
+    "EDIT_SUBTITLE": "Update this zone's information.",
     "COLUMNS": {
-      "NAME": "Nom",
+      "NAME": "Name",
       "DESCRIPTION": "Description",
-      "RISK": "Niveau de risque",
+      "RISK": "Risk Level",
       "ACTIVE": "Active"
     },
     "FORM": {
-      "NAME": "Nom de la zone",
-      "NAME_PH": "Ex : Zone de production A",
+      "NAME": "Zone Name",
+      "NAME_PH": "Example: Production Zone A",
       "DESCRIPTION": "Description",
-      "DESC_PH": "Décrivez cette zone...",
-      "RISK": "Niveau de risque",
-      "ACTIVE": "Zone active",
-      "ACTIVE_HELP": "Désactivez cette option pour masquer temporairement la zone."
+      "DESC_PH": "Describe this zone...",
+      "RISK": "Risk Level",
+      "ACTIVE": "Active Zone",
+      "ACTIVE_HELP": "Disable this option to temporarily hide the zone."
     },
     "RISK": {
-      "low": "Faible",
-      "medium": "Moyen",
-      "high": "Élevé"
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
     },
     "RISK_LEVELS": {
-      "LOW": "Faible",
-      "MEDIUM": "Moyen",
-      "HIGH": "Élevé",
-      "CRITICAL": "Critique",
-      "UNKNOWN": "Inconnu"
+      "LOW": "Low",
+      "MEDIUM": "Medium",
+      "HIGH": "High",
+      "CRITICAL": "Critical",
+      "UNKNOWN": "Unknown"
     },
     "VALIDATION": {
-      "NAME_REQUIRED": "Le nom de la zone est requis.",
-      "NAME_MIN": "Le nom doit contenir au moins 3 caractères."
+      "NAME_REQUIRED": "Zone name is required.",
+      "NAME_MIN": "The name must contain at least 3 characters."
     },
     "MESSAGES": {
-      "LOAD_ERROR": "Erreur lors du chargement des zones.",
-      "DETAIL_LOAD_ERROR": "Erreur lors du chargement de la zone.",
-      "UPDATE_SUCCESS": "Zone mise à jour avec succès.",
-      "UPDATE_ERROR": "Erreur lors de la mise à jour de la zone.",
-      "DELETE_CONFIRM": "Voulez-vous vraiment supprimer cette zone ?",
-      "DELETE_SUCCESS": "Zone supprimée avec succès.",
-      "DELETE_ERROR": "Erreur lors de la suppression de la zone.",
-      "TOGGLE_SUCCESS": "Statut de la zone mis à jour avec succès.",
-      "TOGGLE_ERROR": "Erreur lors de la mise à jour du statut de la zone."
+      "LOAD_ERROR": "Error while loading zones.",
+      "DETAIL_LOAD_ERROR": "Error while loading the zone.",
+      "UPDATE_SUCCESS": "Zone updated successfully.",
+      "UPDATE_ERROR": "Error while updating the zone.",
+      "DELETE_CONFIRM": "Are you sure you want to delete this zone?",
+      "DELETE_SUCCESS": "Zone deleted successfully.",
+      "DELETE_ERROR": "Error while deleting the zone.",
+      "TOGGLE_SUCCESS": "Zone status updated successfully.",
+      "TOGGLE_ERROR": "Error while updating the zone status."
     },
     "OVERVIEW": {
       "KICKER": "Zones",
-      "TITLE": "Vue d'ensemble des zones",
-      "SUBTITLE": "Surveillez rapidement l'état, le risque et l'activité de chaque zone.",
-      "ALL_ZONES": "Toutes les zones",
-      "EMPTY": "Aucune zone ne correspond aux filtres.",
+      "TITLE": "Zones Overview",
+      "SUBTITLE": "Quickly monitor the status, risk, and activity of each zone.",
+      "ALL_ZONES": "All Zones",
+      "EMPTY": "No zone matches the filters.",
       "FILTERS": {
-        "SEARCH": "Recherche",
-        "SEARCH_PH": "Nom, code ou description...",
-        "STATUS": "Statut",
-        "RISK": "Risque",
-        "ALL": "Tous"
+        "SEARCH": "Search",
+        "SEARCH_PH": "Name, code, or description...",
+        "STATUS": "Status",
+        "RISK": "Risk",
+        "ALL": "All"
       },
       "STATS": {
-        "TOTAL": "Total zones",
-        "ACTIVE": "Zones actives",
-        "WARNING": "Zones en alerte",
-        "ALERTS": "Alertes"
+        "TOTAL": "Total Zones",
+        "ACTIVE": "Active Zones",
+        "WARNING": "Zones on Alert",
+        "ALERTS": "Alerts"
       },
       "CARD": {
-        "EMPLOYEES": "Employés",
+        "EMPLOYEES": "Employees",
         "DEVICES": "Devices",
-        "SENSORS": "Capteurs",
-        "ALERTS": "Alertes",
-        "TEMPERATURE": "Température",
-        "HUMIDITY": "Humidité"
+        "SENSORS": "Sensors",
+        "ALERTS": "Alerts",
+        "TEMPERATURE": "Temperature",
+        "HUMIDITY": "Humidity"
       },
       "STATUS": {
         "active": "Active",
         "inactive": "Inactive",
-        "warning": "Alerte"
+        "warning": "Alert"
       },
       "RISK": {
-        "low": "Faible",
-        "medium": "Moyen",
-        "high": "Élevé"
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
       }
     },
     "DETAIL": {
-      "TITLE": "Détails de la zone",
-      "SUBTITLE": "Consultez les informations, l'environnement et les ressources liées à cette zone.",
-      "ENVIRONMENT": "Environnement",
-      "CREATED_AT": "Créée le",
-      "UPDATED_AT": "Mise à jour le",
+      "TITLE": "Zone Details",
+      "SUBTITLE": "View the information, environment, and resources linked to this zone.",
+      "ENVIRONMENT": "Environment",
+      "CREATED_AT": "Created At",
+      "UPDATED_AT": "Updated At",
       "DEVICES": "Devices",
-      "SENSORS": "Capteurs",
-      "EMPLOYEES": "Employés",
-      "NO_DEVICES": "Aucun device dans cette zone.",
-      "NO_SENSORS": "Aucun capteur dans cette zone.",
-      "NO_EMPLOYEES": "Aucun employé affecté à cette zone.",
-      "NOT_FOUND": "Zone introuvable."
+      "SENSORS": "Sensors",
+      "EMPLOYEES": "Employees",
+      "NO_DEVICES": "No devices in this zone.",
+      "NO_SENSORS": "No sensors in this zone.",
+      "NO_EMPLOYEES": "No employees assigned to this zone.",
+      "NOT_FOUND": "Zone not found."
     }
   },
   "COMMON": {
-    "LOADING": "Chargement...",
-    "RETRY": "Réessayer",
+    "LOADING": "Loading...",
+    "RETRY": "Retry",
     "ACTIONS": "Actions",
-    "EDIT": "Modifier",
-    "DELETE": "Supprimer",
-    "BACK": "Retour",
-    "SAVE": "Enregistrer",
-    "SAVING": "Enregistrement...",
-    "CANCEL": "Annuler",
-    "VIEW": "Voir",
-    "RESET": "Réinitialiser"
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "BACK": "Back",
+    "SAVE": "Save",
+    "SAVING": "Saving...",
+    "CANCEL": "Cancel",
+    "VIEW": "View",
+    "RESET": "Reset"
   }
 }
