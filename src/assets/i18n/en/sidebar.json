@@ -19,6 +19,8 @@
       "TRAINING": "Training",
       "TEAM": "Team",
       "MONITORING": "Monitoring",
+            "INVENTORIES":"Inventories",
+
 
       "AUDITS":"Audits",
       "ALERTS": "Alerts",

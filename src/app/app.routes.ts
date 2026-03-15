@@ -9,6 +9,16 @@ export const routes: Routes = [
   // Auth
   { path: 'login', component: Login, canActivate: [guestGuard] },
 
+    // Super routes
+  {
+    path: 'super',
+    loadChildren: () =>
+      import('./features/superadmin/superadmin.routes')
+        .then(m => m.SUPERADMIN_ROUTES),
+    canActivate: [roleGuard],
+    data: { roles: ['superAdmin'] } // Seul SuperAdmin peut accéder
+  },
+
   // Admin routes
   {
     path: 'admin',

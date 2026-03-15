@@ -102,6 +102,13 @@ export const HSEMANAGERS_ROUTES: Routes = [
           import('./observations/observations.routes')
             .then(m => m.OBSERVATIONS_ROUTES),
       },
+                  // ✅ /manager/team
+      {
+        path: 'inventories',
+        loadChildren: () =>
+          import('./inventories/inventories.routes')
+            .then(m => m.INVENTORIES_ROUTES),
+      },
     // ✅ /manager/monitoring
       {
         path: 'monitoring',

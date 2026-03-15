@@ -260,4 +260,12 @@ export class HeaderManager implements OnInit {
   get avatarUrl(): string {
     return 'assets/images/profile-pic.webp';
   }
+
+    goToLive(): void {
+    this.router.navigate(['/manager/live']);
+  }
+
+      goToSettings(): void {
+    this.router.navigate(['/manager/settings']);
+  }
 }

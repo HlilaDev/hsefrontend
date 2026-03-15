@@ -11,8 +11,13 @@
   </div>
 
   <div class="right-section">
-    <button class="icon-btn" type="button"><i class="bi bi-moon"></i></button>
-    <button class="icon-btn" type="button"><i class="bi bi-fullscreen"></i></button>
+<button class="icon-btn" type="button" (click)="goToLive()" title="Live stream">
+  <i class="bi bi-broadcast"></i>
+</button>
+
+    <button class="icon-btn" type="button">
+      <i class="bi bi-fullscreen"></i>
+    </button>
 
     <!-- NOTIFICATIONS -->
     <div class="notification-wrapper">
@@ -25,90 +30,92 @@
       >
         <i class="bi bi-bell"></i>
 
-        <span class="badge bg-danger" *ngIf="unreadCount > 0">
-          {{ unreadCount > 9 ? '9+' : unreadCount }}
-        </span>
+        @if (unreadCount > 0) {
+          <span class="badge bg-danger">
+            {{ unreadCount > 9 ? '9+' : unreadCount }}
+          </span>
+        }
       </button>
 
-      <div class="notification-menu" *ngIf="isNotificationOpen" role="menu">
-        <div class="notification-head">
-          <div>
-            <div class="title">Notifications</div>
-            <div class="subtitle">
-              {{ unreadCount }} non lue(s)
-            </div>
-          </div>
-
-          <button
-            class="mark-all-btn"
-            type="button"
-            (click)="markAllNotificationsRead()"
-          >
-            Tout lire
-          </button>
-        </div>
-
-        <div
-          class="notification-list"
-          *ngIf="notifications.length > 0; else emptyNotifications"
-        >
-          <button
-            class="notification-item"
-            type="button"
-            *ngFor="let item of notifications; trackBy: trackByAlert"
-            [class.unread]="!item.isRead"
-            (click)="openNotification(item)"
-          >
-            <div
-              class="notification-dot"
-              [ngClass]="getSeverityClass(item)"
-            ></div>
-
-            <div class="notification-content">
-              <div class="notification-title">
-                {{ item.title || 'Nouvelle alerte' }}
-              </div>
-
-              <div class="notification-message">
-                {{ item.message || 'Aucune description' }}
-              </div>
-
-              <div class="notification-meta">
-                <span>{{ getZoneName(item) }}</span>
-                <span>•</span>
-                <span>{{ getDeviceName(item) }}</span>
-              </div>
-
-              <div class="notification-time">
-                {{ getNotificationTime(item) }}
+      @if (isNotificationOpen) {
+        <div class="notification-menu" role="menu">
+          <div class="notification-head">
+            <div>
+              <div class="title">Notifications</div>
+              <div class="subtitle">
+                {{ unreadCount }} non lue(s)
               </div>
             </div>
 
             <button
-              class="delete-notification-btn"
+              class="mark-all-btn"
               type="button"
-              (click)="deleteNotification(item._id, $event)"
-              aria-label="Supprimer notification"
-              title="Supprimer"
+              (click)="markAllNotificationsRead()"
             >
-              <i class="bi bi-x-lg"></i>
+              Tout lire
             </button>
-          </button>
-        </div>
-
-        <ng-template #emptyNotifications>
-          <div class="empty-notifications">
-            <i class="bi bi-bell-slash"></i>
-            <p>Aucune notification pour le moment</p>
           </div>
-        </ng-template>
 
-        <div class="notification-footer">
-          <button class="view-all-btn" type="button" (click)="openNotificationsPage()">
-            Afficher toutes les notifications
-          </button>
+          @if (notifications.length > 0) {
+            <div class="notification-list">
+              @for (item of notifications; track trackByAlert($index, item)) {
+                <button
+                  class="notification-item"
+                  type="button"
+                  [class.unread]="!item.isRead"
+                  (click)="openNotification(item)"
+                >
+                  <div
+                    class="notification-dot"
+                    [ngClass]="getSeverityClass(item)"
+                  ></div>
+
+                  <div class="notification-content">
+                    <div class="notification-title">
+                      {{ item.title || 'Nouvelle alerte' }}
+                    </div>
+
+                    <div class="notification-message">
+                      {{ item.message || 'Aucune description' }}
+                    </div>
+
+                    <div class="notification-meta">
+                      <span>{{ getZoneName(item) }}</span>
+                      <span>•</span>
+                      <span>{{ getDeviceName(item) }}</span>
+                    </div>
+
+                    <div class="notification-time">
+                      {{ getNotificationTime(item) }}
+                    </div>
+                  </div>
+
+                  <button
+                    class="delete-notification-btn"
+                    type="button"
+                    (click)="deleteNotification(item._id, $event)"
+                    aria-label="Supprimer notification"
+                    title="Supprimer"
+                  >
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </button>
+              }
+            </div>
+          } @else {
+            <div class="empty-notifications">
+              <i class="bi bi-bell-slash"></i>
+              <p>Aucune notification pour le moment</p>
+            </div>
+          }
+
+          <div class="notification-footer">
+            <button class="view-all-btn" type="button" (click)="openNotificationsPage()">
+              Afficher toutes les notifications
+            </button>
+          </div>
         </div>
-      </div>
+      }
     </div>
 
     <div class="icon-btn badge-container">
@@ -130,20 +137,23 @@
         <i class="bi bi-chevron-down chevron"></i>
       </button>
 
-      <div class="lang-menu" *ngIf="isLangOpen" role="menu">
-        <button
-          class="lang-item"
-          type="button"
-          *ngFor="let o of lang.options"
-          (click)="chooseLang(o.code)"
-          [class.active]="o.code === currentLang"
-          role="menuitem"
-        >
-          <img class="flag-icon" [src]="o.flag" [alt]="o.code + ' flag'" />
-          <span class="code">{{ o.code }}</span>
-          <span class="label">{{ o.label }}</span>
-        </button>
-      </div>
+      @if (isLangOpen) {
+        <div class="lang-menu" role="menu">
+          @for (o of lang.options; track o.code) {
+            <button
+              class="lang-item"
+              type="button"
+              (click)="chooseLang(o.code)"
+              [class.active]="o.code === currentLang"
+              role="menuitem"
+            >
+              <img class="flag-icon" [src]="o.flag" [alt]="o.code + ' flag'" />
+              <span class="code">{{ o.code }}</span>
+              <span class="label">{{ o.label }}</span>
+            </button>
+          }
+        </div>
+      }
     </div>
 
     <!-- USER DROPDOWN -->
@@ -158,32 +168,39 @@
         <img [src]="avatarUrl" alt="User" class="avatar" />
       </button>
 
-      <div class="user-menu" *ngIf="isUserOpen" role="menu">
-        <div class="user-head">
-          <div class="name">{{ displayName }}</div>
+      @if (isUserOpen) {
+        <div class="user-menu" role="menu">
+          <div class="user-head">
+            <div class="name">{{ displayName }}</div>
 
-          <div class="role">
-            {{ ('HEADER.ROLES.' + displayRole) | translate }}
+            <div class="role">
+              {{ ('HEADER.ROLES.' + displayRole) | translate }}
+            </div>
           </div>
+
+          <a class="user-item" routerLink="/manager/profile" (click)="closeUserMenu()">
+            {{ 'HEADER.USER.PROFILE' | translate }}
+          </a>
+
+          <a class="user-item" routerLink="/manager/settings" (click)="closeUserMenu()">
+            {{ 'HEADER.USER.SETTINGS' | translate }}
+          </a>
+
+          <div class="divider"></div>
+
+          <button class="user-item danger" type="button" (click)="logout()">
+            {{ 'HEADER.USER.LOGOUT' | translate }}
+          </button>
         </div>
-
-        <a class="user-item" routerLink="/manager/profile" (click)="closeUserMenu()">
-          {{ 'HEADER.USER.PROFILE' | translate }}
-        </a>
-
-        <a class="user-item" routerLink="/manager/settings" (click)="closeUserMenu()">
-          {{ 'HEADER.USER.SETTINGS' | translate }}
-        </a>
-
-        <div class="divider"></div>
-
-        <button class="user-item danger" type="button" (click)="logout()">
-          {{ 'HEADER.USER.LOGOUT' | translate }}
-        </button>
-      </div>
+      }
     </div>
 
-    <button class="icon-btn" type="button"><i class="bi bi-grid-3x3-gap"></i></button>
-    <button class="icon-btn" type="button"><i class="bi bi-gear"></i></button>
+    <button class="icon-btn" type="button">
+      <i class="bi bi-grid-3x3-gap"></i>
+    </button>
+
+    <button class="icon-btn" type="button" (click)="goToSettings()">
+      <i class="bi bi-gear"></i>
+    </button>
   </div>
 </header>

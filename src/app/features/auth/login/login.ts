@@ -50,7 +50,12 @@ export class Login {
 
         if (role === 'admin') {
           this.router.navigateByUrl('/admin');
-        } else if (role === 'manager') {
+          
+        } else if (role === 'superAdmin') {
+          this.router.navigateByUrl('/super');
+        }
+        
+        else if (role === 'manager') {
           this.router.navigateByUrl('/manager');
         } else if (role === 'agent') {
           this.router.navigateByUrl('/agent');

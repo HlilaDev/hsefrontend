@@ -13,6 +13,10 @@ export const API_URLS ={
     },
 
 
+      companies: `${BASE_URL}/api/companies`,
+
+
+
     //Users API
     users:{
     allusers:`${BASE_API_URL}/users/`,
@@ -149,6 +153,47 @@ userNotifications: {
   markAsRead: `${BASE_API_URL}/user-notifications/`,
   markAllAsRead: `${BASE_API_URL}/user-notifications/read-all`,
   delete: `${BASE_API_URL}/user-notifications/`,
-}
+},
+
+
+  inventory: {
+    items: {
+      all: `${BASE_API_URL}/inventory/items`,
+      create: `${BASE_API_URL}/inventory/items`,
+      byId: (id: string) => `${BASE_API_URL}/inventory/items/${id}`,
+      update: (id: string) => `${BASE_API_URL}/inventory/items/${id}`,
+      delete: (id: string) => `${BASE_API_URL}/inventory/items/${id}`,
+      updateStatus: (id: string) => `${BASE_API_URL}/inventory/items/${id}/status`,
+      assign: (id: string) => `${BASE_API_URL}/inventory/items/${id}/assign`,
+      unassign: (id: string) => `${BASE_API_URL}/inventory/items/${id}/unassign`,
+      stats: `${BASE_API_URL}/inventory/items/stats`,
+      expired: `${BASE_API_URL}/inventory/items/expired`,
+      lowStock: `${BASE_API_URL}/inventory/items/low-stock`,
+    },
+
+    movements: {
+      all: `${BASE_API_URL}/inventory/movements`,
+      create: `${BASE_API_URL}/inventory/movements`,
+      byId: (id: string) => `${BASE_API_URL}/inventory/movements/${id}`,
+      delete: (id: string) => `${BASE_API_URL}/inventory/movements/${id}`,
+    },
+
+    assignments: {
+      all: `${BASE_API_URL}/inventory/assignments`,
+      create: `${BASE_API_URL}/inventory/assignments`,
+      byId: (id: string) => `${BASE_API_URL}/inventory/assignments/${id}`,
+      return: (id: string) => `${BASE_API_URL}/inventory/assignments/${id}/return`,
+      updateStatus: (id: string) => `${BASE_API_URL}/inventory/assignments/${id}/status`,
+      delete: (id: string) => `${BASE_API_URL}/inventory/assignments/${id}`,
+    },
+
+    inspections: {
+      all: `${BASE_API_URL}/inventory/inspections`,
+      create: `${BASE_API_URL}/inventory/inspections`,
+      byId: (id: string) => `${BASE_API_URL}/inventory/inspections/${id}`,
+      update: (id: string) => `${BASE_API_URL}/inventory/inspections/${id}`,
+      delete: (id: string) => `${BASE_API_URL}/inventory/inspections/${id}`,
+    },
+  },
 
 }
