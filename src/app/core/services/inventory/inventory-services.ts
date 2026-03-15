@@ -56,6 +56,12 @@ export type InventoryMovementType =
   | 'damage'
   | 'archive';
 
+export type InventoryInspectionResult =
+  | 'pass'
+  | 'fail'
+  | 'warning'
+  | 'not_applicable';
+
 export interface Pagination {
   total: number;
   page: number;
@@ -172,6 +178,7 @@ export interface InventoryInspection {
   inspectedBy?: string | UserRef | null;
   zone?: string | ZoneRef | null;
   inspectionDate?: string;
+  result?: InventoryInspectionResult | string;
   status?: string;
   condition?: string;
   findings?: string;
@@ -380,6 +387,7 @@ export interface CreateInventoryInspectionDto {
   inventoryItem: string;
   company?: string;
   inspectionDate?: string;
+  result: InventoryInspectionResult | string;
   status?: string;
   condition?: string;
   findings?: string;
@@ -431,7 +439,10 @@ export class InventoryServices {
   createInventoryItem(
     data: CreateInventoryItemDto
   ): Observable<InventoryItemResponse> {
-    return this.http.post<InventoryItemResponse>(API_URLS.inventory.items.create, data);
+    return this.http.post<InventoryItemResponse>(
+      API_URLS.inventory.items.create,
+      data
+    );
   }
 
   updateInventoryItem(

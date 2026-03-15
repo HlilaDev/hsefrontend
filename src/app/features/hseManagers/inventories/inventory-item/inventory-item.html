@@ -317,7 +317,7 @@
             <div class="list-table">
               <div class="list-head inspection-grid">
                 <span>Date</span>
-                <span>Statut</span>
+                <span>Résultat</span>
                 <span>État</span>
                 <span>Inspecté par</span>
                 <span>Prochaine inspection</span>
@@ -325,11 +325,11 @@
 
               @for (inspection of inspections(); track trackInspection($index, inspection)) {
                 <div class="list-row inspection-grid">
-                  <span>{{ formatDate(inspection.inspectionDate) }}</span>
-                  <span>{{ getInspectionStatusLabel(inspection.status) }}</span>
-                  <span>{{ getConditionLabel(inspection.condition) }}</span>
+                  <span>{{ formatDate(getInspectionDate(inspection)) }}</span>
+                  <span>{{ getInspectionStatusLabel(getInspectionStatusValue(inspection)) }}</span>
+                  <span>{{ getConditionLabel(getInspectionCondition(inspection)) }}</span>
                   <span>{{ getUserName(inspection.inspectedBy) }}</span>
-                  <span>{{ formatDate(inspection.nextInspectionDate) }}</span>
+                  <span>{{ formatDate(getInspectionNextDate(inspection)) }}</span>
                 </div>
               }
             </div>
@@ -360,3 +360,13 @@
   (close)="closeMovementModal()"
   (save)="submitMovement($event)"
 ></app-add-inventory-movement-model>
+
+<app-add-inventory-inspection-model
+  [open]="isInspectionModalOpen()"
+  [loading]="inspectionSubmitting()"
+  [errorMessage]="inspectionErrorMessage()"
+  [item]="inspectionModalItem()"
+  [zones]="inspectionZones()"
+  (close)="closeInspectionModal()"
+  (save)="submitInspection($event)"
+></app-add-inventory-inspection-model>

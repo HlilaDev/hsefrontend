@@ -30,6 +30,15 @@ import {
   MovementInventoryItem,
 } from '../add-inventory-movement-model/add-inventory-movement-model';
 
+import {
+  AddInventoryInspectionModel,
+  AddInventoryInspectionPayload,
+  InspectionInventoryItem,
+  InspectionZoneOption,
+} from '../add-inventory-inspection-model/add-inventory-inspection-model';
+
+import { ZoneServices } from '../../../../core/services/zones/zone-services';
+
 type InventoryTab = 'overview' | 'movements' | 'assignments' | 'inspections';
 
 @Component({
@@ -40,6 +49,7 @@ type InventoryTab = 'overview' | 'movements' | 'assignments' | 'inspections';
     RouterModule,
     AssignInventoryModel,
     AddInventoryMovementModel,
+    AddInventoryInspectionModel,
   ],
   templateUrl: './inventory-item.html',
   styleUrl: './inventory-item.scss',
@@ -49,6 +59,7 @@ export class InventoryItem {
   private router = inject(Router);
   private inventoryService = inject(InventoryServices);
   private employeeService = inject(EmployeeServices);
+  private zoneService = inject(ZoneServices);
 
   inventoryId = '';
   activeTab = signal<InventoryTab>('overview');
@@ -72,6 +83,11 @@ export class InventoryItem {
   movementSubmitting = signal(false);
   movementErrorMessage = signal('');
   movementEmployees = signal<MovementEmployeeOption[]>([]);
+
+  isInspectionModalOpen = signal(false);
+  inspectionSubmitting = signal(false);
+  inspectionErrorMessage = signal('');
+  inspectionZones = signal<InspectionZoneOption[]>([]);
 
   summary = computed(() => {
     const currentItem = this.item();
@@ -125,6 +141,26 @@ export class InventoryItem {
     };
   });
 
+  inspectionModalItem = computed<InspectionInventoryItem | null>(() => {
+    const currentItem = this.item();
+
+    if (!currentItem) return null;
+
+    return {
+      _id: currentItem._id,
+      name: currentItem.name,
+      inventoryCode: currentItem.inventoryCode,
+      category: currentItem.category,
+      subCategory: currentItem.subCategory,
+      status: currentItem.status,
+      condition: typeof currentItem.condition === 'string' ? currentItem.condition : '',
+      quantity: currentItem.quantity,
+      unit: currentItem.unit,
+      zone: currentItem.zone,
+      nextInspectionDate: currentItem.nextInspectionDate || null,
+    };
+  });
+
   constructor() {
     this.inventoryId = this.route.snapshot.paramMap.get('id') || '';
 
@@ -136,6 +172,7 @@ export class InventoryItem {
     this.loadItem();
     this.loadRelatedData();
     this.loadAllEmployees();
+    this.loadZones();
   }
 
   setTab(tab: InventoryTab): void {
@@ -263,6 +300,25 @@ export class InventoryItem {
     });
   }
 
+  loadZones(): void {
+    this.zoneService.getAllZones().subscribe({
+      next: (response: any) => {
+        const list = response?.zones || response?.items || response?.data || [];
+
+        const mapped: InspectionZoneOption[] = (list || []).map((zone: any) => ({
+          _id: zone._id || '',
+          name: zone.name || 'Zone',
+          code: zone.code || '',
+        }));
+
+        this.inspectionZones.set(mapped);
+      },
+      error: () => {
+        this.inspectionZones.set([]);
+      },
+    });
+  }
+
   refreshAll(): void {
     this.loadItem();
     this.loadRelatedData();
@@ -333,7 +389,6 @@ export class InventoryItem {
 
   closeAssignModal(): void {
     if (this.assignSubmitting()) return;
-
     this.isAssignModalOpen.set(false);
     this.assignErrorMessage.set('');
   }
@@ -362,6 +417,7 @@ export class InventoryItem {
           assignmentType: payload.assignmentType,
           expectedReturnDate: payload.expectedReturnDate || null,
           notes: payload.note || '',
+          zone: this.getZoneId(currentItem.zone) || null,
           metadata: {
             assignedAt: payload.assignedAt,
             strategy: payload.strategy,
@@ -408,6 +464,7 @@ export class InventoryItem {
           assignmentType: payload.assignmentType,
           expectedReturnDate: payload.expectedReturnDate || null,
           notes: payload.note || '',
+          zone: this.getZoneId(currentItem.zone) || null,
           metadata: {
             assignedAt: payload.assignedAt,
             strategy: payload.strategy,
@@ -436,12 +493,58 @@ export class InventoryItem {
   }
 
   addInspection(): void {
-    this.router.navigate([
-      '/manager/inventories',
-      this.inventoryId,
-      'inspections',
-      'add',
-    ]);
+    this.inspectionErrorMessage.set('');
+    this.isInspectionModalOpen.set(true);
+  }
+
+  closeInspectionModal(): void {
+    if (this.inspectionSubmitting()) return;
+    this.isInspectionModalOpen.set(false);
+    this.inspectionErrorMessage.set('');
+  }
+
+  submitInspection(payload: AddInventoryInspectionPayload): void {
+    const currentItem = this.item();
+
+    if (!currentItem?._id) {
+      this.inspectionErrorMessage.set("Élément d'inventaire introuvable.");
+      return;
+    }
+
+    this.inspectionSubmitting.set(true);
+    this.inspectionErrorMessage.set('');
+
+    this.inventoryService
+      .createInventoryInspection({
+        inventoryItem: currentItem._id,
+        inspectionDate: payload.inspectionDate || undefined,
+        result: this.mapInspectionStatusToResult(payload.status),
+        status: payload.status,
+        condition: payload.condition || undefined,
+        findings: payload.findings?.trim() || '',
+        actionsRequired: payload.actionsRequired?.trim() || '',
+        nextInspectionDate: payload.nextInspectionDate || null,
+        zone: payload.zone || this.getZoneId(currentItem.zone) || null,
+        notes: payload.notes?.trim() || '',
+        metadata: {
+          source: 'inventory-item-modal',
+        },
+      })
+      .pipe(finalize(() => this.inspectionSubmitting.set(false)))
+      .subscribe({
+        next: () => {
+          this.isInspectionModalOpen.set(false);
+          this.loadItem();
+          this.loadRelatedData();
+          this.activeTab.set('inspections');
+        },
+        error: (error) => {
+          this.inspectionErrorMessage.set(
+            error?.error?.message ||
+              "Impossible d'enregistrer l'inspection."
+          );
+        },
+      });
   }
 
   private normalizeEmployeesResponse(response: any): AssignInventoryEmployee[] {
@@ -478,6 +581,21 @@ export class InventoryItem {
       jobTitle: employee.jobTitle || null,
       isActive: employee.isActive,
     }));
+  }
+
+  private mapInspectionStatusToResult(
+    status: AddInventoryInspectionPayload['status']
+  ): 'pass' | 'fail' | 'warning' {
+    switch (status) {
+      case 'ok':
+        return 'pass';
+      case 'issue_found':
+        return 'fail';
+      case 'pending':
+        return 'warning';
+      default:
+        return 'warning';
+    }
   }
 
   private getZoneId(
@@ -639,11 +757,20 @@ export class InventoryItem {
   getInspectionStatusLabel(status?: string): string {
     switch (status) {
       case 'ok':
+      case 'pass':
         return 'Conforme';
+
       case 'issue_found':
+      case 'fail':
         return 'Anomalie';
+
       case 'pending':
+      case 'warning':
         return 'En attente';
+
+      case 'not_applicable':
+        return 'Non applicable';
+
       default:
         return status || '—';
     }
@@ -664,7 +791,9 @@ export class InventoryItem {
 
   getCompanyName(item: InventoryItemModel | null): string {
     if (!item?.company) return '—';
-    return typeof item.company === 'string' ? item.company : item.company.name || '—';
+    return typeof item.company === 'string'
+      ? item.company
+      : item.company.name || '—';
   }
 
   getZoneName(
@@ -685,11 +814,6 @@ export class InventoryItem {
     if (typeof item.assignedTo === 'string') return item.assignedTo;
 
     const assignedLike = item.assignedTo as any;
-
-    if (assignedLike.fullName) {
-      return assignedLike.fullName;
-    }
-
     const firstName = assignedLike.firstName || '';
     const lastName = assignedLike.lastName || '';
     const fullName = `${firstName} ${lastName}`.trim();
@@ -727,11 +851,28 @@ export class InventoryItem {
     if (!value) return '—';
     if (typeof value === 'string') return value;
 
-    const firstName = value.firstName || '';
-    const lastName = value.lastName || '';
+    const userLike = value as any;
+    const firstName = userLike.firstName || '';
+    const lastName = userLike.lastName || '';
     const fullName = `${firstName} ${lastName}`.trim();
 
-    return fullName || value.email || '—';
+    return fullName || userLike.email || '—';
+  }
+
+  getInspectionDate(inspection: InventoryInspection): string {
+    return inspection.inspectionDate || inspection.createdAt || '';
+  }
+
+  getInspectionStatusValue(inspection: InventoryInspection): string {
+    return inspection.result || inspection.status || '';
+  }
+
+  getInspectionCondition(inspection: InventoryInspection): string {
+    return inspection.condition || '';
+  }
+
+  getInspectionNextDate(inspection: InventoryInspection): string | null {
+    return inspection.nextInspectionDate || null;
   }
 
   hasImage(item: InventoryItemModel | null): boolean {
@@ -745,7 +886,11 @@ export class InventoryItem {
 
   isLowStock(item: InventoryItemModel): boolean {
     if (item.category === 'extinguisher') return false;
-    return (item.quantity || 0) <= (item.minStockLevel || 0);
+
+    const quantity = item.quantity ?? 0;
+    const minStockLevel = item.minStockLevel ?? 0;
+
+    return quantity <= minStockLevel;
   }
 
   trackMovement(_: number, movement: InventoryMovement): string {

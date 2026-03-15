@@ -1,5 +1,4 @@
 <div class="page">
-  <!-- loading -->
   <ng-container *ngIf="loading(); else loadedBlock">
     <div class="skeleton-page">
       <div class="skeleton-line w30"></div>
@@ -24,13 +23,11 @@
   </ng-container>
 
   <ng-template #loadedBlock>
-    <!-- error -->
     <div *ngIf="error()" class="alert error">
       <i class="bi bi-exclamation-triangle"></i>
       <span>{{ error() }}</span>
     </div>
 
-    <!-- no report -->
     <div *ngIf="!error() && !report()" class="card empty-state">
       <div class="empty-icon">
         <i class="bi bi-file-earmark-text"></i>
@@ -43,9 +40,7 @@
       </button>
     </div>
 
-    <!-- content -->
     <ng-container *ngIf="report() as r">
-      <!-- top nav -->
       <div class="topbar">
         <button class="btn ghost" (click)="goBack()">
           <i class="bi bi-arrow-left"></i>
@@ -56,7 +51,7 @@
           <a
             class="btn ghost"
             *ngIf="r.exportUrl"
-            [href]="r.exportUrl"
+            [href]="getExportUrl(r.exportUrl)"
             target="_blank"
             rel="noopener"
           >
@@ -83,7 +78,6 @@
         </div>
       </div>
 
-      <!-- hero -->
       <div class="card hero">
         <div class="hero-left">
           <div class="eyebrow">Rapport HSE</div>
@@ -129,7 +123,6 @@
         </div>
       </div>
 
-      <!-- metrics -->
       <div class="metrics-grid">
         <div class="card metric-card">
           <div class="metric-icon incidents">
@@ -178,7 +171,6 @@
         </div>
       </div>
 
-      <!-- details -->
       <div class="details-grid">
         <div class="card detail-card">
           <div class="section-title">
@@ -247,7 +239,6 @@
         </div>
       </div>
 
-      <!-- export -->
       <div class="card export-card">
         <div class="section-title">
           <i class="bi bi-file-earmark-pdf"></i>
@@ -263,7 +254,7 @@
 
             <a
               class="btn primary"
-              [href]="r.exportUrl"
+              [href]="getExportUrl(r.exportUrl)"
               target="_blank"
               rel="noopener"
             >

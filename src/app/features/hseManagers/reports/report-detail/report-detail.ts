@@ -2,6 +2,7 @@ import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReportServices } from '../../../../core/services/reports/report-services';
+import { BASE_URL } from '../../../../core/config/api_urls';
 
 @Component({
   selector: 'app-report-detail',
@@ -143,6 +144,25 @@ export class ReportDetail implements OnInit {
         : '—';
 
     return `${format(start)} → ${format(end)}`;
+  }
+
+getExportUrl(url?: string | null): string {
+  if (!url) return '';
+
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+
+  const base = BASE_URL.replace(/\/+$/, '');
+  const path = url.replace(/^\/+/, '');
+
+  return `${base}/${path}`;
+}
+
+  openPdf(): void {
+    const url = this.getExportUrl(this.report()?.exportUrl);
+    if (!url) return;
+    window.open(url, '_blank', 'noopener');
   }
 
   complianceValue = computed(() => {
