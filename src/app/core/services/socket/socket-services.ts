@@ -31,11 +31,21 @@ export interface LiveAlert {
         threshold?: number;
         severity?: string;
       };
+  actor?:
+    | string
+    | {
+        _id: string;
+        fullName?: string;
+        firstName?: string;
+        lastName?: string;
+        email?: string;
+      };
+  observation?: string | { _id: string; title?: string; status?: string };
   meta?: any;
 }
 
 export interface SocketNotificationPayload {
-  _id?: string; // parfois userNotification id
+  _id?: string;
   isRead?: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -62,6 +72,21 @@ export interface SocketNotificationPayload {
           threshold?: number;
           severity?: string;
         };
+    actor?:
+      | string
+      | {
+          _id: string;
+          fullName?: string;
+          firstName?: string;
+          lastName?: string;
+          email?: string;
+        };
+    observation?: string | { _id: string; title?: string; status?: string };
+    alert?: string | { _id: string; title?: string };
+    report?: string | { _id: string; title?: string; status?: string };
+    incident?: string | { _id: string; title?: string; status?: string };
+    audit?: string | { _id: string; title?: string; status?: string };
+    training?: string | { _id: string; title?: string; status?: string };
     meta?: any;
   };
 }
@@ -179,5 +204,16 @@ export class SocketServices {
     if (!device) return '-';
     if (typeof device === 'string') return device;
     return device.name || device.deviceId || device._id;
+  }
+
+  getActorName(actor: LiveAlert['actor']): string {
+    if (!actor) return '-';
+    if (typeof actor === 'string') return actor;
+
+    const fullName =
+      actor.fullName ||
+      `${actor.firstName || ''} ${actor.lastName || ''}`.trim();
+
+    return fullName || actor.email || actor._id;
   }
 }

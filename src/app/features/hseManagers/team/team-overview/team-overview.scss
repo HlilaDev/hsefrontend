@@ -515,4 +515,22 @@ table {
   .title-wrap h1 {
     font-size: 24px;
   }
+
+  .spin {
+  animation: spin 0.9s linear infinite;
+}
+
+.error-state {
+  color: #dc2626;
+
+  i {
+    color: #dc2626;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 }

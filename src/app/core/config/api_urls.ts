@@ -14,6 +14,8 @@ export const API_URLS ={
 
 
       companies: `${BASE_URL}/api/companies`,
+      displayMessages: `${BASE_API_URL}/display-messages`,
+
 
 
 
@@ -23,6 +25,7 @@ export const API_URLS ={
     getUserById:`${BASE_API_URL}/users/`,
     editUser:`${BASE_API_URL}/users/`,
     deleteUser:`${BASE_API_URL}/users/`,
+    getTeam:`${BASE_API_URL}/users/team`,
      },
 
          //Zones API
@@ -77,15 +80,21 @@ incidentEvents: {
   // optionnel: toggle status, etc...
 },
 
-       //observation
+// observation
 observations: {
-    create: `${BASE_API_URL}/observations`,
-    list: `${BASE_API_URL}/observations`,
-    byId: (id: string) => `${BASE_API_URL}/observations/${id}`,
-    addImage: (id: string) => `${BASE_API_URL}/observations/${id}/images`,
-    totalCountByAgent: (agentId: string) => `${BASE_API_URL}/observations/agent/${agentId}/count`, // Nouvelle route pour obtenir le nombre total d'observations pour un agent
-
-  },
+  create: `${BASE_API_URL}/observations`,
+  list: `${BASE_API_URL}/observations`,
+  byId: (id: string) => `${BASE_API_URL}/observations/${id}`,
+  update: (id: string) => `${BASE_API_URL}/observations/${id}`,
+  delete: (id: string) => `${BASE_API_URL}/observations/${id}`,
+  assign: (id: string) => `${BASE_API_URL}/observations/${id}/assign`,
+  resolve: (id: string) => `${BASE_API_URL}/observations/${id}/resolve`,
+  validate: (id: string) => `${BASE_API_URL}/observations/${id}/validate`,
+  reject: (id: string) => `${BASE_API_URL}/observations/${id}/reject`,
+  addImage: (id: string) => `${BASE_API_URL}/observations/${id}/images`,
+  totalCountByAgent: (agentId: string) =>
+    `${BASE_API_URL}/observations/agent/${agentId}/count`,
+},
 
   upload: {
   images: `${BASE_API_URL}/upload`,

@@ -285,29 +285,8 @@
   }
 }
 
-.chart-placeholder {
-  min-height: 240px;
-  border-radius: 20px;
-  border: 1px dashed #cbd5e1;
-  background:
-    linear-gradient(180deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.9));
-  display: grid;
-  place-items: center;
-  text-align: center;
-  color: #64748b;
-  padding: 20px;
-
-  i {
-    font-size: 28px;
-    display: block;
-    margin-bottom: 10px;
-    color: #94a3b8;
-  }
-
-  p {
-    margin: 0;
-    font-weight: 600;
-  }
+.chart-host {
+  min-height: 280px;
 }
 
 .table-wrap {

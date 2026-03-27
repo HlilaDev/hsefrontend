@@ -1,24 +1,24 @@
 <div class="page">
-  <ng-container *ngIf="loading(); else loadedTpl">
+  @if (loading()) {
     <div class="state-card loading">
       <div class="spinner"></div>
       <h3>Chargement de l’observation...</h3>
       <p>Veuillez patienter pendant la récupération des données.</p>
     </div>
-  </ng-container>
-
-  <ng-template #loadedTpl>
-    <ng-container *ngIf="!error(); else errorTpl">
-      <ng-container *ngIf="observation() as obs; else emptyTpl">
+  } @else {
+    @if (!error()) {
+      @if (observation(); as obs) {
         <div class="topbar">
           <button class="back-btn" type="button" (click)="goBack()">
             <span>←</span>
             Retour aux observations
           </button>
 
-          <button class="refresh-btn" type="button" (click)="refresh()">
-            Actualiser
-          </button>
+          <div class="topbar-actions">
+            <button class="refresh-btn" type="button" (click)="refresh()">
+              Actualiser
+            </button>
+          </div>
         </div>
 
         <section class="hero">
@@ -37,6 +37,12 @@
                   <span class="badge status" [ngClass]="obs.status">
                     {{ getStatusLabel(obs.status) }}
                   </span>
+
+                  @if (obs.assignedTo) {
+                    <span class="badge assigned">Affectée</span>
+                  } @else {
+                    <span class="badge unassigned">Non affectée</span>
+                  }
                 </div>
               </div>
 
@@ -53,6 +59,16 @@
                 <div class="meta-chip">
                   <span class="label">Déclarée par</span>
                   <strong>{{ reporterName() }}</strong>
+                </div>
+
+                <div class="meta-chip">
+                  <span class="label">Affectée à</span>
+                  <strong>{{ assignedToName() }}</strong>
+                </div>
+
+                <div class="meta-chip">
+                  <span class="label">Affectée par</span>
+                  <strong>{{ assignedByName() }}</strong>
                 </div>
 
                 <div class="meta-chip">
@@ -96,7 +112,7 @@
                 </div>
 
                 <div class="detail-card">
-                  <span class="detail-label">Email</span>
+                  <span class="detail-label">Email déclarant</span>
                   <strong>{{ reporterEmail() }}</strong>
                 </div>
 
@@ -108,6 +124,26 @@
                 <div class="detail-card">
                   <span class="detail-label">Statut</span>
                   <strong>{{ getStatusLabel(obs.status) }}</strong>
+                </div>
+
+                <div class="detail-card">
+                  <span class="detail-label">Affectée à</span>
+                  <strong>{{ assignedToName() }}</strong>
+                </div>
+
+                <div class="detail-card">
+                  <span class="detail-label">Email agent affecté</span>
+                  <strong>{{ assignedToEmail() }}</strong>
+                </div>
+
+                <div class="detail-card">
+                  <span class="detail-label">Affectée par</span>
+                  <strong>{{ assignedByName() }}</strong>
+                </div>
+
+                <div class="detail-card">
+                  <span class="detail-label">Date d’affectation</span>
+                  <strong>{{ assignedAtLabel() }}</strong>
                 </div>
 
                 <div class="detail-card">
@@ -135,32 +171,127 @@
                 </div>
               </div>
 
-              <ng-container *ngIf="hasImages(); else noImagesTpl">
+              @if (hasImages()) {
                 <div class="gallery">
-                  <div class="gallery__preview" *ngIf="selectedImage() as image">
-                    <img [src]="getImageUrl(image.url)" alt="Image observation" />
-                  </div>
+                  @if (selectedImage(); as image) {
+                    <div class="gallery__preview">
+                      <img [src]="getImageUrl(image.url)" alt="Image observation" />
+                    </div>
+                  }
 
                   <div class="gallery__thumbs">
-                    <button
-                      type="button"
-                      class="thumb"
-                      *ngFor="let img of obs.images; let i = index"
-                      [class.active]="selectedImageIndex() === i"
-                      (click)="selectImage(i)"
-                    >
-                      <img [src]="getImageUrl(img.url)" alt="Miniature observation" />
-                      <span>
-                        {{ img.uploadedAt | date:'dd/MM HH:mm' }}
-                      </span>
-                    </button>
+                    @for (img of obs.images; track img.url; let i = $index) {
+                      <button
+                        type="button"
+                        class="thumb"
+                        [class.active]="selectedImageIndex() === i"
+                        (click)="selectImage(i)"
+                      >
+                        <img [src]="getImageUrl(img.url)" alt="Miniature observation" />
+                        <span>{{ img.uploadedAt | date:'dd/MM HH:mm' }}</span>
+                      </button>
+                    }
                   </div>
                 </div>
-              </ng-container>
+              } @else {
+                <div class="empty-box">
+                  <div class="empty-icon">🖼️</div>
+                  <h3>Aucune image disponible</h3>
+                  <p>Cette observation ne contient pas encore de preuves visuelles.</p>
+                </div>
+              }
             </article>
           </div>
 
           <aside class="side-column">
+            <article class="panel side-panel">
+              <div class="panel__header">
+                <div>
+                  <h2>Affectation</h2>
+                  <p>Attribuer cette observation à un agent.</p>
+                </div>
+              </div>
+
+              <div class="assign-box">
+                <div class="assign-current">
+                  <div class="assign-item">
+                    <span>Actuellement affectée à</span>
+                    <strong>{{ assignedToName() }}</strong>
+                  </div>
+
+                  <div class="assign-item">
+                    <span>Affectée par</span>
+                    <strong>{{ assignedByName() }}</strong>
+                  </div>
+
+                  <div class="assign-item">
+                    <span>Date d’affectation</span>
+                    <strong>{{ assignedAtLabel() }}</strong>
+                  </div>
+                </div>
+
+                <div class="assign-form">
+                  <label for="agentSelect">Choisir un agent</label>
+
+                  <div class="select-wrap">
+                    <select
+                      id="agentSelect"
+                      [value]="selectedAgentId()"
+                      [disabled]="agentsLoading() || assigning()"
+                      (change)="onSelectedAgentChange($event)"
+                    >
+                      <option value="">Sélectionner un agent</option>
+
+                      @for (agent of agents(); track trackByAgent($index, agent)) {
+                        <option [value]="agent._id">
+                          {{ agent.firstName }} {{ agent.lastName }}
+                          @if (agent.email) {
+                            — {{ agent.email }}
+                          }
+                        </option>
+                      }
+                    </select>
+                  </div>
+
+                  @if (agentsLoading()) {
+                    <p class="form-message">Chargement des agents...</p>
+                  }
+
+                  @if (agentsError()) {
+                    <p class="form-message error">{{ agentsError() }}</p>
+                  }
+
+                  @if (selectedAgentName()) {
+                    <div class="selected-agent-box">
+                      <span>Agent sélectionné</span>
+                      <strong>{{ selectedAgentName() }}</strong>
+                    </div>
+                  }
+
+                  @if (assignError()) {
+                    <p class="form-message error">{{ assignError() }}</p>
+                  }
+
+                  @if (assignSuccess()) {
+                    <p class="form-message success">{{ assignSuccess() }}</p>
+                  }
+
+                  <button
+                    class="primary-btn full-btn"
+                    type="button"
+                    [disabled]="assigning() || agentsLoading() || !selectedAgentId()"
+                    (click)="assignObservation()"
+                  >
+                    @if (assigning()) {
+                      Affectation...
+                    } @else {
+                      Affecter à cet agent
+                    }
+                  </button>
+                </div>
+              </div>
+            </article>
+
             <article class="panel side-panel">
               <div class="panel__header">
                 <div>
@@ -186,8 +317,13 @@
                 </div>
 
                 <div class="summary-item">
-                  <span>Agent</span>
+                  <span>Déclarant</span>
                   <strong>{{ reporterName() }}</strong>
+                </div>
+
+                <div class="summary-item">
+                  <span>Affectée à</span>
+                  <strong>{{ assignedToName() }}</strong>
                 </div>
 
                 <div class="summary-item">
@@ -214,51 +350,58 @@
                   </div>
                 </div>
 
-                <div class="timeline-item" *ngIf="obs.status === 'in_progress' || obs.status === 'closed'">
-                  <div class="timeline-dot progress"></div>
-                  <div class="timeline-content">
-                    <strong>Observation prise en charge</strong>
-                    <p>Le dossier a été traité par l’équipe concernée.</p>
+                @if (obs.assignedTo) {
+                  <div class="timeline-item">
+                    <div class="timeline-dot assigned"></div>
+                    <div class="timeline-content">
+                      <strong>Observation affectée</strong>
+                      <p>
+                        À {{ assignedToName() }}
+                        @if (obs.assignedAt) {
+                          — {{ obs.assignedAt | date:'dd/MM/yyyy HH:mm' }}
+                        }
+                      </p>
+                    </div>
                   </div>
-                </div>
+                }
 
-                <div class="timeline-item" *ngIf="obs.status === 'closed'">
-                  <div class="timeline-dot closed"></div>
-                  <div class="timeline-content">
-                    <strong>Observation clôturée</strong>
-                    <p>{{ obs.updatedAt | date:'dd/MM/yyyy HH:mm' }}</p>
+                @if (obs.status === 'in_progress' || obs.status === 'closed') {
+                  <div class="timeline-item">
+                    <div class="timeline-dot progress"></div>
+                    <div class="timeline-content">
+                      <strong>Observation prise en charge</strong>
+                      <p>Le dossier a été traité par l’équipe concernée.</p>
+                    </div>
                   </div>
-                </div>
+                }
+
+                @if (obs.status === 'closed') {
+                  <div class="timeline-item">
+                    <div class="timeline-dot closed"></div>
+                    <div class="timeline-content">
+                      <strong>Observation clôturée</strong>
+                      <p>{{ obs.updatedAt | date:'dd/MM/yyyy HH:mm' }}</p>
+                    </div>
+                  </div>
+                }
               </div>
             </article>
           </aside>
         </section>
-      </ng-container>
-    </ng-container>
-  </ng-template>
-
-  <ng-template #errorTpl>
-    <div class="state-card error">
-      <div class="state-icon">⚠️</div>
-      <h3>Erreur</h3>
-      <p>{{ error() }}</p>
-      <button class="primary-btn" type="button" (click)="refresh()">Réessayer</button>
-    </div>
-  </ng-template>
-
-  <ng-template #emptyTpl>
-    <div class="state-card empty">
-      <div class="state-icon">📝</div>
-      <h3>Observation introuvable</h3>
-      <p>Aucune donnée n’a été trouvée pour cette observation.</p>
-    </div>
-  </ng-template>
-
-  <ng-template #noImagesTpl>
-    <div class="empty-box">
-      <div class="empty-icon">🖼️</div>
-      <h3>Aucune image disponible</h3>
-      <p>Cette observation ne contient pas encore de preuves visuelles.</p>
-    </div>
-  </ng-template>
+      } @else {
+        <div class="state-card empty">
+          <div class="state-icon">📝</div>
+          <h3>Observation introuvable</h3>
+          <p>Aucune donnée n’a été trouvée pour cette observation.</p>
+        </div>
+      }
+    } @else {
+      <div class="state-card error">
+        <div class="state-icon">⚠️</div>
+        <h3>Erreur</h3>
+        <p>{{ error() }}</p>
+        <button class="primary-btn" type="button" (click)="refresh()">Réessayer</button>
+      </div>
+    }
+  }
 </div>

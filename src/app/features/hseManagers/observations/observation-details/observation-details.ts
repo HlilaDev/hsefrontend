@@ -8,7 +8,13 @@ import {
   Observation,
   ObservationStatus,
   ObservationSeverity,
+  ObservationUser,
 } from '../../../../core/services/observations/observation-services';
+
+import {
+  User,
+  UserServices,
+} from '../../../../core/services/users/user-services';
 
 @Component({
   selector: 'app-observation-details',
@@ -21,6 +27,7 @@ export class ObservationDetails {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private observationService = inject(ObservationService);
+  private userServices = inject(UserServices);
   private destroyRef = inject(DestroyRef);
 
   loading = signal(true);
@@ -28,19 +35,40 @@ export class ObservationDetails {
   observation = signal<Observation | null>(null);
   selectedImageIndex = signal(0);
 
+  assigning = signal(false);
+  assignError = signal('');
+  assignSuccess = signal('');
+
+  agentsLoading = signal(false);
+  agentsError = signal('');
+  agents = signal<User[]>([]);
+  selectedAgentId = signal('');
+
   selectedImage = computed(() => {
     const obs = this.observation();
     if (!obs?.images?.length) return null;
     return obs.images[this.selectedImageIndex()] || null;
   });
 
+  selectedAgentName = computed(() => {
+    const agent = this.agents().find((item) => item._id === this.selectedAgentId());
+    return agent ? this.getTeamUserName(agent) : '';
+  });
+
   constructor() {
+    this.loadPage();
+  }
+
+  loadPage(): void {
     this.loadObservation();
+    this.loadAgents();
   }
 
   loadObservation(): void {
     this.loading.set(true);
     this.error.set('');
+    this.assignError.set('');
+    this.assignSuccess.set('');
 
     const id = this.route.snapshot.paramMap.get('id');
 
@@ -57,11 +85,51 @@ export class ObservationDetails {
         next: (data) => {
           this.observation.set(data);
           this.selectedImageIndex.set(0);
+
+          const assignedId =
+            data?.assignedTo && typeof data.assignedTo !== 'string'
+              ? data.assignedTo._id || ''
+              : '';
+
+          this.selectedAgentId.set(assignedId);
         },
         error: (err) => {
           console.error(err);
           this.error.set(
-            err?.error?.message || 'Impossible de charger les détails de l’observation.'
+            err?.error?.message ||
+              'Impossible de charger les détails de l’observation.'
+          );
+        },
+      });
+
+    this.destroyRef.onDestroy(() => sub.unsubscribe());
+  }
+
+  loadAgents(): void {
+    this.agentsLoading.set(true);
+    this.agentsError.set('');
+
+    const sub = this.userServices
+      .getTeam()
+      .pipe(finalize(() => this.agentsLoading.set(false)))
+      .subscribe({
+        next: (res: any) => {
+          const items = Array.isArray(res?.items)
+            ? res.items
+            : Array.isArray(res)
+            ? res
+            : [];
+
+          const onlyAgents = items.filter(
+            (user: any) => user?.role === 'agent'
+          );
+
+          this.agents.set(onlyAgents);
+        },
+        error: (err: Error) => {
+          console.error(err);
+          this.agentsError.set(
+            err?.message || 'Impossible de charger la liste des agents.'
           );
         },
       });
@@ -70,7 +138,7 @@ export class ObservationDetails {
   }
 
   refresh(): void {
-    this.loadObservation();
+    this.loadPage();
   }
 
   goBack(): void {
@@ -81,6 +149,57 @@ export class ObservationDetails {
     this.selectedImageIndex.set(index);
   }
 
+  onSelectedAgentChange(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value ?? '';
+    this.selectedAgentId.set(value);
+    this.assignError.set('');
+    this.assignSuccess.set('');
+  }
+
+  assignObservation(): void {
+    const obs = this.observation();
+    const agentId = this.selectedAgentId().trim();
+
+    if (!obs?._id) {
+      this.assignError.set('Observation introuvable.');
+      return;
+    }
+
+    if (!agentId) {
+      this.assignError.set('Veuillez choisir un agent.');
+      return;
+    }
+
+    this.assigning.set(true);
+    this.assignError.set('');
+    this.assignSuccess.set('');
+
+    const sub = this.observationService
+      .assign(obs._id, { assignedTo: agentId })
+      .pipe(finalize(() => this.assigning.set(false)))
+      .subscribe({
+        next: (updated) => {
+          this.observation.set(updated);
+
+          const assignedId =
+            updated?.assignedTo && typeof updated.assignedTo !== 'string'
+              ? updated.assignedTo._id || ''
+              : agentId;
+
+          this.selectedAgentId.set(assignedId);
+          this.assignSuccess.set('Observation affectée avec succès.');
+        },
+        error: (err) => {
+          console.error(err);
+          this.assignError.set(
+            err?.error?.message || 'Impossible d’affecter cette observation.'
+          );
+        },
+      });
+
+    this.destroyRef.onDestroy(() => sub.unsubscribe());
+  }
+
   zoneName(): string {
     const obs = this.observation();
     if (!obs?.zone) return '-';
@@ -89,22 +208,41 @@ export class ObservationDetails {
 
   reporterName(): string {
     const obs = this.observation();
-    if (!obs?.reportedBy) return '-';
-
-    if (typeof obs.reportedBy === 'string') return obs.reportedBy;
-
-    return (
-      obs.reportedBy.fullName ||
-      obs.reportedBy.name ||
-      obs.reportedBy.email ||
-      '-'
-    );
+    return this.getObservationUserName(obs?.reportedBy);
   }
 
   reporterEmail(): string {
     const obs = this.observation();
-    if (!obs?.reportedBy || typeof obs.reportedBy === 'string') return '-';
-    return obs.reportedBy.email || '-';
+    return this.getObservationUserEmail(obs?.reportedBy);
+  }
+
+  assignedToName(): string {
+    const obs = this.observation();
+    return this.getObservationUserName(obs?.assignedTo, 'Non affectée');
+  }
+
+  assignedToEmail(): string {
+    const obs = this.observation();
+    return this.getObservationUserEmail(obs?.assignedTo);
+  }
+
+  assignedByName(): string {
+    const obs = this.observation();
+    return this.getObservationUserName(obs?.assignedBy, 'Non défini');
+  }
+
+  assignedAtLabel(): string {
+    const obs = this.observation();
+    if (!obs?.assignedAt) return '-';
+    return new Date(obs.assignedAt).toLocaleString('fr-FR');
+  }
+
+  hasImages(): boolean {
+    return !!this.observation()?.images?.length;
+  }
+
+  imageCount(): number {
+    return this.observation()?.images?.length || 0;
   }
 
   getSeverityLabel(value?: ObservationSeverity): string {
@@ -135,14 +273,6 @@ export class ObservationDetails {
     }
   }
 
-  hasImages(): boolean {
-    return !!this.observation()?.images?.length;
-  }
-
-  imageCount(): number {
-    return this.observation()?.images?.length || 0;
-  }
-
   getImageUrl(url?: string): string {
     if (!url) return '';
 
@@ -152,5 +282,35 @@ export class ObservationDetails {
 
     const normalized = url.startsWith('/') ? url : `/${url}`;
     return `http://localhost:5000${normalized}`;
+  }
+
+  trackByAgent = (_: number, agent: User) => agent?._id || _;
+
+  private getObservationUserName(
+    user?: string | ObservationUser | null,
+    fallback = '-'
+  ): string {
+    if (!user) return fallback;
+    if (typeof user === 'string') return user;
+
+    return (
+      user.fullName ||
+      `${user.firstName || ''} ${user.lastName || ''}`.trim() ||
+      user.name ||
+      user.email ||
+      fallback
+    );
+  }
+
+  private getObservationUserEmail(
+    user?: string | ObservationUser | null
+  ): string {
+    if (!user || typeof user === 'string') return '-';
+    return user.email || '-';
+  }
+
+  private getTeamUserName(user?: User | null): string {
+    if (!user) return '-';
+    return `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.email;
   }
 }

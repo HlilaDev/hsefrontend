@@ -1,26 +1,19 @@
 import { Routes } from '@angular/router';
 
-export const HSEMANAGERS_ROUTES: Routes = [
-  {
-   /* path: '',
-    loadComponent: () =>
-      import('./layouts/hsemanager-layout/hsemanager-layout')
-        .then(m => m.HsemanagerLayout), // ✅ shell with <router-outlet>
-    children: [
-      // ✅ /Supervisor → dashboard
-      {
-        path: '',
-        loadComponent: () =>
-          import('./hsemanager-dashboard/hsemanager-dashboard')
-            .then(m => m.HsemanagerDashboard),
-      },
-
-
-
+export const SUPERVISOR_ROUTES: Routes = [
+ {
+    path: '',
      
-      { path: '', redirectTo: '', pathMatch: 'full' },
-    ],
+    loadComponent: () =>
+      import('./layouts/layout-supervisor/layout-supervisor')
+        .then(m => m.LayoutSupervisor), // ✅ shell with <router-outlet>
+    children: [
 
-    */
-  },
+      
+
+    ]
+
+  }
+
+
 ];

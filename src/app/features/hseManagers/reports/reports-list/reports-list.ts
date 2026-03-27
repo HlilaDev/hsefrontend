@@ -5,6 +5,7 @@ import { catchError, finalize, of } from 'rxjs';
 
 import { ReportServices } from '../../../../core/services/reports/report-services';
 import { ZoneServices } from '../../../../core/services/zones/zone-services';
+import { BASE_URL } from '../../../../core/config/api_urls';
 
 type ZoneLite = { _id: string; name: string };
 
@@ -49,14 +50,12 @@ export class ReportsList implements OnInit {
   private reportsApi = inject(ReportServices);
   private zonesApi = inject(ZoneServices);
 
-  // state
   readonly loading = signal<boolean>(false);
   readonly error = signal<string | null>(null);
 
   readonly reports = signal<Report[]>([]);
   readonly zones = signal<ZoneLite[]>([]);
 
-  // filters
   readonly q = signal<string>('');
   readonly type = signal<'all' | ReportType>('all');
   readonly zoneId = signal<'all' | string>('all');
@@ -78,12 +77,22 @@ export class ReportsList implements OnInit {
     this.sort.set('date_desc');
   }
 
-  setQ(v: string) { this.q.set(v ?? ''); }
-  setType(v: any) { this.type.set((v || 'all') as any); }
-  setZone(v: any) { this.zoneId.set((v || 'all') as any); }
-  setSort(v: any) { this.sort.set((v || 'date_desc') as any); }
+  setQ(v: string) {
+    this.q.set(v ?? '');
+  }
 
-  // ✅ Computed list
+  setType(v: any) {
+    this.type.set((v || 'all') as any);
+  }
+
+  setZone(v: any) {
+    this.zoneId.set((v || 'all') as any);
+  }
+
+  setSort(v: any) {
+    this.sort.set((v || 'date_desc') as any);
+  }
+
   readonly filtered = computed(() => {
     const q = (this.q() || '').trim().toLowerCase();
     const type = this.type();
@@ -92,19 +101,16 @@ export class ReportsList implements OnInit {
 
     let list = [...this.reports()];
 
-    // type filter
     if (type !== 'all') {
-      list = list.filter(r => r.type === type);
+      list = list.filter((r) => r.type === type);
     }
 
-    // zone filter
     if (zoneId !== 'all') {
-      list = list.filter(r => this.zoneIdOf(r.zone) === zoneId);
+      list = list.filter((r) => this.zoneIdOf(r.zone) === zoneId);
     }
 
-    // search filter
     if (q) {
-      list = list.filter(r => {
+      list = list.filter((r) => {
         const title = (r.title || '').toLowerCase();
         const t = (r.type || '').toLowerCase();
         const zn = (this.zoneName(r.zone) || '').toLowerCase();
@@ -112,8 +118,9 @@ export class ReportsList implements OnInit {
       });
     }
 
-    // sort
-    const getDate = (r: Report) => new Date((r.createdAt || r.startDate || '') as any).getTime() || 0;
+    const getDate = (r: Report) =>
+      new Date((r.createdAt || r.startDate || '') as any).getTime() || 0;
+
     const getTitle = (r: Report) => (r.title || '').toLowerCase();
 
     if (sort === 'date_desc') list.sort((a, b) => getDate(b) - getDate(a));
@@ -124,7 +131,6 @@ export class ReportsList implements OnInit {
     return list;
   });
 
-  // ✅ Fix TS2339: helpers safe for union types
   zoneIdOf(z: Report['zone']): string | null {
     if (!z) return null;
     return typeof z === 'string' ? z : (z._id ?? null);
@@ -133,15 +139,13 @@ export class ReportsList implements OnInit {
   zoneName(z: Report['zone']): string {
     if (!z) return '—';
 
-    // if backend sends just zoneId string => find label in zones list
     if (typeof z === 'string') {
-      const found = this.zones().find(x => x._id === z);
+      const found = this.zones().find((x) => x._id === z);
       return found?.name || '—';
     }
 
-    // if populated but without name => fallback to zones()
     if (z._id && !z.name) {
-      const found = this.zones().find(x => x._id === z._id);
+      const found = this.zones().find((x) => x._id === z._id);
       return found?.name || '—';
     }
 
@@ -154,11 +158,25 @@ export class ReportsList implements OnInit {
     return u.name || '—';
   }
 
+  getExportUrl(url?: string | null): string {
+    if (!url) return '';
+
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+
+    const base = BASE_URL.replace(/\/+$/, '');
+    const path = url.replace(/^\/+/, '');
+
+    return `${base}/${path}`;
+  }
+
   private loadReports() {
     this.loading.set(true);
     this.error.set(null);
 
-    this.reportsApi.listReports()
+    this.reportsApi
+      .listReports()
       .pipe(
         catchError((err) => {
           this.error.set(err?.error?.message || 'Erreur lors du chargement des reports.');
@@ -167,13 +185,18 @@ export class ReportsList implements OnInit {
         finalize(() => this.loading.set(false))
       )
       .subscribe((data: any) => {
-        const list = Array.isArray(data) ? data : (data?.items ?? []);
+        const list = Array.isArray(data)
+          ? data
+          : Array.isArray(data?.items)
+            ? data.items
+            : Array.isArray(data?.reports)
+              ? data.reports
+              : [];
         this.reports.set(list);
       });
   }
 
   private loadZones() {
-    // ⚠️ adapte si ton service s'appelle différemment
     const obs$ = (this.zonesApi as any).allZones
       ? (this.zonesApi as any).allZones()
       : (this.zonesApi as any).getAllZones
@@ -194,7 +217,8 @@ export class ReportsList implements OnInit {
     const ok = confirm('Supprimer ce rapport ?');
     if (!ok) return;
 
-    this.reportsApi.deleteReport(r._id)
+    this.reportsApi
+      .deleteReport(r._id)
       .pipe(
         catchError((err) => {
           alert(err?.error?.message || 'Suppression impossible.');
@@ -202,14 +226,13 @@ export class ReportsList implements OnInit {
         })
       )
       .subscribe(() => {
-        this.reports.update(list => list.filter(x => x._id !== r._id));
+        this.reports.update((list) => list.filter((x) => x._id !== r._id));
       });
   }
 
   recalcMetrics(r: Report) {
-    // selon ton backend, si /metrics recalcule automatiquement,
-    // envoie {} ou payload nécessaire
-    this.reportsApi.updateReportMetrics(r._id, {})
+    this.reportsApi
+      .updateReportMetrics(r._id, {})
       .pipe(
         catchError((err) => {
           alert(err?.error?.message || 'Recalcul impossible.');
@@ -218,15 +241,16 @@ export class ReportsList implements OnInit {
       )
       .subscribe((updated: any) => {
         if (!updated) return;
-        this.reports.update(list => list.map(x => x._id === r._id ? (updated as Report) : x));
+        this.reports.update((list) =>
+          list.map((x) => (x._id === r._id ? (updated as Report) : x))
+        );
       });
   }
 
   badgeClass(type: ReportType) {
-    // reuse trainings badges: scheduled/completed/cancelled
     if (type === 'weekly' || type === 'monthly') return 'scheduled';
     if (type === 'audit' || type === 'yearly') return 'completed';
-    return 'cancelled'; // custom
+    return 'cancelled';
   }
 
   formatPeriod(start: any, end: any) {
@@ -234,7 +258,11 @@ export class ReportsList implements OnInit {
     const e = end ? new Date(end) : null;
 
     const fmt = (d: Date) =>
-      d.toLocaleDateString('fr-FR', { year: 'numeric', month: 'short', day: '2-digit' });
+      d.toLocaleDateString('fr-FR', {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+      });
 
     if (s && e) return `${fmt(s)} → ${fmt(e)}`;
     if (s) return fmt(s);

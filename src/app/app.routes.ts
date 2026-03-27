@@ -29,6 +29,16 @@ export const routes: Routes = [
     data: { roles: ['admin'] } // Seul admin peut accéder
   },
 
+      // Super routes
+  {
+    path: 'supervisor',
+    loadChildren: () =>
+      import('./features/supervisor/supervisor.routes')
+        .then(m => m.SUPERVISOR_ROUTES),
+    canActivate: [roleGuard],
+    data: { roles: ['supervisor'] } // Seul supervisor peut accéder
+  },
+
   // HSE Manager routes
   {
     path: 'manager',

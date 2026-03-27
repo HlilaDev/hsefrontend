@@ -1,122 +1,123 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, signal } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { UserServices } from '../../../../core/services/users/user-services';
 
-type TeamStatus = 'online' | 'offline' | 'busy' | 'onLeave';
-type TeamRole = 'hseManager' | 'supervisor' | 'hseAgent' | 'technician' | 'employee';
+type TeamRole = 'manager' | 'agent' | 'supervisor' | 'admin' | 'superAdmin';
 
-interface TeamMember {
+interface TeamApiMember {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: TeamRole;
+  company?:
+    | string
+    | {
+        _id?: string;
+        name?: string;
+        industry?: string;
+      };
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+interface GetTeamResponse {
+  message: string;
+  items: TeamApiMember[];
+  count: number;
+}
+
+interface TeamMemberView {
   _id: string;
   fullName: string;
   email: string;
-  phone: string;
   role: TeamRole;
-  zone: string;
-  status: TeamStatus;
-  avatar?: string;
-  lastSeen: string;
+  companyName: string;
+  createdAt?: string;
 }
 
 @Component({
   selector: 'app-team-overview',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DatePipe],
   templateUrl: './team-overview.html',
   styleUrl: './team-overview.scss',
 })
-export class TeamOverview {
+export class TeamOverview implements OnInit {
+  private userServices = inject(UserServices);
+
+  loading = signal(true);
+  error = signal<string | null>(null);
+
   search = signal('');
-  selectedRole = signal('all');
-  selectedStatus = signal('all');
+  selectedRole = signal<'all' | TeamRole>('all');
   viewMode = signal<'table' | 'cards'>('table');
 
-  team = signal<TeamMember[]>([
-    {
-      _id: 'TM-001',
-      fullName: 'Ahmed Ben Salah',
-      email: 'ahmed.bensalah@hse.local',
-      phone: '+216 20 111 222',
-      role: 'supervisor',
-      zone: 'Production A',
-      status: 'online',
-      lastSeen: 'Now',
-    },
-    {
-      _id: 'TM-002',
-      fullName: 'Sarra Trabelsi',
-      email: 'sarra.trabelsi@hse.local',
-      phone: '+216 21 334 455',
-      role: 'hseManager',
-      zone: 'Warehouse',
-      status: 'busy',
-      lastSeen: '5 min ago',
-    },
-    {
-      _id: 'TM-003',
-      fullName: 'Youssef Gharbi',
-      email: 'youssef.gharbi@hse.local',
-      phone: '+216 23 555 666',
-      role: 'hseAgent',
-      zone: 'Chemical Zone',
-      status: 'online',
-      lastSeen: 'Now',
-    },
-    {
-      _id: 'TM-004',
-      fullName: 'Amira Jlassi',
-      email: 'amira.jlassi@hse.local',
-      phone: '+216 25 777 888',
-      role: 'technician',
-      zone: 'Maintenance',
-      status: 'offline',
-      lastSeen: '32 min ago',
-    },
-    {
-      _id: 'TM-005',
-      fullName: 'Walid Mzoughi',
-      email: 'walid.mzoughi@hse.local',
-      phone: '+216 27 444 999',
-      role: 'employee',
-      zone: 'Packaging',
-      status: 'onLeave',
-      lastSeen: 'Today 08:15',
-    },
-    {
-      _id: 'TM-006',
-      fullName: 'Meriem Hadded',
-      email: 'meriem.hadded@hse.local',
-      phone: '+216 29 123 456',
-      role: 'hseAgent',
-      zone: 'Production B',
-      status: 'online',
-      lastSeen: 'Now',
-    },
-  ]);
+  team = signal<TeamMemberView[]>([]);
+
+  ngOnInit(): void {
+    this.loadTeam();
+  }
+
+  loadTeam(): void {
+    this.loading.set(true);
+    this.error.set(null);
+
+    this.userServices.getTeam().subscribe({
+      next: (response: GetTeamResponse | TeamApiMember[] | any) => {
+        const items: TeamApiMember[] = Array.isArray(response)
+          ? response
+          : response?.items || [];
+
+        const mapped: TeamMemberView[] = items.map((member) => ({
+          _id: member._id,
+          fullName: `${member.firstName ?? ''} ${member.lastName ?? ''}`.trim(),
+          email: member.email ?? '-',
+          role: member.role,
+          companyName:
+            typeof member.company === 'object'
+              ? member.company?.name || '-'
+              : '-',
+          createdAt: member.createdAt,
+        }));
+
+        this.team.set(mapped);
+        this.loading.set(false);
+      },
+      error: (err: Error) => {
+        this.error.set(err.message || 'Failed to load team');
+        this.team.set([]);
+        this.loading.set(false);
+      },
+    });
+  }
 
   filteredTeam = computed(() => {
     const q = this.search().trim().toLowerCase();
     const role = this.selectedRole();
-    const status = this.selectedStatus();
 
     return this.team().filter((member) => {
       const matchesSearch =
         !q ||
         member.fullName.toLowerCase().includes(q) ||
         member.email.toLowerCase().includes(q) ||
-        member.zone.toLowerCase().includes(q) ||
+        member.companyName.toLowerCase().includes(q) ||
         member.role.toLowerCase().includes(q);
 
       const matchesRole = role === 'all' || member.role === role;
-      const matchesStatus = status === 'all' || member.status === status;
 
-      return matchesSearch && matchesRole && matchesStatus;
+      return matchesSearch && matchesRole;
     });
   });
 
   totalMembers = computed(() => this.team().length);
-  onlineCount = computed(() => this.team().filter((m) => m.status === 'online').length);
-  busyCount = computed(() => this.team().filter((m) => m.status === 'busy').length);
-  offlineCount = computed(() => this.team().filter((m) => m.status === 'offline').length);
+  managersCount = computed(
+    () => this.team().filter((m) => m.role === 'manager').length
+  );
+  agentsCount = computed(
+    () => this.team().filter((m) => m.role === 'agent').length
+  );
 
   setView(mode: 'table' | 'cards'): void {
     this.viewMode.set(mode);
@@ -125,6 +126,7 @@ export class TeamOverview {
   getInitials(name: string): string {
     return name
       .split(' ')
+      .filter(Boolean)
       .map((part) => part[0])
       .slice(0, 2)
       .join('')
@@ -133,37 +135,22 @@ export class TeamOverview {
 
   getRoleLabel(role: TeamRole): string {
     switch (role) {
-      case 'hseManager':
-        return 'HSE Manager';
+      case 'manager':
+        return 'Manager';
+      case 'agent':
+        return 'Agent';
       case 'supervisor':
         return 'Supervisor';
-      case 'hseAgent':
-        return 'HSE Agent';
-      case 'technician':
-        return 'Technician';
-      case 'employee':
-        return 'Employee';
+      case 'admin':
+        return 'Admin';
+      case 'superAdmin':
+        return 'Super Admin';
       default:
         return role;
     }
   }
 
-  getStatusLabel(status: TeamStatus): string {
-    switch (status) {
-      case 'online':
-        return 'Online';
-      case 'offline':
-        return 'Offline';
-      case 'busy':
-        return 'Busy';
-      case 'onLeave':
-        return 'On Leave';
-      default:
-        return status;
-    }
-  }
-
-  trackById(index: number, item: TeamMember): string {
+  trackById(index: number, item: TeamMemberView): string {
     return item._id;
   }
 }

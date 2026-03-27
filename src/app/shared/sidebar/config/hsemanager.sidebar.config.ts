@@ -20,6 +20,7 @@ export const HSEMANAGER_SECTIONS: SidebarSection[] = [
       { labelKey: 'SIDEBAR.MENU.REPORTS', icon: 'bi bi-file-earmark-bar-graph', route: '/manager/reports' },
       { labelKey: 'SIDEBAR.MENU.TEAM', icon: 'bi bi-mortarboard', route: '/manager/team' },
      { labelKey: 'SIDEBAR.MENU.INVENTORIES', icon: 'bi bi-mortarboard', route: '/manager/inventories' },
+        { labelKey: 'SIDEBAR.MENU.OPMESSAGES', icon: 'bi bi-mortarboard', route: '/manager/operational-messages' },
 
 
     ],

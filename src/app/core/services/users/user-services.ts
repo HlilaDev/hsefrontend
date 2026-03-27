@@ -55,6 +55,12 @@ export class UserServices {
       .pipe(catchError(this.handleError));
   }
 
+  getTeam() {
+  return this.http
+    .get(API_URLS.users.getTeam)
+    .pipe(catchError(this.handleError));
+}
+
   private handleError(error: HttpErrorResponse) {
     const message =
       error?.error?.message || error?.message || 'Request failed';

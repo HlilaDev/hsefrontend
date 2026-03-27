@@ -54,6 +54,9 @@ export class Login {
         } else if (role === 'superAdmin') {
           this.router.navigateByUrl('/super');
         }
+           else if (role === 'supervisor') {
+          this.router.navigateByUrl('/supervisor');
+        }
         
         else if (role === 'manager') {
           this.router.navigateByUrl('/manager');

@@ -1,13 +1,31 @@
-import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DeviceServices } from '../../../../core/services/devices/device-services';
+import { finalize } from 'rxjs';
+
+import {
+  Device,
+  DeviceServices,
+} from '../../../../core/services/devices/device-services';
 
 type CommandLog = {
   time: string;
   action: string;
   status: 'success' | 'pending' | 'failed';
   source: string;
+};
+
+type DeviceDetails = Device & {
+  ipAddress?: string;
+  macAddress?: string;
+  firmware?: string;
+  broker?: string;
+  port?: number;
+  samplingInterval?: number;
+  threshold?: number;
+  uptime?: string;
+  battery?: number;
+  signal?: number;
 };
 
 @Component({
@@ -17,44 +35,30 @@ type CommandLog = {
   templateUrl: './device-management.html',
   styleUrl: './device-management.scss',
 })
-export class DeviceManagement {
+export class DeviceManagement implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private deviceService = inject(DeviceServices);
 
   deviceId = this.route.snapshot.paramMap.get('id') ?? '';
 
-  device = {
-    name: 'ESP8266 - Zone A',
-    deviceId: this.deviceId || 'esp8266-01',
-    type: 'ESP8266',
-    zone: 'Production Line A',
-    status: 'online',
-    ipAddress: '192.168.1.45',
-    macAddress: '84:F3:EB:12:9A:44',
-    firmware: 'v1.4.2',
-    broker: '10.190.49.242',
-    port: 1883,
-    samplingInterval: 10,
-    threshold: 75,
-    uptime: '3d 12h 18m',
-    lastSync: '2026-03-07 18:42',
-    battery: 92,
-    signal: -61,
-  };
+  loading = signal(true);
+  error = signal<string | null>(null);
+
+  device = signal<DeviceDetails | null>(null);
 
   mqttEnabled = signal(true);
   maintenanceMode = signal(false);
   alertMode = signal(true);
   autoReconnect = signal(true);
 
-  logs: CommandLog[] = [
+  logs = signal<CommandLog[]>([
     { time: '18:41', action: 'Ping device', status: 'success', source: 'Dashboard' },
     { time: '18:37', action: 'Restart device', status: 'success', source: 'Dashboard' },
     { time: '18:25', action: 'Update threshold', status: 'pending', source: 'Admin panel' },
     { time: '17:58', action: 'Sync time', status: 'success', source: 'System' },
     { time: '17:30', action: 'Factory reset request', status: 'failed', source: 'Dashboard' },
-  ];
+  ]);
 
   selectedAction = signal<string>('None');
   showConfirmModal = signal(false);
@@ -63,11 +67,69 @@ export class DeviceManagement {
   actionLoading = signal(false);
   actionError = signal<string | null>(null);
 
+  zoneName = computed(() => {
+    const current = this.device();
+    if (!current) return '—';
+
+    return typeof current.zone === 'string'
+      ? current.zone
+      : current.zone?.name || current.zone?._id || '—';
+  });
+
+  displayName = computed(() => {
+    const current = this.device();
+    if (!current) return 'Device';
+
+    return current.name?.trim() || current.deviceId || 'Device';
+  });
+
+  ngOnInit(): void {
+    this.loadDevice();
+  }
+
+  loadDevice() {
+    if (!this.deviceId) {
+      this.error.set('Device id not found in route.');
+      this.loading.set(false);
+      return;
+    }
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    this.deviceService
+      .getDeviceById(this.deviceId)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: (result) => {
+          this.device.set({
+            ...result,
+            // valeurs UI par défaut tant qu’elles n’existent pas en base
+            ipAddress: '—',
+            macAddress: '—',
+            firmware: '—',
+            broker: '10.190.49.242',
+            port: 1883,
+            samplingInterval: 10,
+            threshold: 75,
+            uptime: '—',
+            battery: 0,
+            signal: 0,
+          });
+        },
+        error: (err) => {
+          this.error.set(err?.error?.message ?? 'Failed to load device.');
+        },
+      });
+  }
+
   onAction(action: string) {
+    const current = this.device();
+
     this.selectedAction.set(action);
     this.confirmTitle.set(action);
     this.confirmText.set(
-      `This action will send a command to device ${this.device.deviceId}.`
+      `This action will send a command to device ${current?.deviceId ?? this.deviceId}.`
     );
     this.actionError.set(null);
     this.showConfirmModal.set(true);
@@ -86,15 +148,15 @@ export class DeviceManagement {
       return;
     }
 
-    this.logs = [
+    this.logs.update((current) => [
       {
         time: 'Now',
         action,
         status: 'pending',
         source: 'Dashboard',
       },
-      ...this.logs,
-    ];
+      ...current,
+    ]);
 
     this.showConfirmModal.set(false);
   }
@@ -108,39 +170,39 @@ export class DeviceManagement {
     this.actionLoading.set(true);
     this.actionError.set(null);
 
-    this.deviceService.restartDevice(this.deviceId).subscribe({
-      next: () => {
-        this.logs = [
-          {
-            time: 'Now',
-            action: 'Restart device',
-            status: 'success',
-            source: 'Dashboard',
-          },
-          ...this.logs,
-        ];
+    this.deviceService
+      .restartDevice(this.deviceId)
+      .pipe(finalize(() => this.actionLoading.set(false)))
+      .subscribe({
+        next: () => {
+          this.logs.update((current) => [
+            {
+              time: 'Now',
+              action: 'Restart device',
+              status: 'success',
+              source: 'Dashboard',
+            },
+            ...current,
+          ]);
 
-        this.showConfirmModal.set(false);
-        this.actionLoading.set(false);
-      },
-      error: (err) => {
-        this.actionError.set(
-          err?.error?.message ?? 'Failed to send restart command.'
-        );
+          this.showConfirmModal.set(false);
+        },
+        error: (err) => {
+          this.actionError.set(
+            err?.error?.message ?? 'Failed to send restart command.'
+          );
 
-        this.logs = [
-          {
-            time: 'Now',
-            action: 'Restart device',
-            status: 'failed',
-            source: 'Dashboard',
-          },
-          ...this.logs,
-        ];
-
-        this.actionLoading.set(false);
-      },
-    });
+          this.logs.update((current) => [
+            {
+              time: 'Now',
+              action: 'Restart device',
+              status: 'failed',
+              source: 'Dashboard',
+            },
+            ...current,
+          ]);
+        },
+      });
   }
 
   toggleMqtt() {
@@ -159,8 +221,8 @@ export class DeviceManagement {
     this.autoReconnect.update((v) => !v);
   }
 
-  getStatusClass(status: string) {
-    return status.toLowerCase();
+  getStatusClass(status?: string) {
+    return (status ?? 'offline').toLowerCase();
   }
 
   onBack() {

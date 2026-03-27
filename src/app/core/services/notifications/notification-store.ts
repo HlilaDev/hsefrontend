@@ -1,6 +1,9 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { NotificationServices, NotificationItem } from './notification-services';
-import { SocketServices, LiveAlert } from '../socket/socket-services';
+import {
+  SocketServices,
+  SocketNotificationPayload,
+} from '../socket/socket-services';
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +29,7 @@ export class NotificationStore {
     this.initialized = true;
 
     this.loadNotifications();
-    this.listenToSocket();
+    this.listenToSocketNotifications();
     this.socketServices.connect();
   }
 
@@ -52,25 +55,38 @@ export class NotificationStore {
     });
   }
 
-  listenToSocket(): void {
-    this.socketServices.onNewAlert().subscribe({
-      next: (alert: LiveAlert) => {
-        const newNotification: NotificationItem = {
-          _id: alert._id || crypto.randomUUID(),
-          notificationId: alert._id,
-          title: alert.title || 'Nouvelle alerte',
-          message: alert.message || 'Aucune description',
-          severity: alert.severity || 'info',
-          isRead: false,
-          createdAt: alert.createdAt,
-          updatedAt: alert.updatedAt,
-          zone: alert.zone,
-          device: alert.device,
-          rule: alert.rule,
-          type: alert.type,
-          action: 'created',
-          meta: alert,
-        };
+  private mapSocketItem(payload: SocketNotificationPayload): NotificationItem {
+    const n = payload.notification;
+
+    return {
+      _id: payload._id || crypto.randomUUID(),
+      notificationId: n?._id,
+      title: n?.title || 'Notification',
+      message: n?.message || '',
+      type: n?.type,
+      action: n?.action,
+      severity: n?.severity || 'info',
+      isRead: payload.isRead ?? false,
+      createdAt: payload.createdAt || n?.createdAt,
+      updatedAt: payload.updatedAt || n?.updatedAt,
+      zone: n?.zone,
+      device: n?.device,
+      rule: n?.rule,
+      alert: n?.alert,
+      report: n?.report,
+      observation: n?.observation,
+      incident: n?.incident,
+      audit: n?.audit,
+      training: n?.training,
+      actor: n?.actor,
+      meta: n?.meta,
+    };
+  }
+
+  listenToSocketNotifications(): void {
+    this.socketServices.onNewNotification().subscribe({
+      next: (payload: SocketNotificationPayload) => {
+        const newNotification = this.mapSocketItem(payload);
 
         this.notifications.update((items) => {
           const exists = items.some(
@@ -172,6 +188,13 @@ export class NotificationStore {
 
   getTime(value?: string): string {
     if (!value) return '';
-    return new Date(value).toLocaleString();
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+
+    return date.toLocaleString('fr-FR', {
+      dateStyle: 'short',
+      timeStyle: 'short',
+    });
   }
 }

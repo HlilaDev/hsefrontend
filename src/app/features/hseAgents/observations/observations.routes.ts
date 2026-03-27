@@ -4,8 +4,8 @@ export const OBSERVATIONS_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./my-observations/my-observations')
-        .then(m => m.MyObservations),
+      import('./observations-overview/observations-overview')
+        .then(m => m.ObservationsOverview),
   },
   {
     path: 'add',
