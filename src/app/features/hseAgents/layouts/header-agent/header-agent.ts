@@ -102,9 +102,88 @@ export class HeaderAgent {
     this.notificationStore.markAllAsRead();
   }
 
-  openNotification(id?: string): void {
-    if (!id) return;
-    this.notificationStore.markAsRead(id);
+  openNotification(item: NotificationItem): void {
+    if (!item?._id) return;
+
+    if (!item.isRead) {
+      this.notificationStore.markAsRead(item._id);
+    }
+
+    this.isNotificationOpen = false;
+
+    if (item.type === 'observation' && item.observation) {
+      const id =
+        typeof item.observation === 'string'
+          ? item.observation
+          : item.observation._id;
+
+      if (id) {
+        this.router.navigate(['/agent/observations', id]);
+        return;
+      }
+    }
+
+    if (item.type === 'incident' && item.incident) {
+      const id =
+        typeof item.incident === 'string'
+          ? item.incident
+          : item.incident._id;
+
+      if (id) {
+        this.router.navigate(['/agent/incidents', id]);
+        return;
+      }
+    }
+
+    if (item.type === 'audit' && item.audit) {
+      const id =
+        typeof item.audit === 'string'
+          ? item.audit
+          : item.audit._id;
+
+      if (id) {
+        this.router.navigate(['/agent/audits', id]);
+        return;
+      }
+    }
+
+    if (item.type === 'training' && item.training) {
+      const id =
+        typeof item.training === 'string'
+          ? item.training
+          : item.training._id;
+
+      if (id) {
+        this.router.navigate(['/agent/trainings', id]);
+        return;
+      }
+    }
+
+    if (item.type === 'report' && item.report) {
+      const id =
+        typeof item.report === 'string'
+          ? item.report
+          : item.report._id;
+
+      if (id) {
+        this.router.navigate(['/agent/reports', id]);
+        return;
+      }
+    }
+
+    if (item.type === 'device' && item.device) {
+      const id =
+        typeof item.device === 'string'
+          ? item.device
+          : item.device._id;
+
+      if (id) {
+        this.router.navigate(['/agent/devices', id]);
+        return;
+      }
+    }
+
+    this.router.navigate(['/agent/notifications']);
   }
 
   openNotificationsPage(): void {

@@ -18,6 +18,8 @@ export const HSEMANAGER_SECTIONS: SidebarSection[] = [
       { labelKey: 'SIDEBAR.MENU.MONITORING', icon: 'bi bi-clipboard-check', route: '/manager/monitoring' },
       { labelKey: 'SIDEBAR.MENU.OBSERVATIONS', icon: 'bi bi-file-earmark-bar-graph', route: '/manager/observations' },
       { labelKey: 'SIDEBAR.MENU.REPORTS', icon: 'bi bi-file-earmark-bar-graph', route: '/manager/reports' },
+      { labelKey: 'SIDEBAR.MENU.INSPECTIONS', icon: 'bi bi-file-earmark-bar-graph', route: '/manager/inspections' },
+
       { labelKey: 'SIDEBAR.MENU.TEAM', icon: 'bi bi-mortarboard', route: '/manager/team' },
      { labelKey: 'SIDEBAR.MENU.INVENTORIES', icon: 'bi bi-mortarboard', route: '/manager/inventories' },
         { labelKey: 'SIDEBAR.MENU.OPMESSAGES', icon: 'bi bi-mortarboard', route: '/manager/operational-messages' },

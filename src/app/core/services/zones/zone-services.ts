@@ -21,6 +21,9 @@ export interface Zone {
   devices?: any[];
   employees?: any[];
   code?: string;
+  employeesCount?: number;
+devicesCount?: number;
+sensorsCount?: number;
 }
 
 export interface CreateZonePayload {

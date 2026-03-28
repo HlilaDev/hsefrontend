@@ -1,4 +1,4 @@
-import { CommonModule, DatePipe, DecimalPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, computed, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -31,6 +31,14 @@ type IncidentItem = {
   status: 'open' | 'in_progress' | 'closed';
 };
 
+type ObservationItem = {
+  id: string;
+  title: string;
+  zone: string;
+  createdAt: string;
+  status: 'open' | 'in_progress' | 'resolved' | 'rejected';
+};
+
 type TrainingItem = {
   id: string;
   title: string;
@@ -58,49 +66,12 @@ type AlertItem = {
 @Component({
   selector: 'app-hsemanager-dashboard',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    TranslateModule,
-    
-  ],
+  imports: [CommonModule, RouterModule, TranslateModule],
   templateUrl: './hsemanager-dashboard.html',
   styleUrl: './hsemanager-dashboard.scss',
 })
 export class HsemanagerDashboard {
   readonly today = new Date();
-
-  readonly stats = signal<StatCard[]>([
-    {
-      label: 'Zones monitored',
-      value: 12,
-      icon: 'bi bi-geo-alt',
-      trend: 8,
-      tone: 'primary',
-    },
-    {
-      label: 'Active employees',
-      value: 86,
-      icon: 'bi bi-people',
-      trend: 5,
-      tone: 'success',
-    },
-    {
-      label: 'Open incidents',
-      value: 7,
-      icon: 'bi bi-exclamation-triangle',
-      trend: -2,
-      tone: 'warn',
-    },
-    {
-      label: 'Training completion',
-      value: 78,
-      unit: '%',
-      icon: 'bi bi-mortarboard',
-      trend: 11,
-      tone: 'danger',
-    },
-  ]);
 
   readonly zones = signal<ZoneRisk[]>([
     {
@@ -165,6 +136,44 @@ export class HsemanagerDashboard {
       severity: 'low',
       date: '2026-03-07T17:30:00',
       status: 'closed',
+    },
+  ]);
+
+  readonly observations = signal<ObservationItem[]>([
+    {
+      id: 'o1',
+      title: 'Helmet not worn in production line',
+      zone: 'Production A',
+      createdAt: '2026-03-08T08:45:00',
+      status: 'open',
+    },
+    {
+      id: 'o2',
+      title: 'Blocked emergency exit',
+      zone: 'Warehouse B',
+      createdAt: '2026-03-08T07:30:00',
+      status: 'in_progress',
+    },
+    {
+      id: 'o3',
+      title: 'Chemical container without label',
+      zone: 'Chemical Storage',
+      createdAt: '2026-03-07T16:10:00',
+      status: 'resolved',
+    },
+    {
+      id: 'o4',
+      title: 'Worker without reflective vest',
+      zone: 'Packaging Line',
+      createdAt: '2026-03-07T11:20:00',
+      status: 'open',
+    },
+    {
+      id: 'o5',
+      title: 'Improper storage near evacuation path',
+      zone: 'Warehouse B',
+      createdAt: '2026-03-06T14:00:00',
+      status: 'rejected',
     },
   ]);
 
@@ -258,12 +267,60 @@ export class HsemanagerDashboard {
   });
 
   readonly highRiskZones = computed(
-    () => this.zones().filter(z => z.risk === 'high').length
+    () => this.zones().filter(zone => zone.risk === 'high').length
   );
 
   readonly openIncidentsCount = computed(
-    () => this.incidents().filter(i => i.status !== 'closed').length
+    () => this.incidents().filter(incident => incident.status !== 'closed').length
   );
+
+  readonly openObservationsCount = computed(
+    () =>
+      this.observations().filter(
+        observation =>
+          observation.status === 'open' || observation.status === 'in_progress'
+      ).length
+  );
+
+  readonly trainingCompletionRate = computed(() => {
+    const items = this.trainings();
+    if (!items.length) return 0;
+
+    const total = items.reduce((sum, item) => sum + item.completion, 0);
+    return Math.round(total / items.length);
+  });
+
+  readonly stats = computed<StatCard[]>(() => [
+    {
+      label: 'Zones monitored',
+      value: this.zones().length,
+      icon: 'bi bi-geo-alt',
+      trend: 8,
+      tone: 'primary',
+    },
+    {
+      label: 'Open observations',
+      value: this.openObservationsCount(),
+      icon: 'bi bi-search',
+      trend: 6,
+      tone: 'success',
+    },
+    {
+      label: 'Open incidents',
+      value: this.openIncidentsCount(),
+      icon: 'bi bi-exclamation-triangle',
+      trend: -2,
+      tone: 'warn',
+    },
+    {
+      label: 'Training completion',
+      value: this.trainingCompletionRate(),
+      unit: '%',
+      icon: 'bi bi-mortarboard',
+      trend: 11,
+      tone: 'danger',
+    },
+  ]);
 
   readonly chartBars = computed(() => {
     const data = [
@@ -276,7 +333,7 @@ export class HsemanagerDashboard {
       { label: 'Sun', value: 7 },
     ];
 
-    const max = Math.max(...data.map(x => x.value), 1);
+    const max = Math.max(...data.map(item => item.value), 1);
 
     return data.map(item => ({
       ...item,
@@ -292,7 +349,13 @@ export class HsemanagerDashboard {
 
   severityClass(level: string): string {
     if (level === 'low' || level === 'info') return 'ok';
-    if (level === 'medium' || level === 'warning' || level === 'in_progress') return 'warn';
+    if (
+      level === 'medium' ||
+      level === 'warning' ||
+      level === 'in_progress'
+    ) {
+      return 'warn';
+    }
     return 'bad';
   }
 

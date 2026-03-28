@@ -60,7 +60,7 @@
         <div class="hero-right">
           <div class="meta-box">
             <span class="meta-label">Créée par</span>
-            <strong>{{ t.createdBy?.name || '-' }}</strong>
+<strong>{{ getCreatedByName() }}</strong>
             <small>{{ t.createdBy?.email || '' }}</small>
           </div>
         </div>
@@ -83,12 +83,12 @@
           <div class="info-grid">
             <div class="info-item">
               <span class="k"><i class="bi bi-calendar-event"></i> Début</span>
-              <span class="v">{{ fmtDate(t.startDate) }}</span>
+              <span class="v">{{ fmtDateTime(t.startDate) }}</span>
             </div>
 
             <div class="info-item">
               <span class="k"><i class="bi bi-calendar-check"></i> Fin</span>
-              <span class="v">{{ t.endDate ? fmtDate(t.endDate) : '-' }}</span>
+              <span class="v">{{ t.endDate ? fmtDateTime(t.endDate) : '-' }}</span>
             </div>
 
             <div class="info-item">
@@ -114,15 +114,55 @@
         </div>
 
         <div class="card participants-card">
-          <div class="section-head">
-            <h3>Participants</h3>
-            <span class="count">{{ t.participants?.length ?? 0 }}</span>
+          <div class="section-head participants-head">
+            <div>
+              <h3>Participants</h3>
+              <p class="section-subtitle">
+                Gérez les employés inscrits à cette formation.
+              </p>
+            </div>
+
+            <div class="participants-head-actions">
+              <span class="count">{{ t.participants?.length ?? 0 }}</span>
+
+              @if (canManageParticipants()) {
+                <button
+                  class="btn add-participant-btn"
+                  type="button"
+                  (click)="openAddParticipantsModal()"
+                >
+                  <i class="bi bi-plus-lg"></i>
+                  Ajouter
+                </button>
+              }
+            </div>
           </div>
+
+          @if (!canManageParticipants()) {
+            <div class="inline-info">
+              <i class="bi bi-info-circle"></i>
+              <span>
+                L’ajout de participants est autorisé uniquement pour une
+                formation planifiée qui n’a pas encore commencé.
+              </span>
+            </div>
+          }
 
           @if (!t.participants || t.participants.length === 0) {
             <div class="empty-state">
               <i class="bi bi-people"></i>
               <p>Aucun participant enregistré pour cette formation.</p>
+
+              @if (canManageParticipants()) {
+                <button
+                  class="btn primary"
+                  type="button"
+                  (click)="openAddParticipantsModal()"
+                >
+                  <i class="bi bi-plus-lg"></i>
+                  Ajouter des participants
+                </button>
+              }
             </div>
           } @else {
             <div class="participants-list">
@@ -213,6 +253,17 @@
               Modifier la formation
             </button>
 
+            @if (canManageParticipants()) {
+              <button
+                class="btn ghost block"
+                type="button"
+                (click)="openAddParticipantsModal()"
+              >
+                <i class="bi bi-person-plus"></i>
+                Ajouter des participants
+              </button>
+            }
+
             <button class="btn ghost block" type="button" (click)="goBack()">
               <i class="bi bi-list-ul"></i>
               Retour à la liste
@@ -221,6 +272,125 @@
         </div>
       </div>
     </div>
+
+    @if (showAddParticipantsModal()) {
+      <div class="modal-backdrop" (click)="closeAddParticipantsModal()">
+        <div class="modal-card" (click)="$event.stopPropagation()">
+          <div class="modal-head">
+            <div>
+              <h3>Ajouter des participants</h3>
+              <p>
+                Sélectionnez un ou plusieurs employés à inscrire à la formation.
+              </p>
+            </div>
+
+            <button
+              class="icon-btn"
+              type="button"
+              (click)="closeAddParticipantsModal()"
+              [disabled]="isSubmittingParticipants()"
+            >
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+
+          <div class="modal-toolbar">
+            <div class="search-box">
+              <i class="bi bi-search"></i>
+              <input
+                type="text"
+                placeholder="Rechercher un employé..."
+                [value]="employeeSearch()"
+                (input)="onSearchEmployees($any($event.target).value)"
+              />
+            </div>
+
+            <div class="selected-chip">
+              {{ selectedCount() }} sélectionné(s)
+            </div>
+          </div>
+
+          @if (employeesError()) {
+            <div class="alert error compact">
+              <i class="bi bi-exclamation-triangle"></i>
+              <span>{{ employeesError() }}</span>
+            </div>
+          }
+
+          <div class="modal-body">
+            @if (employeesLoading()) {
+              <div class="modal-loading">
+                <div class="spinner"></div>
+                <span>Chargement des employés...</span>
+              </div>
+            } @else if (availableEmployees().length === 0) {
+              <div class="empty-state slim">
+                <i class="bi bi-person-x"></i>
+                <p>
+                  Aucun employé disponible à ajouter.
+                </p>
+              </div>
+            } @else {
+              <div class="employee-select-list">
+                @for (employee of availableEmployees(); track trackByEmployee($index, employee)) {
+                  <button
+                    class="employee-option"
+                    type="button"
+                    [class.selected]="isSelected(employee._id)"
+                    (click)="toggleEmployee(employee._id)"
+                  >
+                    <div class="employee-option-left">
+                      <div class="employee-avatar">
+                        {{ initials(employee.fullName) }}
+                      </div>
+
+                      <div class="employee-main">
+                        <strong>{{ employee.fullName }}</strong>
+                        <span>{{ employeeShortMeta(employee) }}</span>
+                      </div>
+                    </div>
+
+                    <div class="employee-option-right">
+                      @if (isSelected(employee._id)) {
+                        <i class="bi bi-check-circle-fill"></i>
+                      } @else {
+                        <i class="bi bi-circle"></i>
+                      }
+                    </div>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="modal-actions">
+            <button
+              class="btn ghost"
+              type="button"
+              (click)="closeAddParticipantsModal()"
+              [disabled]="isSubmittingParticipants()"
+            >
+              Annuler
+            </button>
+
+            <button
+              class="btn primary"
+              type="button"
+              (click)="addSelectedParticipants()"
+              [disabled]="selectedCount() === 0 || isSubmittingParticipants()"
+            >
+              @if (isSubmittingParticipants()) {
+                <span class="btn-loader"></span>
+                Ajout...
+              } @else {
+                <i class="bi bi-person-plus"></i>
+                Ajouter les participants
+              }
+            </button>
+          </div>
+        </div>
+      </div>
+    }
   } @else {
     <div class="empty-state card">
       <i class="bi bi-journal-x"></i>

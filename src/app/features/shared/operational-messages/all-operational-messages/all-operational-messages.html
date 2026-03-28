@@ -154,7 +154,15 @@
               <tr>
                 <td>
                   <div class="message-main">
-                    <strong>{{ item.title || 'Sans titre' }}</strong>
+                    <button
+                      type="button"
+                      class="message-title-btn"
+                      (click)="goToDetail(item)"
+                      [title]="item.title || 'Sans titre'"
+                    >
+                      {{ item.title || 'Sans titre' }}
+                    </button>
+
                     <p>{{ item.content }}</p>
                   </div>
                 </td>
@@ -195,6 +203,16 @@
 
                 <td class="actions-col">
                   <div class="row-actions">
+                    <button
+                      type="button"
+                      class="icon-btn info"
+                      title="Voir détail"
+                      [disabled]="actionLoadingId() === item._id"
+                      (click)="goToDetail(item)"
+                    >
+                      <i class="bi bi-eye"></i>
+                    </button>
+
                     <button
                       type="button"
                       class="icon-btn success"

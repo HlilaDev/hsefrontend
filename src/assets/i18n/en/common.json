@@ -10,6 +10,12 @@
   },
   "FOOTER": {
     "COPYRIGHT": "Copyright © {{year}} {{brand}}. All rights reserved."
+  },
+  "STATUS": {
+    "scheduled": "Planifiée",
+    "completed": "Terminée",
+    "cancelled": "Annulée",
+    "planned": "Prévu",
+    "pending": "En attente"
   }
-
 }

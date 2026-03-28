@@ -328,10 +328,6 @@ export class EmployeeProfile {
     return v === null || v === undefined || v === '' ? '—' : String(v);
   }
 
-  trainingStatusKey(status: any): string {
-    const s = String(status ?? 'completed').toLowerCase();
-    return `TRAININGS.STATUS.${s}`;
-  }
 
   trainingBadgeClass(status: any): string {
     const s = String(status ?? 'completed').toLowerCase();

@@ -1,0 +1,262 @@
+<section class="page">
+  <div class="hero">
+    <div class="hero-content">
+      <span class="eyebrow">MANAGER INSPECTIONS</span>
+      <h1>Vue d’ensemble des inspections</h1>
+      <p>
+        Gérez vos templates de contrôle, suivez les exécutions terrain et
+        surveillez la conformité globale des inspections HSE.
+      </p>
+    </div>
+
+    <div class="hero-actions">
+      <button class="btn ghost" type="button" (click)="loadOverview()" [disabled]="loading()">
+        <i class="bi bi-arrow-repeat"></i>
+        {{ loading() ? 'Chargement...' : 'Actualiser' }}
+      </button>
+
+      <button class="btn" type="button" (click)="goToCreateTemplate()">
+        <i class="bi bi-plus-circle"></i>
+        Nouveau template
+      </button>
+    </div>
+  </div>
+
+  @if (errorMsg()) {
+    <div class="alert error">
+      <i class="bi bi-exclamation-triangle"></i>
+      <span>{{ errorMsg() }}</span>
+    </div>
+  }
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="icon blue">
+        <i class="bi bi-ui-checks-grid"></i>
+      </div>
+      <div class="body">
+        <span>Templates</span>
+        <strong>{{ totalTemplates() }}</strong>
+        <small>{{ activeTemplates() }} actifs</small>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="icon green">
+        <i class="bi bi-clipboard-check"></i>
+      </div>
+      <div class="body">
+        <span>Exécutions terminées</span>
+        <strong>{{ completedExecutions() }}</strong>
+        <small>Contrôles finalisés</small>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="icon amber">
+        <i class="bi bi-hourglass-split"></i>
+      </div>
+      <div class="body">
+        <span>En cours</span>
+        <strong>{{ inProgressExecutions() }}</strong>
+        <small>Inspections actives</small>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="icon purple">
+        <i class="bi bi-speedometer2"></i>
+      </div>
+      <div class="body">
+        <span>Taux de complétion</span>
+        <strong>{{ completionRate() }}%</strong>
+        <small>Sur {{ totalExecutions() }} exécutions</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="main-col">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Templates récents</h3>
+            <p>Les modèles de checklist disponibles pour les inspections.</p>
+          </div>
+
+          <button class="text-btn" type="button" (click)="goToTemplates()">
+            Voir tout
+          </button>
+        </div>
+
+        @if (loading()) {
+          <div class="state">Chargement des templates...</div>
+        } @else if (recentTemplates().length) {
+          <div class="template-list">
+            @for (template of recentTemplates(); track template._id) {
+              <button class="template-card" type="button" (click)="openTemplate(template._id)">
+                <div class="template-top">
+                  <div>
+                    <h4>{{ template.title }}</h4>
+                    <p>{{ template.description || 'Aucune description.' }}</p>
+                  </div>
+
+                  <span class="chip">{{ categoryLabel(template.category) }}</span>
+                </div>
+
+                <div class="template-bottom">
+                  <span>{{ template.items?.length ?? 0 }} item(s)</span>
+                  <span>{{ template.isActive !== false ? 'Actif' : 'Inactif' }}</span>
+                  <span>{{ formatDate(template.createdAt) }}</span>
+                </div>
+              </button>
+            }
+          </div>
+        } @else {
+          <div class="state empty">
+            Aucun template inspection trouvé.
+          </div>
+        }
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Exécutions récentes</h3>
+            <p>Derniers contrôles réalisés par les agents sur le terrain.</p>
+          </div>
+
+          <button class="text-btn" type="button" (click)="goToExecutions()">
+            Voir tout
+          </button>
+        </div>
+
+        @if (loading()) {
+          <div class="state">Chargement des exécutions...</div>
+        } @else if (recentExecutions().length) {
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Checklist</th>
+                  <th>Agent</th>
+                  <th>Zone</th>
+                  <th>Statut</th>
+                  <th>Score</th>
+                  <th>Date</th>
+                  <th></th>
+                </tr>
+              </thead>
+
+              <tbody>
+                @for (execution of recentExecutions(); track execution._id) {
+                  <tr>
+                    <td>{{ getChecklistTitle(execution.checklist) }}</td>
+                    <td>{{ getAgentName(execution.agent) }}</td>
+                    <td>{{ getZoneName(execution.zone) }}</td>
+                    <td>
+                      <span [class]="statusClass(execution.status)">
+                        {{ statusLabel(execution.status) }}
+                      </span>
+                    </td>
+                    <td>{{ execution.score ?? 0 }}%</td>
+                    <td>{{ formatDateTime(execution.createdAt) }}</td>
+                    <td>
+                      <button class="icon-btn" type="button" (click)="openExecution(execution._id)">
+                        <i class="bi bi-eye"></i>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <div class="state empty">
+            Aucune exécution inspection trouvée.
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="side-col">
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Répartition par catégorie</h3>
+            <p>Templates disponibles par domaine HSE.</p>
+          </div>
+        </div>
+
+        <div class="category-list">
+          @for (item of templatesByCategory(); track item.key) {
+            <div class="category-row">
+              <span>{{ item.label }}</span>
+              <strong>{{ item.count }}</strong>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div>
+            <h3>Résumé d’activité</h3>
+            <p>Vue rapide du module inspections.</p>
+          </div>
+        </div>
+
+        <div class="summary-list">
+          <div class="summary-row">
+            <span>Total exécutions</span>
+            <strong>{{ totalExecutions() }}</strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Terminées</span>
+            <strong>{{ completedExecutions() }}</strong>
+          </div>
+
+          <div class="summary-row">
+            <span>En cours</span>
+            <strong>{{ inProgressExecutions() }}</strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Brouillons</span>
+            <strong>{{ draftExecutions() }}</strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Templates actifs</span>
+            <strong>{{ activeTemplates() }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel quick-actions">
+        <div class="panel-head">
+          <div>
+            <h3>Accès rapides</h3>
+            <p>Raccourcis utiles pour le manager.</p>
+          </div>
+        </div>
+
+        <button class="quick-btn" type="button" (click)="goToCreateTemplate()">
+          <i class="bi bi-plus-square"></i>
+          <span>Créer un template</span>
+        </button>
+
+        <button class="quick-btn" type="button" (click)="goToTemplates()">
+          <i class="bi bi-card-checklist"></i>
+          <span>Gérer les templates</span>
+        </button>
+
+        <button class="quick-btn" type="button" (click)="goToExecutions()">
+          <i class="bi bi-clipboard-data"></i>
+          <span>Voir les exécutions</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

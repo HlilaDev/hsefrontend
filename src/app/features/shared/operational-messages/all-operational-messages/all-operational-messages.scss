@@ -264,7 +264,7 @@
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1100px;
+  min-width: 1150px;
 
   thead th {
     text-align: left;
@@ -295,10 +295,23 @@ table {
   gap: 0.35rem;
   max-width: 330px;
 
-  strong {
+  .message-title-btn {
+    padding: 0;
+    border: none;
+    background: transparent;
+    text-align: left;
     color: #172033;
     font-size: 0.96rem;
     font-weight: 800;
+    cursor: pointer;
+    width: fit-content;
+    max-width: 100%;
+    transition: 0.2s ease;
+
+    &:hover {
+      color: #4f46e5;
+      text-decoration: underline;
+    }
   }
 
   p {
@@ -411,7 +424,7 @@ table {
 }
 
 .actions-col {
-  width: 150px;
+  width: 190px;
 }
 
 .row-actions {
@@ -437,6 +450,15 @@ table {
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+
+  &.info {
+    background: #eef2ff;
+    color: #4338ca;
+
+    &:hover {
+      background: #e0e7ff;
+    }
   }
 
   &.success {

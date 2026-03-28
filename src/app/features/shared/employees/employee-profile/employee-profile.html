@@ -256,7 +256,7 @@
 
                     <div class="training-meta">
                       <span class="mini-chip" [ngClass]="trainingBadgeClass(t.status)">
-                        {{ trainingStatusKey(t.status) | translate }}
+                        {{ ('STATUS.' + (t.status || 'scheduled').toLowerCase()) | translate }}
                       </span>
 
                       <span class="muted">
@@ -367,37 +367,7 @@
                     </span>
                   </div>
 
-                  <div class="assignment-grid">
-                    <div class="assignment-meta-item">
-                      <span>Catégorie</span>
-                      <strong>{{ inventoryItemCategory(assignment) }}</strong>
-                    </div>
-
-                    <div class="assignment-meta-item">
-                      <span>Type</span>
-                      <strong>{{ assignmentTypeLabel(assignment.assignmentType) }}</strong>
-                    </div>
-
-                    <div class="assignment-meta-item">
-                      <span>Zone</span>
-                      <strong>{{ assignmentZoneLabel(assignment) }}</strong>
-                    </div>
-
-                    <div class="assignment-meta-item">
-                      <span>État</span>
-                      <strong>{{ inventoryItemCondition(assignment) }}</strong>
-                    </div>
-
-                    <div class="assignment-meta-item">
-                      <span>Quantité</span>
-                      <strong>{{ inventoryItemQuantity(assignment) }}</strong>
-                    </div>
-
-                    <div class="assignment-meta-item">
-                      <span>Unité</span>
-                      <strong>{{ inventoryItemUnit(assignment) }}</strong>
-                    </div>
-
+                  <div class="assignment-grid simplified">
                     <div class="assignment-meta-item">
                       <span>Affectée le</span>
                       <strong>
@@ -410,11 +380,6 @@
                       <strong>
                         {{ assignment.expectedReturnDate ? (assignment.expectedReturnDate | date:'yyyy-MM-dd') : '—' }}
                       </strong>
-                    </div>
-
-                    <div class="assignment-meta-item full">
-                      <span>Affectée par</span>
-                      <strong>{{ assignedByLabel(assignment) }}</strong>
                     </div>
                   </div>
 

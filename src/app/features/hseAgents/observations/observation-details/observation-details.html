@@ -89,7 +89,7 @@
 
               <div class="helper-text">
                 Décris les actions réalisées pour corriger le problème, puis
-                envoie l’observation au manager pour validation.
+                joins des photos de preuve avant d’envoyer l’observation au manager.
               </div>
 
               <div class="form-field">
@@ -104,14 +104,62 @@
               </div>
 
               <div class="form-field">
-                <label for="proofImageUrl">URL d’image de preuve (optionnel)</label>
-                <input
-                  id="proofImageUrl"
-                  type="text"
-                  [value]="proofImageUrl()"
-                  (input)="onProofImageUrl($any($event.target).value)"
-                  placeholder="https://... ou /uploads/..."
-                />
+                <label>Photos de preuve (optionnel)</label>
+
+                <label class="upload-box" for="proofFiles">
+                  <input
+                    id="proofFiles"
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    (change)="onProofFilesSelected($event)"
+                  />
+
+                  <div class="upload-icon">📷</div>
+                  <div class="upload-text">
+                    <strong>Ajouter des images</strong>
+                    <span>PNG, JPG, JPEG, WEBP</span>
+                  </div>
+                </label>
+
+                <div class="file-summary">
+                  <span>{{ proofFilesCountLabel() }}</span>
+
+                  @if (hasProofFiles()) {
+                    <button
+                      type="button"
+                      class="mini-btn"
+                      (click)="clearProofFiles()"
+                    >
+                      Vider
+                    </button>
+                  }
+                </div>
+
+                @if (hasProofFiles()) {
+                  <div class="proof-grid">
+                    @for (item of proofPreviews(); track trackByProofPreview($index, item)) {
+                      <div class="proof-card">
+                        <div class="proof-thumb">
+                          <img [src]="item.preview" [alt]="item.file.name" />
+                        </div>
+
+                        <div class="proof-info">
+                          <div class="proof-name" [title]="item.file.name">
+                            {{ item.file.name }}
+                          </div>
+                          <button
+                            type="button"
+                            class="remove-btn"
+                            (click)="removeProofFile($index)"
+                          >
+                            Supprimer
+                          </button>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                }
               </div>
 
               <div class="treatment-actions">

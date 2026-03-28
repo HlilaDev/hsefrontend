@@ -1,5 +1,6 @@
 import { CommonModule, DatePipe } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import {
@@ -10,12 +11,13 @@ import {
 @Component({
   selector: 'app-all-operational-messages',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, DatePipe],
   templateUrl: './all-operational-messages.html',
   styleUrl: './all-operational-messages.scss',
 })
 export class AllOperationalMessages implements OnInit {
   private operationalMessageServices = inject(OperationalMessageServices);
+  private router = inject(Router);
 
   loading = signal(false);
   actionLoadingId = signal<string | null>(null);
@@ -130,6 +132,12 @@ export class AllOperationalMessages implements OnInit {
     this.loadMessages();
   }
 
+  goToDetail(item: OperationalMessage): void {
+    if (!item?._id) return;
+
+    this.router.navigate(['/manager/operational-messages', item._id]);
+  }
+
   publishMessage(item: OperationalMessage): void {
     if (!item?._id) return;
 
@@ -220,7 +228,11 @@ export class AllOperationalMessages implements OnInit {
 
   getCreatedByLabel(item: OperationalMessage): string {
     if (item.createdBy && typeof item.createdBy === 'object') {
-      return `${item.createdBy.firstName || ''} ${item.createdBy.lastName || ''}`.trim() || item.createdBy.email || '-';
+      return (
+        `${item.createdBy.firstName || ''} ${item.createdBy.lastName || ''}`.trim() ||
+        item.createdBy.email ||
+        '-'
+      );
     }
 
     return '-';

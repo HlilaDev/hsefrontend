@@ -103,20 +103,20 @@ export class ZonesOverview {
       status = 'active';
     }
 
-    return {
-      _id: zone._id,
-      name: zone.name,
-      code: zone.code ?? '',
-      description: zone.description ?? '',
-      status,
-      riskLevel: zone.riskLevel ?? 'low',
-      employeesCount: Array.isArray(zone.employees) ? zone.employees.length : 0,
-      devicesCount: Array.isArray(zone.devices) ? zone.devices.length : 0,
-      sensorsCount: Array.isArray(zone.sensors) ? zone.sensors.length : 0,
-      alertsCount,
-      temperature: zone.temperature ?? null,
-      humidity: zone.humidity ?? null,
-    };
+return {
+  _id: zone._id,
+  name: zone.name,
+  code: zone.code ?? '',
+  description: zone.description ?? '',
+  status,
+  riskLevel: zone.riskLevel ?? 'low',
+  employeesCount: zone.employeesCount ?? 0,
+  devicesCount: zone.devicesCount ?? 0,
+  sensorsCount: zone.sensorsCount ?? 0,
+  alertsCount: zone.alertsCount ?? 0,
+  temperature: zone.temperature ?? null,
+  humidity: zone.humidity ?? null,
+};
   }
 
   filteredZones = computed(() => {

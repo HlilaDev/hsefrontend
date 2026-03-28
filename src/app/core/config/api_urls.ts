@@ -121,6 +121,31 @@ sensors: {
     removeParticipant: (id: string, participantId: string) => `${BASE_API_URL}/trainings/${id}/participants/${participantId}`,
   },
 
+  // Checklists API
+checklists: {
+  allTemplates: `${BASE_API_URL}/checklists/templates`,
+  getTemplateById: (id: string) => `${BASE_API_URL}/checklists/templates/${id}`,
+  addTemplate: `${BASE_API_URL}/checklists/templates`,
+  editTemplate: (id: string) => `${BASE_API_URL}/checklists/templates/${id}`,
+  deleteTemplate: (id: string) => `${BASE_API_URL}/checklists/templates/${id}`,
+
+  addItemToTemplate: (templateId: string) =>
+    `${BASE_API_URL}/checklists/templates/${templateId}/items`,
+  editItem: (itemId: string) => `${BASE_API_URL}/checklists/items/${itemId}`,
+  deleteItem: (itemId: string) => `${BASE_API_URL}/checklists/items/${itemId}`,
+
+  allExecutions: `${BASE_API_URL}/checklists/executions`,
+  getExecutionById: (id: string) =>
+    `${BASE_API_URL}/checklists/executions/${id}`,
+  startExecution: `${BASE_API_URL}/checklists/executions`,
+  editExecution: (id: string) =>
+    `${BASE_API_URL}/checklists/executions/${id}`,
+  saveResponse: (executionId: string) =>
+    `${BASE_API_URL}/checklists/executions/${executionId}/responses`,
+  completeExecution: (id: string) =>
+    `${BASE_API_URL}/checklists/executions/${id}/complete`,
+},
+
   // Reports API
   reports: {
     create: `${BASE_API_URL}/reports`,

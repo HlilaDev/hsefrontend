@@ -1,42 +1,151 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthServices } from '../../../core/services/auth/auth-services';  // Assurez-vous que le chemin est correct
+import { Component, OnInit, inject } from '@angular/core';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
+import { StatCard } from '../../../shared/components/stat-card/stat-card';
+import { AuthServices } from '../../../core/services/auth/auth-services';
 import { ObservationService } from '../../../core/services/observations/observation-services';
-import { StatCard } from "../../../shared/components/stat-card/stat-card";  // Assurez-vous que le chemin est correct
+import { TrainingServices } from '../../../core/services/trainings/training-services';
+import { NotificationServices } from '../../../core/services/notifications/notification-services';
 
 @Component({
   selector: 'app-hseagent-dashboard',
-  templateUrl: './hseagent-dashboard.html',
-  styleUrls: ['./hseagent-dashboard.scss'],
+  standalone: true,
   imports: [StatCard],
+  templateUrl: './hseagent-dashboard.html',
+  styleUrl: './hseagent-dashboard.scss',
 })
 export class HseagentDashboard implements OnInit {
-  totalObservations: number = 0;  // Variable pour stocker le nombre total d'observations
-  currentAgentId: string = '';    // Variable pour l'ID de l'agent
+  private authService = inject(AuthServices);
+  private observationService = inject(ObservationService);
+  private trainingService = inject(TrainingServices);
+  private notificationService = inject(NotificationServices);
 
-  constructor(
-    private authService: AuthServices,  // Injection du service AuthServices
-    private observationService: ObservationService  // Injection du service ObservationService
-  ) {}
+  loading = true;
 
-  ngOnInit() {
-    // Récupérer les informations de l'utilisateur actuel via le service AuthServices
-    this.authService.me().subscribe(
-      (response) => {
-        // L'ID de l'agent se trouve dans response.user._id
-        this.currentAgentId = response.user._id;  // Assurez-vous que _id est l'ID de l'agent
-        // Appel de l'API pour obtenir le nombre total d'observations pour cet agent
-        this.observationService.getObservationsCountByAgent(this.currentAgentId).subscribe(
-          (count) => {
-            this.totalObservations = count;  // Assigner le nombre d'observations à la variable
+  currentAgentId = '';
+
+  myObservationsCount = 0;
+  assignedObservationsCount = 0;
+  scheduledTrainingsCount = 0;
+  completedTrainingsCount = 0;
+  unreadNotificationsCount = 0;
+
+  agentName = '';
+
+  ngOnInit(): void {
+    this.loadDashboard();
+  }
+
+  loadDashboard(): void {
+    this.loading = true;
+
+    this.authService.me().subscribe({
+      next: (response: any) => {
+        const user = response?.user;
+        this.currentAgentId = user?._id || '';
+        this.agentName =
+          user?.fullName ||
+          `${user?.firstName || ''} ${user?.lastName || ''}`.trim() ||
+          'Agent';
+
+        if (!this.currentAgentId) {
+          this.loading = false;
+          return;
+        }
+
+        forkJoin({
+          myObservations: this.observationService
+            .list({
+              scope: 'reported',
+              reportedBy: this.currentAgentId,
+              page: 1,
+              limit: 1,
+            })
+            .pipe(
+              catchError((error) => {
+                console.error(
+                  'Erreur lors du chargement des observations créées:',
+                  error
+                );
+                return of({
+                  items: [],
+                  meta: { total: 0, page: 1, limit: 1, pages: 1 },
+                });
+              })
+            ),
+
+          assignedObservations: this.observationService
+            .list({
+              scope: 'assigned',
+              assignedTo: this.currentAgentId,
+              page: 1,
+              limit: 1,
+            })
+            .pipe(
+              catchError((error) => {
+                console.error(
+                  'Erreur lors du chargement des observations affectées:',
+                  error
+                );
+                return of({
+                  items: [],
+                  meta: { total: 0, page: 1, limit: 1, pages: 1 },
+                });
+              })
+            ),
+
+          trainings: this.trainingService.getAllTrainings().pipe(
+            catchError((error) => {
+              console.error('Erreur lors du chargement des formations:', error);
+              return of([]);
+            })
+          ),
+
+          unreadNotifications: this.notificationService.getUnreadCount().pipe(
+            catchError((error) => {
+              console.error(
+                'Erreur lors du chargement des notifications non lues:',
+                error
+              );
+              return of({ count: 0 });
+            })
+          ),
+        }).subscribe({
+          next: ({ myObservations, assignedObservations, trainings, unreadNotifications }) => {
+            this.myObservationsCount = myObservations?.meta?.total ?? 0;
+            this.assignedObservationsCount =
+              assignedObservations?.meta?.total ?? 0;
+
+            const trainingList = Array.isArray(trainings)
+              ? trainings
+              : trainings?.items || trainings?.data || [];
+
+            this.scheduledTrainingsCount = trainingList.filter(
+              (training: any) => training?.status === 'scheduled'
+            ).length;
+
+            this.completedTrainingsCount = trainingList.filter(
+              (training: any) => training?.status === 'completed'
+            ).length;
+
+            this.unreadNotificationsCount = unreadNotifications?.count ?? 0;
+
+            this.loading = false;
           },
-          (error) => {
-            console.error('Erreur lors de la récupération du total des observations:', error);
-          }
-        );
+          error: (error) => {
+            console.error('Erreur dashboard agent:', error);
+            this.loading = false;
+          },
+        });
       },
-      (error) => {
-        console.error('Erreur lors de la récupération des informations de l\'utilisateur:', error);
-      }
-    );
+      error: (error) => {
+        console.error(
+          "Erreur lors de la récupération des informations de l'agent:",
+          error
+        );
+        this.loading = false;
+      },
+    });
   }
 }

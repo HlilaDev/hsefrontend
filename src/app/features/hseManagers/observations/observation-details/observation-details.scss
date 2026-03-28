@@ -290,7 +290,135 @@ h1 {
   }
 }
 
-.assign-box {
+.treatment-wrap {
+  padding: 20px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.treatment-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.treatment-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fbfdff 0%, #f8fbff 100%);
+  border: 1px solid #e8edf5;
+
+  strong {
+    font-size: 15px;
+    color: #0f172a;
+    word-break: break-word;
+  }
+}
+
+.treatment-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+}
+
+.treatment-note {
+  padding: 18px;
+  border-radius: 20px;
+  background: #f8fafc;
+  border: 1px solid #e8edf5;
+
+  h3 {
+    margin: 0 0 10px;
+    font-size: 17px;
+    color: #0f172a;
+  }
+
+  p {
+    margin: 0;
+    color: #475569;
+    line-height: 1.8;
+    font-size: 15px;
+    white-space: pre-wrap;
+  }
+}
+
+.treatment-media {
+  border-radius: 20px;
+  border: 1px solid #e8edf5;
+  background: #fff;
+}
+
+.treatment-preview {
+  height: 360px;
+}
+
+.section-mini-title {
+  padding: 18px 22px 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.validation-box {
+  padding: 18px;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #fafaff 0%, #f5f7ff 100%);
+  border: 1px solid #dbe4ff;
+}
+
+.validation-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+
+  h3 {
+    margin: 0;
+    font-size: 17px;
+    color: #0f172a;
+  }
+}
+
+.validation-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #4338ca;
+  border: 1px solid #c7d2fe;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.validation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.validation-comment {
+  margin: 0;
+  color: #475569;
+  line-height: 1.8;
+  font-size: 15px;
+  white-space: pre-wrap;
+}
+
+.assign-box,
+.review-box {
   padding: 18px 22px 22px;
   display: flex;
   flex-direction: column;
@@ -325,7 +453,8 @@ h1 {
   }
 }
 
-.assign-form {
+.assign-form,
+.review-form {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -336,27 +465,41 @@ h1 {
     color: #334155;
   }
 
-  select {
+  select,
+  textarea {
     width: 100%;
-    height: 48px;
     border-radius: 16px;
     border: 1px solid #dbe4f0;
     background: #fff;
-    padding: 0 14px;
+    padding: 14px;
     font-size: 14px;
     color: #0f172a;
     outline: none;
     transition: 0.2s ease;
+  }
+
+  select {
+    height: 48px;
+    padding: 0 14px;
     appearance: none;
     cursor: pointer;
   }
 
-  select:focus {
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.6;
+    font-family: inherit;
+  }
+
+  select:focus,
+  textarea:focus {
     border-color: #6366f1;
     box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
   }
 
-  select:disabled {
+  select:disabled,
+  textarea:disabled {
     background: #f8fafc;
     color: #94a3b8;
     cursor: not-allowed;
@@ -401,6 +544,35 @@ h1 {
   }
 }
 
+.review-status {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &__label {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #6d28d9;
+  }
+
+  strong {
+    color: #312e81;
+    font-size: 15px;
+  }
+}
+
+.review-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
 .form-message {
   margin: 0;
   font-size: 13px;
@@ -416,8 +588,50 @@ h1 {
   }
 }
 
-.full-btn {
+.full-btn,
+.approve-btn,
+.reject-btn {
   width: 100%;
+}
+
+.primary-btn,
+.secondary-btn {
+  margin-top: 18px;
+  height: 44px;
+  border: none;
+  border-radius: 14px;
+  padding: 0 18px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, #8b86ee, #7f79e4);
+  color: #fff;
+}
+
+.primary-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 20px rgba(79, 70, 229, 0.2);
+}
+
+.secondary-btn {
+  background: #fff1f2;
+  color: #be123c;
+  border: 1px solid #fecdd3;
+}
+
+.secondary-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 20px rgba(244, 63, 94, 0.12);
+}
+
+.primary-btn:disabled,
+.secondary-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 .summary-list {
@@ -479,6 +693,10 @@ h1 {
 
   &.progress {
     background: #f59e0b;
+  }
+
+  &.review {
+    background: #6366f1;
   }
 
   &.closed {
@@ -552,6 +770,18 @@ h1 {
     border-color: #fed7aa;
   }
 
+  &.pending_validation {
+    background: #f5f3ff;
+    color: #6d28d9;
+    border-color: #ddd6fe;
+  }
+
+  &.reopened {
+    background: #fef2f2;
+    color: #b91c1c;
+    border-color: #fecaca;
+  }
+
   &.closed {
     background: #ecfdf5;
     color: #059669;
@@ -609,30 +839,6 @@ h1 {
   animation: spin 0.9s linear infinite;
 }
 
-.primary-btn {
-  margin-top: 18px;
-  height: 44px;
-  border: none;
-  border-radius: 14px;
-  padding: 0 18px;
-  background: linear-gradient(135deg, #8b86ee, #7f79e4);
-  color: #fff;
-  font-weight: 800;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.primary-btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 20px rgba(79, 70, 229, 0.2);
-}
-
-.primary-btn:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
 .empty-box {
   padding: 38px 22px 42px;
   text-align: center;
@@ -651,6 +857,10 @@ h1 {
   p {
     margin: 0;
     color: #64748b;
+  }
+
+  &.compact {
+    padding: 22px;
   }
 }
 
@@ -688,8 +898,14 @@ h1 {
     flex-direction: column;
   }
 
-  .details-grid {
+  .details-grid,
+  .treatment-grid,
+  .validation-grid,
+  .review-actions {
     grid-template-columns: 1fr;
+  }
+
+  .details-grid {
     padding: 16px 16px 0;
   }
 
@@ -709,7 +925,9 @@ h1 {
     }
   }
 
+  .treatment-wrap,
   .assign-box,
+  .review-box,
   .summary-list,
   .timeline {
     padding: 16px;

@@ -33,7 +33,11 @@
             {{ card.value }}{{ card.unit ?? '' }}
           </div>
           <div class="stat-trend" [class.down]="(card.trend ?? 0) < 0">
-            <i class="bi" [class.bi-arrow-up-right]="(card.trend ?? 0) >= 0" [class.bi-arrow-down-right]="(card.trend ?? 0) < 0"></i>
+            <i
+              class="bi"
+              [class.bi-arrow-up-right]="(card.trend ?? 0) >= 0"
+              [class.bi-arrow-down-right]="(card.trend ?? 0) < 0"
+            ></i>
             {{ (card.trend ?? 0) | number:'1.0-0' }}%
           </div>
         </div>
@@ -61,8 +65,8 @@
           <strong>{{ openIncidentsCount() }}</strong>
         </div>
         <div class="mini">
-          <span>Avg response time</span>
-          <strong>{{ responseTime() }} min</strong>
+          <span>Open observations</span>
+          <strong>{{ openObservationsCount() }}</strong>
         </div>
       </div>
 
@@ -200,7 +204,7 @@
           <h3>Training progress</h3>
           <p>Completion status by program</p>
         </div>
-        <a routerLink="/manager/trainings" class="link-btn">Open training</a> 
+        <a routerLink="/manager/trainings" class="link-btn">Open training</a>
       </div>
 
       <div class="training-list">

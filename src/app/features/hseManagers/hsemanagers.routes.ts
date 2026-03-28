@@ -52,6 +52,13 @@ export const HSEMANAGERS_ROUTES: Routes = [
           import('./trainings/trainings.routes')
             .then(m => m.TRAININGS_ROUTES),
       },
+            // ✅ /manager/inspections
+      {
+        path: 'inspections',
+        loadChildren: () =>
+          import('./Inspections/Inspections.routes')
+            .then(m => m.INSPECTIONS_ROUTES),
+      },
 
             // ✅ /manager/operational-messages
       {

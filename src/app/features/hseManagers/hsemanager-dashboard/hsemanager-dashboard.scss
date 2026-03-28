@@ -98,7 +98,7 @@
     inset: auto 0 0 0;
     height: 4px;
     background: #2563eb;
-    opacity: .9;
+    opacity: 0.9;
   }
 
   &.success::after {
@@ -141,6 +141,11 @@
   color: #ef4444;
 }
 
+.stat-content {
+  min-width: 0;
+  flex: 1;
+}
+
 .stat-label {
   color: #64748b;
   font-size: 13px;
@@ -176,7 +181,7 @@
 }
 
 .top-grid {
-  grid-template-columns: 1.45fr .85fr;
+  grid-template-columns: 1.45fr 0.85fr;
 }
 
 .content-grid {
