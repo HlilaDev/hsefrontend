@@ -23,7 +23,13 @@
       "JOB_TITLE": "Job Title",
       "ZONE": "Zone",
       "PHONE": "Phone",
-      "STATUS": "Status"
+      "STATUS": "Status",
+       "MATRICULE": "Matricule",
+      "FULL_NAME":"Full Name",
+      "ACTIVE":"Active",
+            "ACTIONS":"Actions",
+            "JOB": "Job",
+            "HIRE_DATE": "Hire Date"
     },
     "FILTERS": {
       "SEARCH": "Search",

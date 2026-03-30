@@ -37,6 +37,7 @@ export class HseagentSidebar {
       items: [
         { labelKey: 'SIDEBAR.MENU.INCIDENTS', icon: 'bi bi-exclamation-triangle', route: '/agent/incidents' },
         { labelKey: 'SIDEBAR.MENU.AUDITS', icon: 'bi bi-clipboard-check', route: '/agent/audits' },
+                { labelKey: 'SIDEBAR.MENU.INSPECTIONS', icon: 'bi bi-clipboard-check', route: '/agent/inspections' },
         { labelKey: 'SIDEBAR.MENU.TRAINING', icon: 'bi bi-mortarboard', route: '/agent/trainings' },
       ],
     },

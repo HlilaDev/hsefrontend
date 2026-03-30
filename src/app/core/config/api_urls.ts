@@ -156,6 +156,16 @@ checklists: {
     delete: (id: string) => `${BASE_API_URL}/reports/${id}`,
   },
 
+  // PPE Alerts API
+ppeAlerts: {
+  list: `${BASE_API_URL}/ppe-alerts`,
+  stats: `${BASE_API_URL}/ppe-alerts/stats`,
+  byId: (id: string) => `${BASE_API_URL}/ppe-alerts/${id}`,
+  updateStatus: (id: string) => `${BASE_API_URL}/ppe-alerts/${id}/status`,
+  delete: (id: string) => `${BASE_API_URL}/ppe-alerts/${id}`,
+    uploadSnapshot: `${BASE_API_URL}/ppe-alerts/upload-snapshot`,
+},
+
   // readings
 readings: {
   list: `${BASE_API_URL}/readings`, // liste paginée + filtres

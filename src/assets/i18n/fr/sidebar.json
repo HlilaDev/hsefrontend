@@ -25,7 +25,8 @@
       "MONITORING": "Surveillance",
       "AUDITS":"Audits",
       "ALERTS": "Alertes",
-      "REPORTS": "Rapports"
+      "REPORTS": "Rapports",
+            "PPE": "PPE"
     },
     "HINT": {
       "SECURE_ADMIN": "Administration sécurisée",

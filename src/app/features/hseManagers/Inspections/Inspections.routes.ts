@@ -8,21 +8,39 @@ export const INSPECTIONS_ROUTES: Routes = [
         .then(m => m.InspectionsOverview),
   },
     {
+    path: 'list',
+    loadComponent: () =>
+      import('./inspection-list/inspection-list')
+        .then(m => m.InspectionList),
+  },
+  {
     path: 'templates/new',
     loadComponent: () =>
-      import('./templates/create-template/create-template')
+      import('./create-template/create-template')
         .then(m => m.CreateTemplate),
   },
-      {
+  {
     path: 'templates',
     loadComponent: () =>
       import('./templates/templates-list/templates-list')
         .then(m => m.TemplatesList),
   },
-        {
+  {
     path: 'templates/:id',
     loadComponent: () =>
-      import('./templates/template-item/template-item')
-        .then(m => m.TemplateItem),
+      import('./templates/template-details/template-details')
+        .then(m => m.TemplateDetails),
+  },
+    {
+    path: 'executions/new',
+    loadComponent: () =>
+      import('./executions/create-execution/create-execution')
+        .then(m => m.CreateExecution),
+  },
+      {
+    path: ':id',
+    loadComponent: () =>
+      import('./inspection-details/inspection-details')
+        .then(m => m.InspectionDetails),
   },
 ];

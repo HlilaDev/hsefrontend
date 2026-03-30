@@ -15,6 +15,7 @@ export const HSEAGENT_SECTIONS: SidebarSection[] = [
       { labelKey: 'SIDEBAR.MENU.INCIDENTS', icon: 'bi bi-exclamation-triangle', route: '/hseagent/incidents' },
       { labelKey: 'SIDEBAR.MENU.AUDITS', icon: 'bi bi-clipboard-check', route: '/hseagent/audits' },
       { labelKey: 'SIDEBAR.MENU.TRAINING', icon: 'bi bi-mortarboard', route: '/hseagent/training' },
+          { labelKey: 'SIDEBAR.MENU.PPE', icon: 'bi bi-mortarboard', route: '/hseagent/ppe' },
     ],
   },
   {

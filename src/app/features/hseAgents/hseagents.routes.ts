@@ -23,6 +23,11 @@ export const HSEAGENTS_ROUTES: Routes = [
       import('./trainings/trainings.routes')
         .then(m => m.TRAININGS_ROUTES),
   },
+      { path: 'inspections',
+    loadChildren: () =>
+      import('./inspections.routes')
+        .then(m => m.OBSERVATIONS_ROUTES),
+  },
 
     { path: 'employees',
     loadChildren: () =>

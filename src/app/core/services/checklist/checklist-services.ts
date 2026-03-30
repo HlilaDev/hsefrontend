@@ -64,6 +64,7 @@ export interface ChecklistExecution {
         title?: string;
         description?: string;
         category?: ChecklistCategory;
+        items?: ChecklistItem[];
       };
   agent?:
     | string
@@ -142,6 +143,7 @@ export interface UpdateChecklistItemDto {
 
 export interface StartChecklistExecutionDto {
   checklistId: string;
+  title: string;
   zone?: string | null;
   notes?: string;
 }

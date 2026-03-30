@@ -19,6 +19,7 @@
     "COLUMNS": {
       "NAME": "Vollständiger Name",
       "EMPLOYEE_ID": "Mitarbeiter-ID",
+      
       "DEPARTMENT": "Abteilung",
       "JOB_TITLE": "Position",
       "ZONE": "Zone",

@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
-import { ChecklistServices } from '../../../../../core/services/checklist/checklist-services';
+import { ChecklistServices } from '../../../../core/services/checklist/checklist-services';
 
 type ItemType = 'boolean' | 'text' | 'number';
 

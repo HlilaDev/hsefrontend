@@ -60,6 +60,14 @@ export const HSEMANAGERS_ROUTES: Routes = [
             .then(m => m.INSPECTIONS_ROUTES),
       },
 
+                  // ✅ /manager/ppe
+      {
+        path: 'ppe',
+        loadChildren: () =>
+          import('./ppe-alerts/ppeAlerts.routes')
+            .then(m => m.PPEALERTS_ROUTES),
+      },
+
             // ✅ /manager/operational-messages
       {
         path: 'operational-messages',

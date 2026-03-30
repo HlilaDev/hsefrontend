@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { catchError, finalize, of } from 'rxjs';
+import { catchError, finalize, forkJoin, of } from 'rxjs';
 
 import {
   ChecklistCategory,
@@ -10,17 +10,18 @@ import {
   ChecklistServices,
   ChecklistTemplate,
 } from '../../../../core/services/checklist/checklist-services';
+import { InspectionKpiCard } from '../inspection-kpi-card/inspection-kpi-card';
 
 @Component({
   selector: 'app-inspections-overview',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, InspectionKpiCard],
   templateUrl: './inspections-overview.html',
   styleUrl: './inspections-overview.scss',
 })
 export class InspectionsOverview {
-  private checklistService = inject(ChecklistServices);
-  private router = inject(Router);
+  private readonly checklistService = inject(ChecklistServices);
+  private readonly router = inject(Router);
 
   loading = signal(true);
   errorMsg = signal<string | null>(null);
@@ -32,6 +33,13 @@ export class InspectionsOverview {
 
   readonly activeTemplates = computed(
     () => this.templates().filter((item) => item.isActive !== false).length
+  );
+
+  readonly inactiveTemplates = computed(() =>
+    [...this.templates()]
+      .filter((item) => item.isActive === false)
+      .sort((a, b) => this.toTime(b.updatedAt || b.createdAt) - this.toTime(a.updatedAt || a.createdAt))
+      .slice(0, 5)
   );
 
   readonly totalExecutions = computed(() => this.executions().length);
@@ -66,6 +74,13 @@ export class InspectionsOverview {
       .slice(0, 4)
   );
 
+  readonly lowScoreExecutions = computed(() =>
+    [...this.executions()]
+      .filter((item) => typeof item.score === 'number' && item.score < 60)
+      .sort((a, b) => (a.score ?? 0) - (b.score ?? 0))
+      .slice(0, 5)
+  );
+
   readonly templatesByCategory = computed(() => {
     const base: Record<ChecklistCategory, number> = {
       safety: 0,
@@ -89,6 +104,43 @@ export class InspectionsOverview {
     ];
   });
 
+  readonly topZones = computed(() => {
+    const map = new Map<string, number>();
+
+    for (const execution of this.executions()) {
+      const zoneName = this.getZoneName(execution.zone);
+      if (!zoneName || zoneName === '—') continue;
+      map.set(zoneName, (map.get(zoneName) || 0) + 1);
+    }
+
+    return [...map.entries()]
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+  });
+
+  readonly lastCreatedTemplate = computed(() => {
+    const [item] = [...this.templates()].sort(
+      (a, b) => this.toTime(b.createdAt) - this.toTime(a.createdAt)
+    );
+    return item ?? null;
+  });
+
+  readonly lastExecution = computed(() => {
+    const [item] = [...this.executions()].sort(
+      (a, b) => this.toTime(b.createdAt) - this.toTime(a.createdAt)
+    );
+    return item ?? null;
+  });
+
+  readonly lastCompletedExecution = computed(() => {
+    const [item] = [...this.executions()]
+      .filter((execution) => execution.status === 'completed')
+      .sort((a, b) => this.toTime(b.updatedAt || b.createdAt) - this.toTime(a.updatedAt || a.createdAt));
+
+    return item ?? null;
+  });
+
   ngOnInit(): void {
     this.loadOverview();
   }
@@ -97,9 +149,8 @@ export class InspectionsOverview {
     this.loading.set(true);
     this.errorMsg.set(null);
 
-    this.checklistService
-      .getAllTemplates()
-      .pipe(
+    forkJoin({
+      templates: this.checklistService.getAllTemplates().pipe(
         catchError((error) => {
           console.error('Templates load error:', error);
           this.errorMsg.set(
@@ -107,16 +158,9 @@ export class InspectionsOverview {
               'Erreur lors du chargement des templates inspections.'
           );
           return of([]);
-        }),
-        finalize(() => {})
-      )
-      .subscribe((templates) => {
-        this.templates.set(Array.isArray(templates) ? templates : []);
-      });
-
-    this.checklistService
-      .getAllExecutions()
-      .pipe(
+        })
+      ),
+      executions: this.checklistService.getAllExecutions().pipe(
         catchError((error) => {
           console.error('Executions load error:', error);
           this.errorMsg.set(
@@ -124,12 +168,16 @@ export class InspectionsOverview {
               'Erreur lors du chargement des exécutions inspections.'
           );
           return of([]);
-        }),
+        })
+      ),
+    })
+      .pipe(
         finalize(() => {
           this.loading.set(false);
         })
       )
-      .subscribe((executions) => {
+      .subscribe(({ templates, executions }) => {
+        this.templates.set(Array.isArray(templates) ? templates : []);
         this.executions.set(Array.isArray(executions) ? executions : []);
       });
   }
@@ -139,7 +187,7 @@ export class InspectionsOverview {
   }
 
   goToExecutions(): void {
-    this.router.navigate(['/manager/inspections/executions']);
+    this.router.navigate(['/manager/inspections/list']);
   }
 
   goToCreateTemplate(): void {
@@ -153,7 +201,7 @@ export class InspectionsOverview {
 
   openExecution(executionId?: string): void {
     if (!executionId) return;
-    this.router.navigate(['/manager/inspections/executions', executionId]);
+    this.router.navigate(['/manager/inspections/', executionId]);
   }
 
   categoryLabel(category?: ChecklistCategory): string {
@@ -190,6 +238,12 @@ export class InspectionsOverview {
     if (status === 'completed') return 'badge completed';
     if (status === 'in_progress') return 'badge progress';
     return 'badge draft';
+  }
+
+  scoreClass(score?: number): string {
+    if ((score ?? 0) < 60) return 'score low';
+    if ((score ?? 0) < 80) return 'score medium';
+    return 'score high';
   }
 
   getChecklistTitle(
@@ -278,4 +332,7 @@ export class InspectionsOverview {
     const date = new Date(value);
     return Number.isNaN(date.getTime()) ? 0 : date.getTime();
   }
+  goToCreateExecution(): void {
+  this.router.navigate(['/manager/inspections/executions/new']);
+}
 }
